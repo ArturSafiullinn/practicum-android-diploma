@@ -19,13 +19,19 @@ kotlin = "1.9.24"
 preference = "1.2.0"
 
 koin = "3.3.0"
+retrofit = "2.9.0"
 
 [libraries]
 
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationCompose" }
 androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationCompose" }
 
+# Koin
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+
+# Retrofit
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 
 # Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
