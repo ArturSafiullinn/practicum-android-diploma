@@ -25,7 +25,7 @@ class RetrofitNetworkClient(
 
     override suspend fun doRequest(dto: Request): Response {
         if (!isConnected()) {
-            return Response(resultCode = -1)
+            return Response(resultCode = NOT_CONNECTED_CODE)
         }
 
         return withContext(Dispatchers.IO) {
@@ -33,12 +33,12 @@ class RetrofitNetworkClient(
                 when (dto) {
                     AreasRequest -> {
                         val areas = apiService.getAreas()
-                        AreasResponse(areas, 200)
+                        AreasResponse(areas, HTTP_OK)
                     }
 
                     IndustriesRequest -> {
                         val industries = apiService.getIndustries()
-                        IndustriesResponse(industries, 200)
+                        IndustriesResponse(industries, HTTP_OK)
                     }
 
                     is VacanciesRequest -> {
@@ -50,18 +50,18 @@ class RetrofitNetworkClient(
                             page = dto.page,
                             onlyWithSalary = dto.onlyWithSalary
                         )
-                        VacanciesResponse(result, 200)
+                        VacanciesResponse(result, HTTP_OK)
                     }
 
                     is VacancyDetailsRequest -> {
                         val vacancy = apiService.getVacancyDetails(dto.id)
-                        VacancyDetailsResponse(vacancy, 200)
+                        VacancyDetailsResponse(vacancy, HTTP_OK)
                     }
                 }
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
             } catch (e: Throwable) {
-                Response(resultCode = 500)
+                Response(resultCode = HTTP_SERVER_ERROR)
             }
         }
     }
@@ -77,5 +77,11 @@ class RetrofitNetworkClient(
                 it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                 it.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
         } ?: false
+    }
+
+    companion object {
+        private const val NOT_CONNECTED_CODE = -1
+        private const val HTTP_OK: Int = 200
+        private const val HTTP_SERVER_ERROR = 500
     }
 }
