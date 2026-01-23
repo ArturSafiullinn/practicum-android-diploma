@@ -5,26 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import ru.practicum.android.diploma.R
 
-class MainFragment : Fragment() {
+class VacancyFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,38 +36,37 @@ class MainFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MainScreen(
-                    onFilterClick = {
-                        findNavController().navigate(R.id.action_mainFragment_to_filterSettingsFragment)
-                    },
-                    onVacancyClick = {
-                        findNavController().navigate(R.id.action_mainFragment_to_vacancyFragment)
-                    }
+                VacancyScreen(
+                    onBackClick = { findNavController().popBackStack() }
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
-    onFilterClick: () -> Unit,
-    onVacancyClick: () -> Unit
-) {
+fun VacancyScreen(onBackClick: () -> Unit) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Поиск вакансий") },
-                actions = {
-                    IconButton(onClick = onFilterClick) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_filter),
-                            contentDescription = "Фильтры"
-                        )
-                    }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Назад"
+                    )
                 }
-            )
+                Text(
+                    text = "Вакансия",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
         }
     ) { paddingValues ->
         Box(
@@ -74,9 +75,7 @@ fun MainScreen(
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            Button(onClick = onVacancyClick) {
-                Text(text = "Открыть тестовую вакансию")
-            }
+            Text(text = "Здесь будет описание вакансии")
         }
     }
 }

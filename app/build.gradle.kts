@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
+    implementation(libs.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
 
     // Navigation
     implementation(libs.androidx.navigation.fragment)
