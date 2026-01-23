@@ -18,10 +18,14 @@ detektTwitterComposeRules ="0.0.26"
 kotlin = "1.9.24"
 preference = "1.2.0"
 
+koin = "3.3.0"
+
 [libraries]
 
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationCompose" }
 androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationCompose" }
+
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 
 # Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
