@@ -60,8 +60,6 @@ class RetrofitNetworkClient(
                 }
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
-            } catch (e: Throwable) {
-                Response(resultCode = HTTP_SERVER_ERROR)
             }
         }
     }
@@ -82,6 +80,5 @@ class RetrofitNetworkClient(
     companion object {
         private const val NOT_CONNECTED_CODE = -1
         private const val HTTP_OK: Int = 200
-        private const val HTTP_SERVER_ERROR = 500
     }
 }
