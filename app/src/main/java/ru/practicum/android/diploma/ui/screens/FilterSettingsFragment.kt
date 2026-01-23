@@ -97,7 +97,7 @@ fun FilterSettingsScreen(
 
             Button(
                 onClick = onIndustryClick,
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Отрасль")
             }
