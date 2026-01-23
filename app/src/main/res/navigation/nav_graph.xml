@@ -1,22 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/mainFragment"
         android:name="ru.practicum.android.diploma.ui.screens.MainFragment"
-        android:label="Search" />
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_mainFragment_to_filterSettingsFragment"
+            app:destination="@id/filterSettingsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_vacancyFragment"
+            app:destination="@id/vacancyFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="ru.practicum.android.diploma.ui.screens.FavoritesFragment"
-        android:label="Favorites" />
+        android:label="FavoritesFragment" />
 
     <fragment
         android:id="@+id/teamFragment"
         android:name="ru.practicum.android.diploma.ui.screens.TeamFragment"
-        android:label="Team" />
+        android:label="TeamFragment" />
+
+    <fragment
+        android:id="@+id/filterSettingsFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.FilterSettingsFragment"
+        android:label="FilterSettingsFragment">
+        <action
+            android:id="@+id/action_filterSettingsFragment_to_workPlaceFragment"
+            app:destination="@id/workPlaceFragment" />
+        <action
+            android:id="@+id/action_filterSettingsFragment_to_selectIndustryFragment"
+            app:destination="@id/selectIndustryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workPlaceFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.WorkPlaceFragment"
+        android:label="WorkPlaceFragment">
+        <action
+            android:id="@+id/action_workPlaceFragment_to_selectCountryFragment"
+            app:destination="@id/selectCountryFragment" />
+        <action
+            android:id="@+id/action_workPlaceFragment_to_selectRegionFragment"
+            app:destination="@id/selectRegionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectCountryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.SelectCountryFragment"
+        android:label="SelectCountryFragment" />
+
+    <fragment
+        android:id="@+id/selectRegionFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.SelectRegionFragment"
+        android:label="SelectRegionFragment" />
+
+    <fragment
+        android:id="@+id/selectIndustryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.SelectIndustryFragment"
+        android:label="SelectIndustryFragment" >
+        <action
+            android:id="@+id/action_selectIndustryFragment_to_filterSettingsFragment"
+            app:destination="@id/filterSettingsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/vacancyFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.VacancyFragment"
+        android:label="VacancyFragment" />
 
 </navigation>
