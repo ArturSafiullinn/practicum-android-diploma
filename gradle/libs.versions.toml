@@ -21,17 +21,17 @@ navigation = "2.7.7"
 glide = "4.16.0"
 
 # KSP (Room)
-ksp = "2.0.21-1.0.25"
+ksp = "1.9.21-1.0.16"
 
 # DI / Coroutines / Lifecycle / Fragment
 koin = "4.1.1"
 coroutines = "1.10.2"
-lifecycle = "2.10.0"
-fragment = "1.8.9"
+lifecycle = "2.6.2"
+fragment = "1.6.2"
 
 # Compose
-composeBom = "2024.10.01"
-activityCompose = "1.9.3"
+composeBom = "2024.02.02"
+activityCompose = "1.9.0"
 
 [libraries]
 
