@@ -74,7 +74,6 @@ fun MainScreen(
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-
             Button(onClick = onVacancyClick) {
                 Text(text = "Открыть тестовую вакансию")
             }

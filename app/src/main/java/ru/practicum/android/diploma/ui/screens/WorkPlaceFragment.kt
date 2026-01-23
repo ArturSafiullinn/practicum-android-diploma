@@ -88,14 +88,14 @@ fun WorkPlaceScreen(
         ) {
             Button(
                 onClick = onCountryClick,
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Страна")
             }
 
             Button(
                 onClick = onRegionClick,
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Регион")
             }

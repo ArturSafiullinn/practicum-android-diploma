@@ -30,7 +30,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
 
-
 class FilterSettingsFragment : Fragment() {
 
     override fun onCreateView(
@@ -89,7 +88,7 @@ fun FilterSettingsScreen(
         ) {
             Button(
                 onClick = onWorkPlaceClick,
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Место работы")
             }

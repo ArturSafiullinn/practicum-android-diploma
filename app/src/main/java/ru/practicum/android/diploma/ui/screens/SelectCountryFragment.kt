@@ -57,7 +57,7 @@ fun SelectCountryScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBackClick) {
@@ -73,15 +73,13 @@ fun SelectCountryScreen(
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
-
-
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Button(
                 onClick = onCountrySelect,
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Россия (тест)")
             }

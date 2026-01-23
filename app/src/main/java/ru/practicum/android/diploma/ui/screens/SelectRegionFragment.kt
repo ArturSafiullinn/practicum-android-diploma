@@ -80,7 +80,7 @@ fun SelectRegionScreen(
         ) {
             Button(
                 onClick = onRegionSelect,
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Москва (тест)")
             }
