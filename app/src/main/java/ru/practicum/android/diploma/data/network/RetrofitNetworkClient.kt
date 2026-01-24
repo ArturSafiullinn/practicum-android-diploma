@@ -79,6 +79,6 @@ class RetrofitNetworkClient(
 
     companion object {
         private const val NOT_CONNECTED_CODE = -1
-        private const val HTTP_OK: Int = 200
+        private const val HTTP_OK = 200
     }
 }
