@@ -17,7 +17,6 @@ import ru.practicum.android.diploma.data.VacanciesRequest
 import ru.practicum.android.diploma.data.VacanciesResponse
 import ru.practicum.android.diploma.data.VacancyDetailsRequest
 import ru.practicum.android.diploma.data.VacancyDetailsResponse
-import java.io.IOException
 
 class RetrofitNetworkClient(
     private val context: Context,
