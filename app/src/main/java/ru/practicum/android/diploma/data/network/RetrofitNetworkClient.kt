@@ -62,7 +62,7 @@ class RetrofitNetworkClient(
                 }
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
-            } catch (_: IOException) {
+            } catch (_: Throwable) {
                 Response(resultCode = SERVER_INTERNAL_ERROR)
             }
         }
