@@ -17,6 +17,7 @@ import ru.practicum.android.diploma.data.VacanciesRequest
 import ru.practicum.android.diploma.data.VacanciesResponse
 import ru.practicum.android.diploma.data.VacancyDetailsRequest
 import ru.practicum.android.diploma.data.VacancyDetailsResponse
+import java.io.IOException
 
 class RetrofitNetworkClient(
     private val context: Context,
@@ -61,6 +62,9 @@ class RetrofitNetworkClient(
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
             }
+            catch (e: IOException) {
+                Response(resultCode = SERVER_INTERNAL_ERROR)
+            }
         }
     }
 
@@ -80,5 +84,6 @@ class RetrofitNetworkClient(
     companion object {
         private const val NOT_CONNECTED_CODE = -1
         private const val HTTP_OK = 200
+        private const val SERVER_INTERNAL_ERROR = 500
     }
 }
