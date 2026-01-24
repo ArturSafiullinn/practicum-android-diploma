@@ -24,6 +24,7 @@ class RetrofitNetworkClient(
     private val apiService: ApiService,
 ) : NetworkClient {
 
+    @Suppress("SwallowedException")
     override suspend fun doRequest(dto: Request): Response {
         if (!isConnected()) {
             return Response(resultCode = NOT_CONNECTED_CODE)
@@ -62,7 +63,7 @@ class RetrofitNetworkClient(
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
             }
-            catch (e: IOException) {
+            catch (_: IOException) {
                 Response(resultCode = SERVER_INTERNAL_ERROR)
             }
         }
