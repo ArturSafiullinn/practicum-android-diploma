@@ -9,7 +9,6 @@ class ConnectivityMonitor(context: Context) {
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
     fun hasInternet(): Boolean = runCatching {
-
         connectivityManager
             ?.activeNetwork
             ?.let { connectivityManager.getNetworkCapabilities(it) }
