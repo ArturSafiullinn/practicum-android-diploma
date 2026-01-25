@@ -8,22 +8,15 @@ import android.util.Log
 class ConnectivityMonitor(context: Context) {
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
-    fun hasInternet(): Boolean {
-        var hasValidInternet = false
+    fun hasInternet(): Boolean = runCatching {
 
-        connectivityManager?.let { manager ->
-            manager.activeNetwork?.let { network ->
-                manager.getNetworkCapabilities(network)?.let { capabilities ->
+        connectivityManager
+            ?.activeNetwork
+            ?.let { connectivityManager.getNetworkCapabilities(it) }
+            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ?: false
 
-                    try {
-                        hasValidInternet = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-                    } catch (e: SecurityException) {
-                        Log.e(TAG_CONNECTIVITY_MONITOR, e.message, e)
-                    }
-                }
-            }
-        }
-
-        return hasValidInternet
+    }.getOrElse { exception ->
+        Log.e(TAG_CONNECTIVITY_MONITOR, exception.message, exception)
+        false
     }
 }
