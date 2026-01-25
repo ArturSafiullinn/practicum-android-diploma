@@ -32,3 +32,7 @@ const val MIN_SALARY = "min_salary"
 const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрытия вакансий с необозначенной ЗП
 const val SELECTED_CURRENCY = "selected_currency"
 // endregion
+
+// region Тэги для логов
+const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
+// endregion
