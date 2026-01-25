@@ -9,30 +9,21 @@ class ConnectivityMonitor(context: Context) {
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
     fun hasInternet(): Boolean {
-        if (connectivityManager == null) {
-            return false
+        var hasValidInternet = false
+
+        connectivityManager?.let { manager ->
+            manager.activeNetwork?.let { network ->
+                manager.getNetworkCapabilities(network)?.let { capabilities ->
+
+                    try {
+                        hasValidInternet = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                    } catch (e: SecurityException) {
+                        Log.e(TAG_CONNECTIVITY_MONITOR, e.message, e)
+                    }
+                }
+            }
         }
 
-        val network = connectivityManager.activeNetwork
-        if (network == null) {
-            return false
-        }
-
-        val capabilities = connectivityManager.getNetworkCapabilities(network)
-        if (capabilities == null) {
-            return false
-        }
-
-        return try {
-            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-
-        } catch (e: SecurityException) {
-            Log.e(TAG_CONNECTIVITY_MONITOR, e.message.toString())
-            false
-
-        } catch (e: RuntimeException) {
-            Log.e(TAG_CONNECTIVITY_MONITOR, e.message.toString())
-            false
-        }
+        return hasValidInternet
     }
 }
