@@ -17,4 +17,47 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- Fragment Titles -->
+    <string name="search_vaccancies">Поиск вакансий</string>
+    <string name="filter_settings">Настроийки фильтрации</string>
+    <string name="select_country">Выбор страны</string>
+    <string name="select_workkplace">Выбор места работы</string>
+    <string name="select_region">Выбор региона</string>
+    <string name="select_industry">Выбор отрасли</string>
+    <string name="vaccancy">Вакансия</string>
+
+    <!-- Text Inputs Placeholders -->
+    <string name="search_placeholder">Введите запрос</string>
+    <string name="salary_label">Ожидаемая зарплата</string>
+    <string name="salary_placeholder">Введите сумму</string>
+
+    <!-- Empty States (Заголовки экранов пустышек: нет интернета и т.д. -->
+    <string name="empty_state_no_internet">Нет интернета</string>
+    <string name="empty_state_loading_vaccancies_error">Не удалось получить список вакансий</string>
+    <string name="empty_state_no_such_region">Нет такого региона</string>
+    <string name="empty_state_loading_regions_error">Не удалось получить список</string>
+    <string name="empty_state_vaccancy_load_error">Вакансия не найдена или удалена</string>
+    <string name="empty_state_server_error">Ошибка сервера</string>
+    <string name="empty_state_empty_favourites">Список пуст</string>
+
+    <!-- Team Fragment -->
+    <string name="team_fragment_description">Над приложением работали</string>
+    <string name="razrab1">Артур Сафиллин</string>
+    <string name="razrab2">Денис Кузнецов</string>
+    <string name="razrab3">Валерий Архипов</string>
+    <string name="razrab4">Иван Гаренских</string>
+
+    <!-- Search Fragment -->
+    <string name="no_such_vaccancies">Таких вакансий нет</string>
+
+    <!-- Filter Settings -->
+    <string name="workplace">Место работы</string>
+    <string name="industry">Отрасль</string>
+    <string name="no_salary_checkbox">Не показывать без зарплаты</string>
+
+    <!-- Button Texts -->
+    <string name="select_button_text">Выбрать</string>
+    <string name="apply_button_text">Применить</string>
+    <string name="cancel_button_text">Сбросить</string>
 </resources>
