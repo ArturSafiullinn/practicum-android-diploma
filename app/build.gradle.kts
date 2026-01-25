@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -66,6 +67,22 @@ dependencies {
     implementation(libs.ui.material)
     implementation(libs.ui.constraintLayout)
     implementation(libs.androidx.preference)
+
+    // Networking
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp.logging)
+
+    // Database
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    // Images
+    implementation(libs.glide.core)
+    kapt(libs.glide.compiler)
+
+    implementation(libs.kotlinx.coroutines.android)
 
     // region Unit tests
     testImplementation(libs.unitTests.junit)
