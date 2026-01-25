@@ -29,6 +29,6 @@ const val SELECTED_AREA_NAME = "selected_area_name"
 const val SELECTED_INDUSTRY_ID = "selected_industry_id"
 const val SELECTED_INDUSTRY_NAME = "selected_industry_name"
 const val MIN_SALARY = "min_salary"
-const val ONLY_WITH_SALARY = "only_with_salary"     // Флаг для скрытия вакансий с необозначенной ЗП
+const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрытия вакансий с необозначенной ЗП
 const val SELECTED_CURRENCY = "selected_currency"
 // endregion
