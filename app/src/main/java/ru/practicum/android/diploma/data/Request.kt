@@ -16,4 +16,3 @@ data class VacanciesRequest(
 data class VacancyDetailsRequest(
     val id: String
 ) : Request
-
