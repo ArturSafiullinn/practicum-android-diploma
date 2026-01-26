@@ -7,12 +7,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.data.NetworkClient
 import ru.practicum.android.diploma.data.network.ApiService
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
+import ru.practicum.android.diploma.util.API_BASE_URL
 
 val networkModule = module {
 
     single<ApiService> {
         Retrofit.Builder()
-            .baseUrl("https://practicum-diploma-8bc38133faba.herokuapp.com/")
+            .baseUrl(API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)

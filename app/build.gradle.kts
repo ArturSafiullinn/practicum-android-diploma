@@ -92,10 +92,5 @@ dependencies {
     androidTestImplementation(libs.uiTests.espressoCore)
     // endregion
 
-    // Koin
     implementation(libs.koin.android)
-
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
 }
