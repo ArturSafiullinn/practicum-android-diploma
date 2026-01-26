@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.theme.Dimens.SearchFieldHeight
@@ -60,11 +59,11 @@ fun WorkPlaceScreen(
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource( R.string.back)
+                    contentDescription = stringResource(R.string.back)
                 )
             }
             Text(
-                text = stringResource( R.string.workplace),
+                text = stringResource(R.string.workplace),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = Space16)
             )
@@ -81,14 +80,14 @@ fun WorkPlaceScreen(
                 onClick = onCountryClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource( R.string.select_country), style = MaterialTheme.typography.bodyLarge,)
+                Text(stringResource(R.string.select_country), style = MaterialTheme.typography.bodyLarge,)
             }
 
             Button(
                 onClick = onRegionClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource( R.string.select_region), style = MaterialTheme.typography.bodyLarge,)
+                Text(stringResource(R.string.select_region), style = MaterialTheme.typography.bodyLarge,)
             }
         }
     }

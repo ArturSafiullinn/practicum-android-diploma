@@ -39,13 +39,13 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = { Text(
-                    stringResource( R.string.search_vaccancies),
+                    stringResource(R.string.search_vaccancies),
                     style = MaterialTheme.typography.titleLarge,) },
                 actions = {
                     IconButton(onClick = onFilterClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_filter),
-                            contentDescription = stringResource( R.string.filters)
+                            contentDescription = stringResource(R.string.filters)
                         )
                     }
                 }
@@ -59,7 +59,7 @@ fun MainScreen(
             contentAlignment = Alignment.Center
         ) {
             Button(onClick = onVacancyClick) {
-                Text(text = stringResource( R.string.open_test_vaccancy),
+                Text(text = stringResource(R.string.open_test_vaccancy),
                     style = MaterialTheme.typography.bodyLarge)
             }
         }

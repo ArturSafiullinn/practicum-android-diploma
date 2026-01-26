@@ -51,11 +51,11 @@ fun SelectIndustryScreen(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource( R.string.back)
+                        contentDescription = stringResource(R.string.back)
                     )
                 }
                 Text(
-                    text = stringResource( R.string.select_industry),
+                    text = stringResource(R.string.select_industry),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = Space16)
                 )
@@ -69,7 +69,7 @@ fun SelectIndustryScreen(
                     .padding(Space16)
                     .height(BottomBarHeight)
             ) {
-                Text(stringResource( R.string.apply_button_text), style = MaterialTheme.typography.bodyLarge,)
+                Text(stringResource(R.string.apply_button_text), style = MaterialTheme.typography.bodyLarge,)
             }
         }
     ) { paddingValues ->
@@ -79,8 +79,8 @@ fun SelectIndustryScreen(
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = stringResource( R.string.industries_test_text),
-                style = MaterialTheme.typography.titleLarge,)
+            Text(text = stringResource(R.string.industries_test_text),
+                style = MaterialTheme.typography.titleLarge)
         }
     }
 }

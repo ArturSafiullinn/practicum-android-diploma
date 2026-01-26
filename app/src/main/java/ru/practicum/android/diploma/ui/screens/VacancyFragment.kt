@@ -44,11 +44,11 @@ fun VacancyScreen(onBackClick: () -> Unit) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource( R.string.back)
+                        contentDescription = stringResource(R.string.back)
                     )
                 }
                 Text(
-                    text = stringResource( R.string.vaccancy),
+                    text = stringResource(R.string.vaccancy),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = Space16)
                 )
@@ -61,7 +61,8 @@ fun VacancyScreen(onBackClick: () -> Unit) {
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = stringResource( R.string.vaccancy_test_description), style = MaterialTheme.typography.titleLarge,)
+            Text(text = stringResource(R.string.vaccancy_test_description),
+                style = MaterialTheme.typography.titleLarge)
         }
     }
 }

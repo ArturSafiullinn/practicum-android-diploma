@@ -50,11 +50,11 @@ fun SelectRegionScreen(
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource( R.string.back)
+                    contentDescription = stringResource(R.string.back)
                 )
             }
             Text(
-                text = stringResource( R.string.select_region),
+                text = stringResource(R.string.select_region),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = Space16)
             )
@@ -68,7 +68,7 @@ fun SelectRegionScreen(
                 onClick = onRegionSelect,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource( R.string.Moscow_test), style = MaterialTheme.typography.bodyLarge,)
+                Text(stringResource(R.string.Moscow_test), style = MaterialTheme.typography.bodyLarge,)
             }
         }
     }

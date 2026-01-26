@@ -49,11 +49,11 @@ fun SelectCountryScreen(
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource( R.string.back)
+                    contentDescription = stringResource(R.string.back)
                 )
             }
             Text(
-                text = stringResource( R.string.select_country),
+                text = stringResource(R.string.select_country),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = Space16)
             )
@@ -66,8 +66,8 @@ fun SelectCountryScreen(
                 onClick = onCountrySelect,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource( R.string.Russia_test),
-                    style = MaterialTheme.typography.bodyLarge,)
+                Text(stringResource(R.string.Russia_test),
+                    style = MaterialTheme.typography.bodyLarge)
             }
         }
     }

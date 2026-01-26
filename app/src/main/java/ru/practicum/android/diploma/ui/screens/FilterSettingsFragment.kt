@@ -46,7 +46,6 @@ fun FilterSettingsScreen(
     onIndustryClick: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -56,12 +55,12 @@ fun FilterSettingsScreen(
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource( R.string.back)
+                    contentDescription = stringResource(R.string.back)
                 )
             }
 
             Text(
-                text = stringResource( R.string.filters),
+                text = stringResource(R.string.filters),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = Space16)
             )
@@ -72,13 +71,12 @@ fun FilterSettingsScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Button(
                 onClick = onWorkPlaceClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource( R.string.workplace),
+                    text = stringResource(R.string.workplace),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -90,7 +88,7 @@ fun FilterSettingsScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource( R.string.industry),
+                    text = stringResource(R.string.industry),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
