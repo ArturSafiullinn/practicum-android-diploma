@@ -1,9 +1,5 @@
 package ru.practicum.android.diploma.ui.screens
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,34 +9,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.fragment.findNavController
+import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.theme.Dimens.Space16
+import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 
-class VacancyFragment : Fragment() {
+class VacancyFragment : BaseComposeFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                VacancyScreen(
-                    onBackClick = { findNavController().popBackStack() }
-                )
-            }
-        }
+    @Composable
+    override fun ScreenContent() {
+        VacancyScreen(
+            onBackClick = { findNavController().popBackStack() }
+        )
     }
 }
 
@@ -51,20 +38,19 @@ fun VacancyScreen(onBackClick: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(Space8),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Назад"
+                        contentDescription = stringResource( R.string.back)
                     )
                 }
                 Text(
-                    text = "Вакансия",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 16.dp)
+                    text = stringResource( R.string.vaccancy),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = Space16)
                 )
             }
         }
@@ -75,7 +61,7 @@ fun VacancyScreen(onBackClick: () -> Unit) {
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Здесь будет описание вакансии")
+            Text(text = stringResource( R.string.vaccancy_test_description), style = MaterialTheme.typography.titleLarge,)
         }
     }
 }

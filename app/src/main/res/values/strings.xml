@@ -60,4 +60,15 @@
     <string name="select_button_text">Выбрать</string>
     <string name="apply_button_text">Применить</string>
     <string name="cancel_button_text">Сбросить</string>
+
+    <!-- Test Texts -->
+    <string name="open_test_vaccancy">Открыть тестовую вакансию</string>
+    <string name="Russia_test">Россия (тест)</string>
+    <string name="Moscow_test">Москва (тест)</string>
+    <string name="vaccancy_test_description">Здесь будет описание вакансии</string>
+    <string name="industries_test_text">Список отраслей появится здесь</string>
+
+    <!-- Content Descriptions -->
+    <string name="filters">Фильтры</string>
+    <string name="back">Назад</string>
 </resources>

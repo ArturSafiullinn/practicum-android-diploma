@@ -1,9 +1,5 @@
 package ru.practicum.android.diploma.ui.screens
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,36 +11,26 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.fragment.findNavController
+import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
-class SelectCountryFragment : Fragment() {
+class SelectCountryFragment : BaseComposeFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                SelectCountryScreen(
-                    onBackClick = { findNavController().popBackStack() },
-                    onCountrySelect = {
-                        findNavController().popBackStack()
-                    }
-                )
+    @Composable
+    override fun ScreenContent() {
+        SelectCountryScreen(
+            onBackClick = { findNavController().popBackStack() },
+            onCountrySelect = {
+                findNavController().popBackStack()
             }
-        }
+        )
     }
 }
 
@@ -57,20 +43,19 @@ fun SelectCountryScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = Space16),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Назад"
+                    contentDescription = stringResource( R.string.back)
                 )
             }
             Text(
-                text = "Выбор страны",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 16.dp)
+                text = stringResource( R.string.select_country),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(start = Space16)
             )
         }
         Box(
@@ -81,7 +66,8 @@ fun SelectCountryScreen(
                 onClick = onCountrySelect,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Россия (тест)")
+                Text(stringResource( R.string.Russia_test),
+                    style = MaterialTheme.typography.bodyLarge,)
             }
         }
     }
