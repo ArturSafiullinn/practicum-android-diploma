@@ -1,14 +1,14 @@
 package ru.practicum.android.diploma.util
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import ru.practicum.android.diploma.di.appModule
 import ru.practicum.android.diploma.di.networkModule
 import ru.practicum.android.diploma.di.storageModule
-import ru.practicum.android.diploma.domain.api.ThemeInteractor
 
 class App : Application(), KoinComponent {
 
@@ -24,7 +24,7 @@ class App : Application(), KoinComponent {
             )
         }
 
-        val themeInteractor: ThemeInteractor = get()
-        applyTheme(themeInteractor.isDarkTheme())
+        // apply theme
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
     }
 }
