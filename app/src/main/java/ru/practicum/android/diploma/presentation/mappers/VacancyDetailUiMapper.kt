@@ -28,37 +28,34 @@ class VacancyDetailUiMapper(private val resourceProvider: ResourceProvider) {
         )
     }
 
-    private fun getSalaryFormatted(salaryDomain: VacancyDetail.Salary?): String {
-        if (salaryDomain == null) {
+    private fun getSalaryFormatted(salary: VacancyDetail.Salary?): String {
+        if (salary == null) {
             return resourceProvider.getString(R.string.salary_not_specified)
         }
+        val salaryFromSpaced = formatSalarySpaced(salary.from)
+        val salaryToSpaced = formatSalarySpaced(salary.to)
+        val currency = salary.currency ?: ""
 
-        salaryDomain.apply {
-            val salaryFromSpaced = formatSalarySpaced(from)
-            val salaryToSpaced = formatSalarySpaced(to)
-            val currency = this.currency ?: ""
+        return when {
+            salary.from != null && salary.to != null -> {
+                resourceProvider.getString(
+                    R.string.salary_range,
+                    salaryFromSpaced,
+                    salaryToSpaced,
+                    currency
+                )
+            }
 
-            return when {
-                from != null && to != null -> {
-                    resourceProvider.getString(
-                        R.string.salary_range,
-                        salaryFromSpaced,
-                        salaryToSpaced,
-                        currency
-                    )
-                }
+            salary.from != null -> {
+                resourceProvider.getString(R.string.salary_from, salaryFromSpaced, currency)
+            }
 
-                from != null && to == null -> {
-                    resourceProvider.getString(R.string.salary_from, salaryFromSpaced, currency)
-                }
+            salary.to != null -> {
+                resourceProvider.getString(R.string.salary_to, salaryToSpaced, currency)
+            }
 
-                from == null && to != null -> {
-                    resourceProvider.getString(R.string.salary_to, salaryToSpaced, currency)
-                }
-
-                else -> {
-                    resourceProvider.getString(R.string.salary_not_specified)
-                }
+            else -> {
+                resourceProvider.getString(R.string.salary_not_specified)
             }
         }
     }
