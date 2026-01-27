@@ -21,7 +21,9 @@ class TeamFragment : BaseComposeFragment() {
 @Composable
 fun TeamScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(stringResource(R.string.team),
-            style = MaterialTheme.typography.titleLarge)
+        Text(
+            stringResource(R.string.team),
+            style = MaterialTheme.typography.titleLarge
+        )
     }
 }

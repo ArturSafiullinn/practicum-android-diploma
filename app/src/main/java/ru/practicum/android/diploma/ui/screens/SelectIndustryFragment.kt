@@ -79,8 +79,10 @@ fun SelectIndustryScreen(
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = stringResource(R.string.industries_test_text),
-                style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = stringResource(R.string.industries_test_text),
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }

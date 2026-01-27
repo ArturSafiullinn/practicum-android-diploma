@@ -61,8 +61,10 @@ fun VacancyScreen(onBackClick: () -> Unit) {
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = stringResource(R.string.vaccancy_test_description),
-                style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = stringResource(R.string.vaccancy_test_description),
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }

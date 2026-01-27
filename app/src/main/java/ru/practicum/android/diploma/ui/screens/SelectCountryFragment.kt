@@ -66,8 +66,10 @@ fun SelectCountryScreen(
                 onClick = onCountrySelect,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.Russia_test),
-                    style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    stringResource(R.string.Russia_test),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }

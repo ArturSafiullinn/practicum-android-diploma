@@ -20,7 +20,9 @@ class FavoritesFragment : BaseComposeFragment() {
 @Composable
 fun FavoritesScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Экран избранного",
-            style = MaterialTheme.typography.titleLarge)
+        Text(
+            "Экран избранного",
+            style = MaterialTheme.typography.titleLarge
+        )
     }
 }

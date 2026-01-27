@@ -38,9 +38,12 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(
+                title = {
+                    Text(
                     stringResource(R.string.search_vaccancies),
-                    style = MaterialTheme.typography.titleLarge,) },
+                    style = MaterialTheme.typography.titleLarge,
+                        )
+                        },
                 actions = {
                     IconButton(onClick = onFilterClick) {
                         Icon(
@@ -59,8 +62,10 @@ fun MainScreen(
             contentAlignment = Alignment.Center
         ) {
             Button(onClick = onVacancyClick) {
-                Text(text = stringResource(R.string.open_test_vaccancy),
-                    style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = stringResource(R.string.open_test_vaccancy),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }
