@@ -1,8 +1,6 @@
 package ru.practicum.android.diploma.util
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
@@ -23,8 +21,5 @@ class App : Application(), KoinComponent {
                 storageModule
             )
         }
-
-        // apply theme
-        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
     }
 }
