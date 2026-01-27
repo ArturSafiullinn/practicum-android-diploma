@@ -1,39 +1,29 @@
 package ru.practicum.android.diploma.ui.screens
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.Fragment
+import androidx.compose.ui.res.stringResource
+import ru.practicum.android.diploma.R
 
-class TeamFragment : Fragment() {
+class TeamFragment : BaseComposeFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-
-            setContent {
-                TeamScreen()
-            }
-        }
+    @Composable
+    override fun ScreenContent() {
+        TeamScreen()
     }
 }
 
 @Composable
 fun TeamScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Экран команды")
+        Text(
+            stringResource(R.string.team),
+            style = MaterialTheme.typography.titleLarge
+        )
     }
 }
