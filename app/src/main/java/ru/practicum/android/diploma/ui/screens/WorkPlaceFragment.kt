@@ -80,14 +80,14 @@ fun WorkPlaceScreen(
                 onClick = onCountryClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.select_country), style = MaterialTheme.typography.bodyLarge,)
+                Text(stringResource(R.string.select_country), style = MaterialTheme.typography.bodyLarge)
             }
 
             Button(
                 onClick = onRegionClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.select_region), style = MaterialTheme.typography.bodyLarge,)
+                Text(stringResource(R.string.select_region), style = MaterialTheme.typography.bodyLarge)
             }
         }
     }

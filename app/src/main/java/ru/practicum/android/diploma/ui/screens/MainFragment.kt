@@ -40,10 +40,10 @@ fun MainScreen(
             TopAppBar(
                 title = {
                     Text(
-                    stringResource(R.string.search_vaccancies),
-                    style = MaterialTheme.typography.titleLarge,
-                        )
-                        },
+                        text = stringResource(R.string.search_vaccancies),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
                 actions = {
                     IconButton(onClick = onFilterClick) {
                         Icon(
