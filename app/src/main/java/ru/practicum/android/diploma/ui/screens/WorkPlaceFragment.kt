@@ -1,9 +1,5 @@
 package ru.practicum.android.diploma.ui.screens
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,40 +11,35 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.theme.Dimens.SearchFieldHeight
+import ru.practicum.android.diploma.ui.theme.Dimens.Space16
+import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 
-class WorkPlaceFragment : Fragment() {
+class WorkPlaceFragment : BaseComposeFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                WorkPlaceScreen(
-                    onBackClick = { findNavController().popBackStack() },
-                    onCountryClick = {
-                        findNavController().navigate(R.id.action_workPlaceFragment_to_selectCountryFragment)
-                    },
-                    onRegionClick = {
-                        findNavController().navigate(R.id.action_workPlaceFragment_to_selectRegionFragment)
-                    }
+    @Composable
+    override fun ScreenContent() {
+        WorkPlaceScreen(
+            onBackClick = { findNavController().popBackStack() },
+            onCountryClick = {
+                findNavController().navigate(
+                    R.id.action_workPlaceFragment_to_selectCountryFragment
+                )
+            },
+            onRegionClick = {
+                findNavController().navigate(
+                    R.id.action_workPlaceFragment_to_selectRegionFragment
                 )
             }
-        }
+        )
     }
 }
 
@@ -62,27 +53,26 @@ fun WorkPlaceScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(Space8),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Назад"
+                    contentDescription = stringResource(R.string.back)
                 )
             }
             Text(
-                text = "Место работы",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 16.dp)
+                text = stringResource(R.string.workplace),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(start = Space16)
             )
         }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 56.dp),
+                .padding(bottom = SearchFieldHeight),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -90,14 +80,14 @@ fun WorkPlaceScreen(
                 onClick = onCountryClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Страна")
+                Text(stringResource(R.string.select_country), style = MaterialTheme.typography.bodyLarge)
             }
 
             Button(
                 onClick = onRegionClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Регион")
+                Text(stringResource(R.string.select_region), style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
