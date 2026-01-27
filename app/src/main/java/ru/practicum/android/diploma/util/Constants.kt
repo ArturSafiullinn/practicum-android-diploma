@@ -37,7 +37,6 @@ const val SELECTED_CURRENCY = "selected_currency"
 const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
 // endregion
 
-
 // SharedPrefs
 const val APP_SETTINGS = "app_settings"
 const val DARK_THEME = "dark_theme"
