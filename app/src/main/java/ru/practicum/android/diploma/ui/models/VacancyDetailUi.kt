@@ -1,5 +1,9 @@
 package ru.practicum.android.diploma.ui.models
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class VacancyDetailUi(
     val name: String,
     val description: String?,
@@ -16,4 +20,4 @@ data class VacancyDetailUi(
     val skills: List<String>,
     val url: String,
     val industry: String
-)
+) : Parcelable
