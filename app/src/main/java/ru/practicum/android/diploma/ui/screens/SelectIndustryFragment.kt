@@ -1,9 +1,5 @@
 package ru.practicum.android.diploma.ui.screens
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,37 +11,27 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.fragment.findNavController
+import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.theme.Dimens.BottomBarHeight
+import ru.practicum.android.diploma.ui.theme.Dimens.Space16
+import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 
-class SelectIndustryFragment : Fragment() {
+class SelectIndustryFragment : BaseComposeFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                SelectIndustryScreen(
-                    onBackClick = { findNavController().popBackStack() },
-                    onApplyClick = {
-                        findNavController().popBackStack()
-                    }
-                )
-            }
-        }
+    @Composable
+    override fun ScreenContent() {
+        SelectIndustryScreen(
+            onBackClick = { findNavController().popBackStack() },
+            onApplyClick = { findNavController().popBackStack() }
+        )
     }
 }
 
@@ -59,20 +45,19 @@ fun SelectIndustryScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(Space8),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Назад"
+                        contentDescription = stringResource(R.string.back)
                     )
                 }
                 Text(
-                    text = "Выбор отрасли",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 16.dp)
+                    text = stringResource(R.string.select_industry),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = Space16)
                 )
             }
         },
@@ -81,10 +66,10 @@ fun SelectIndustryScreen(
                 onClick = onApplyClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .height(60.dp)
+                    .padding(Space16)
+                    .height(BottomBarHeight)
             ) {
-                Text("Применить", fontSize = 16.sp)
+                Text(stringResource(R.string.apply_button_text), style = MaterialTheme.typography.bodyLarge,)
             }
         }
     ) { paddingValues ->
@@ -94,7 +79,10 @@ fun SelectIndustryScreen(
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Список отраслей появится здесь")
+            Text(
+                text = stringResource(R.string.industries_test_text),
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }
