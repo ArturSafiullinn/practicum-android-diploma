@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -52,61 +53,128 @@ fun DiplomaTopAppBar(
                 .padding(end = Space8),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (showBack) {
-                Spacer(modifier = Modifier.width(Space4))
+            AppBarStartSpacer(showBack = showBack)
 
-                IconButton(onClick = { onBackClick?.invoke() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back)
-                    )
-                }
+            AppBarBackButton(showBack = showBack, onBackClick = onBackClick)
 
-                Spacer(modifier = Modifier.width(Space4))
-            } else {
-                Spacer(modifier = Modifier.width(Space16))
-            }
+            AppBarTitle(title = title)
 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                modifier = Modifier.weight(1f)
+            AppBarActions(
+                showFilter = showFilter,
+                showShare = showShare,
+                showFavorite = showFavorite,
+                isFavorite = isFavorite,
+                onFilterClick = onFilterClick,
+                onShareClick = onShareClick,
+                onFavoriteClick = onFavoriteClick
             )
+        }
+    }
+}
 
-            // RIGHT: actions
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(Space4),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (showFilter) {
-                    IconButton(onClick = { onFilterClick?.invoke() }) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_filter),
-                            contentDescription = stringResource(R.string.filters)
-                        )
-                    }
-                }
+@Composable
+private fun AppBarStartSpacer(showBack: Boolean) {
+    if (!showBack) {
+        Spacer(modifier = Modifier.width(Space16))
+    } else {
+        Spacer(modifier = Modifier.width(Space4))
+    }
+}
 
-                if (showShare) {
-                    IconButton(onClick = { onShareClick?.invoke() }) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = stringResource(R.string.share)
-                        )
-                    }
-                }
+@Composable
+private fun AppBarBackButton(
+    showBack: Boolean,
+    onBackClick: (() -> Unit)?
+) {
+    if (!showBack) return
 
-                if (showFavorite) {
-                    IconButton(onClick = { onFavoriteClick?.invoke() }) {
-                        Icon(
-                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = stringResource(R.string.favorites)
-                        )
-                    }
-                }
+    IconButton(onClick = { onBackClick?.invoke() }) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.back)
+        )
+    }
+
+    Spacer(modifier = Modifier.width(Space4))
+}
+
+@Composable
+private fun RowScope.AppBarTitle(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        maxLines = 1,
+        modifier = Modifier.weight(1f)
+    )
+}
+
+private enum class AppBarAction { Filter, Share, Favorite }
+
+@Composable
+private fun AppBarActions(
+    showFilter: Boolean,
+    showShare: Boolean,
+    showFavorite: Boolean,
+    isFavorite: Boolean,
+    onFilterClick: (() -> Unit)?,
+    onShareClick: (() -> Unit)?,
+    onFavoriteClick: (() -> Unit)?
+) {
+    val actions = buildList {
+        if (showFilter) add(AppBarAction.Filter)
+        if (showShare) add(AppBarAction.Share)
+        if (showFavorite) add(AppBarAction.Favorite)
+    }
+
+    if (actions.isEmpty()) return
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Space4),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        actions.forEach { action ->
+            when (action) {
+                AppBarAction.Filter -> FilterAction(onFilterClick)
+                AppBarAction.Share -> ShareAction(onShareClick)
+                AppBarAction.Favorite -> FavoriteAction(
+                    isFavorite = isFavorite,
+                    onFavoriteClick = onFavoriteClick
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun FilterAction(onFilterClick: (() -> Unit)?) {
+    IconButton(onClick = { onFilterClick?.invoke() }) {
+        Icon(
+            painter = painterResource(R.drawable.ic_filter),
+            contentDescription = stringResource(R.string.filters)
+        )
+    }
+}
+
+@Composable
+private fun ShareAction(onShareClick: (() -> Unit)?) {
+    IconButton(onClick = { onShareClick?.invoke() }) {
+        Icon(
+            imageVector = Icons.Default.Share,
+            contentDescription = stringResource(R.string.share)
+        )
+    }
+}
+
+@Composable
+private fun FavoriteAction(
+    isFavorite: Boolean,
+    onFavoriteClick: (() -> Unit)?
+) {
+    IconButton(onClick = { onFavoriteClick?.invoke() }) {
+        Icon(
+            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            contentDescription = stringResource(R.string.favorites)
+        )
     }
 }
 
@@ -125,10 +193,7 @@ fun SearchTopAppBar(
 
 @Composable
 fun SimpleTitleTopAppBar(title: String) {
-    DiplomaTopAppBar(
-        title = title,
-        showBack = false
-    )
+    DiplomaTopAppBar(title = title, showBack = false)
 }
 
 @Composable
