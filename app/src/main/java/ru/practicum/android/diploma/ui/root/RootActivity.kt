@@ -16,7 +16,6 @@ class RootActivity : AppCompatActivity() {
 
     private fun networkRequestExample(accessToken: String) {
         // ...
-        val a = 1
     }
 
 }
