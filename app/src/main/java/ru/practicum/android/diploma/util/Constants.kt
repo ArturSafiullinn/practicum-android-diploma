@@ -21,7 +21,6 @@ const val LAST_SEARCH_QUERY = "last_search_query"
 
 // region Shared Preferences
 const val SHARED_PREFERENCES = "diploma_preferences"
-const val DARK_THEME_ENABLED = "dark_theme_enabled"
 
 // Сохраненные настройки фильтров
 const val SELECTED_AREA_ID = "selected_area_id"
@@ -30,7 +29,6 @@ const val SELECTED_INDUSTRY_ID = "selected_industry_id"
 const val SELECTED_INDUSTRY_NAME = "selected_industry_name"
 const val MIN_SALARY = "min_salary"
 const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрытия вакансий с необозначенной ЗП
-const val SELECTED_CURRENCY = "selected_currency"
 // endregion
 
 // region Тэги для логов
