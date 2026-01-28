@@ -2,21 +2,23 @@ package ru.practicum.android.diploma.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,8 +26,8 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space4
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
+import ru.practicum.android.diploma.ui.theme.Dimens.TopAppBarHeight
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiplomaTopAppBar(
     title: String,
@@ -39,111 +41,72 @@ fun DiplomaTopAppBar(
     onShareClick: (() -> Unit)? = null,
     onFavoriteClick: (() -> Unit)? = null,
 ) {
-    val colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.surface,
-        titleContentColor = MaterialTheme.colorScheme.onSurface,
-        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-        actionIconContentColor = MaterialTheme.colorScheme.onSurface
-    )
-
-    TopAppBar(
-        colors = colors,
-
-        navigationIcon = {
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(TopAppBarHeight)
+                .padding(end = Space8),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (showBack) {
-                IconButton(
-                    onClick = { onBackClick?.invoke() },
-                    modifier = Modifier.padding(start = Space4)
-                ) {
+                Spacer(modifier = Modifier.width(Space4))
+
+                IconButton(onClick = { onBackClick?.invoke() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back),
-                        tint = MaterialTheme.colorScheme.onSurface
+                        contentDescription = stringResource(R.string.back)
                     )
                 }
-            } else {
-                // Чтобы title всегда начинался от 16 в варианте без back:
-                // оставляем навигационную зону пустой, а нужный отступ задаём title.
-            }
-        },
 
-        title = {
+                Spacer(modifier = Modifier.width(Space4))
+            } else {
+                Spacer(modifier = Modifier.width(Space16))
+            }
+
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(
-                    start = if (showBack) Space4 else Space16
-                )
+                maxLines = 1,
+                modifier = Modifier.weight(1f)
             )
-        },
 
-        actions = {
-            AppBarActionsRow(
-                showFilter = showFilter,
-                showShare = showShare,
-                showFavorite = showFavorite,
-                isFavorite = isFavorite,
-                onFilterClick = onFilterClick,
-                onShareClick = onShareClick,
-                onFavoriteClick = onFavoriteClick
-            )
-        }
-    )
-}
+            // RIGHT: actions
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Space4),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (showFilter) {
+                    IconButton(onClick = { onFilterClick?.invoke() }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_filter),
+                            contentDescription = stringResource(R.string.filters)
+                        )
+                    }
+                }
 
-@Composable
-private fun RowScope.AppBarActionsRow(
-    showFilter: Boolean,
-    showShare: Boolean,
-    showFavorite: Boolean,
-    isFavorite: Boolean,
-    onFilterClick: (() -> Unit)?,
-    onShareClick: (() -> Unit)?,
-    onFavoriteClick: (() -> Unit)?
-) {
-    val actions = buildList<@Composable () -> Unit> {
-        if (showFilter) {
-            add {
-                IconButton(onClick = { onFilterClick?.invoke() }) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_filter),
-                        contentDescription = stringResource(R.string.filters),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
+                if (showShare) {
+                    IconButton(onClick = { onShareClick?.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = stringResource(R.string.share)
+                        )
+                    }
+                }
+
+                if (showFavorite) {
+                    IconButton(onClick = { onFavoriteClick?.invoke() }) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = stringResource(R.string.favorites)
+                        )
+                    }
                 }
             }
         }
-        if (showShare) {
-            add {
-                IconButton(onClick = { onShareClick?.invoke() }) {
-                    Icon(
-                        imageVector = Icons.Default.Share,
-                        contentDescription = stringResource(R.string.share),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-        }
-        if (showFavorite) {
-            add {
-                IconButton(onClick = { onFavoriteClick?.invoke() }) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = stringResource(R.string.favorites),
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-        }
-    }
-
-    if (actions.isEmpty()) return
-
-    Row(
-        modifier = Modifier.padding(end = Space8),
-        horizontalArrangement = Arrangement.spacedBy(Space4)
-    ) {
-        actions.forEach { action -> action() }
     }
 }
 
