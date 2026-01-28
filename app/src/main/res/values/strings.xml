@@ -73,8 +73,10 @@
     <string name="Moscow_test">Москва (тест)</string>
     <string name="vaccancy_test_description">Здесь будет описание вакансии</string>
     <string name="industries_test_text">Список отраслей появится здесь</string>
+    <string name="favorites_screen_test_description">Экран избранного</string>
 
     <!-- Content Descriptions -->
     <string name="filters">Фильтры</string>
     <string name="back">Назад</string>
+    <string name="share">Поделиться</string>
 </resources>

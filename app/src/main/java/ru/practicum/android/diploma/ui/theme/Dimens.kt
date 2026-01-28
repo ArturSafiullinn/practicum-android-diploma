@@ -25,7 +25,8 @@ object Dimens {
     val LoadingIconSize = 36.dp // у загрузки 36x36
 
     val SearchFieldHeight = 56.dp // поле поиска
-    val BottomBarHeight = 57.dp // стандартно, если совпадает — оставь
+    val BottomBarHeight = 57.dp
+    val TopAppBarHeight = 64.dp
 
     // --- Radii ---
     val Radius12 = 12.dp

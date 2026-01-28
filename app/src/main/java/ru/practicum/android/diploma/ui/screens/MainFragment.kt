@@ -1,23 +1,22 @@
 package ru.practicum.android.diploma.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.components.SearchTopAppBar
+import ru.practicum.android.diploma.ui.theme.AppTheme
 
 class MainFragment : BaseComposeFragment() {
     @Composable
@@ -29,7 +28,6 @@ class MainFragment : BaseComposeFragment() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     onFilterClick: () -> Unit,
@@ -37,21 +35,9 @@ fun MainScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.search_vaccancies),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                actions = {
-                    IconButton(onClick = onFilterClick) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_filter),
-                            contentDescription = stringResource(R.string.filters)
-                        )
-                    }
-                }
+            SearchTopAppBar(
+                title = stringResource(R.string.search_vaccancies),
+                onFilterClick = onFilterClick
             )
         }
     ) { paddingValues ->
@@ -68,5 +54,21 @@ fun MainScreen(
                 )
             }
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun MainScreenPreview() {
+    AppTheme {
+        MainScreen(
+            onFilterClick = {},
+            onVacancyClick = {}
+        )
     }
 }

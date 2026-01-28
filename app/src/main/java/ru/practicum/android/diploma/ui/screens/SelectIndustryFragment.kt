@@ -1,16 +1,12 @@
 package ru.practicum.android.diploma.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,11 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.components.BackTopAppBar
+import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens.BottomBarHeight
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
-import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 
 class SelectIndustryFragment : BaseComposeFragment() {
 
@@ -42,24 +40,10 @@ fun SelectIndustryScreen(
 ) {
     Scaffold(
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Space8),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back)
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.select_industry),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = Space16)
-                )
-            }
+            BackTopAppBar(
+                title = stringResource(R.string.select_industry),
+                onBackClick = onBackClick
+            )
         },
         bottomBar = {
             Button(
@@ -84,5 +68,21 @@ fun SelectIndustryScreen(
                 style = MaterialTheme.typography.titleLarge
             )
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SelectIndustryScreenPreview() {
+    AppTheme {
+        SelectIndustryScreen(
+            onBackClick = {},
+            onApplyClick = {}
+        )
     }
 }

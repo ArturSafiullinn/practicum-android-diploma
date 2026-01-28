@@ -34,7 +34,8 @@
         style="@style/BottomNavigationMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bottom_navigation_view_background"
+        android:background="@null"
+        app:backgroundTint="@color/bottom_navigation_view_background"
         app:itemIconTint="@color/bottom_nav_item_color"
         app:itemPaddingBottom="@dimen/space8"
         app:itemPaddingTop="@dimen/space9"
@@ -44,6 +45,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_navigation_view" />
+        app:menu="@menu/bottom_navigation_view"
+        android:elevation="0dp"
+        app:elevation="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

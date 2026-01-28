@@ -6,4 +6,5 @@
     <color name="gray100">#FFE6E8EB</color>
     <color name="gray400">#FFAEAFB4</color>
     <color name="bottom_navigation_view_background">#FFFDFDFD</color>
+    <color name="icons_color">#FF1A1B22</color>
 </resources>
