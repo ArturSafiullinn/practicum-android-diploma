@@ -60,7 +60,6 @@ fun FilterSettingsScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Button(
                 onClick = onWorkPlaceClick,
                 modifier = Modifier.fillMaxWidth()
