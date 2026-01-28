@@ -21,7 +21,7 @@ private val LightColorScheme = lightColorScheme(
 
     // Поверхности (карточки/панели/BottomBar)
     // BottomNavigation -> Gray400
-    surface = Gray400,
+    surface = White,
     onSurface = Black,
 
     // Серые контейнеры (TextField фон и т.п.) в светлой теме -> Gray100
@@ -32,14 +32,14 @@ private val LightColorScheme = lightColorScheme(
 private val DarkColorScheme = darkColorScheme(
     // Акцент
     primary = Blue,
-    onPrimary = Black,
+    onPrimary = White,
 
     // Фон экранов
     background = Black,
     onBackground = White,
 
     // Поверхности (карточки/панели/BottomBar) в тёмной теме -> Gray400
-    surface = Gray400,
+    surface = Black,
     onSurface = White,
 
     // Серые контейнеры (TextField фон и т.п.) в тёмной теме -> Gray400
