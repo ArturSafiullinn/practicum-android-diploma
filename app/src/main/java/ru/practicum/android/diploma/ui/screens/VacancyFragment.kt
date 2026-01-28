@@ -23,8 +23,8 @@ class VacancyFragment : BaseComposeFragment() {
     override fun ScreenContent() {
         VacancyScreen(
             onBackClick = { findNavController().popBackStack() },
-            onShareClick = { /* TODO */ },
-            onFavoriteClick = { /* TODO */ },
+            onShareClick = {},
+            onFavoriteClick = {},
             isFavorite = false
         )
     }

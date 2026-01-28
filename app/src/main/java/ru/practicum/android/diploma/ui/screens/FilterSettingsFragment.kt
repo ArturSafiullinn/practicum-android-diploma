@@ -52,7 +52,6 @@ fun FilterSettingsScreen(
             )
         }
     ) { padding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
