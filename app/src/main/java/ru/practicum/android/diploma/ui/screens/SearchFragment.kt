@@ -45,7 +45,7 @@ class SearchFragment : BaseComposeFragment() {
     override fun ScreenContent() {
         SearchScreen(
             onFilterClick = { findNavController().navigate(R.id.action_searchFragment_to_filterSettingsFragment) },
-            onVacancyClick = { findNavController().navigate(R.id.action_mainFragment_to_vacancyFragment) }
+            onVacancyClick = { findNavController().navigate(R.id.action_searchFragment_to_vacancyFragment) }
         )
     }
 }
