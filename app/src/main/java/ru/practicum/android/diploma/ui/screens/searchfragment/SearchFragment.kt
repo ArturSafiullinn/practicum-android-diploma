@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
@@ -98,18 +100,9 @@ fun SearchScreen(
 
             when (state) {
                 is SearchUiState.Initial -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = Space16),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.image_search),
-                            contentDescription = null,
-                            contentScale = ContentScale.Fit
-                        )
-                    }
+                    SearchPlaceholder(
+                        imageRes = R.drawable.image_search
+                    )
                 }
 
                 is SearchUiState.Loading -> {
@@ -121,15 +114,24 @@ fun SearchScreen(
                 }
 
                 is SearchUiState.Empty -> {
-                    Text("Ничего не найдено")
+                    SearchPlaceholder(
+                        title = stringResource(R.string.empty_state_no_such_vaccancies),
+                        imageRes = R.drawable.empty_result
+                    )
                 }
 
                 is SearchUiState.NoInternet -> {
-                    Text("Нет интернета")
+                    SearchPlaceholder(
+                        title = stringResource(R.string.empty_state_no_internet),
+                        imageRes = R.drawable.no_internet
+                    )
                 }
 
                 is SearchUiState.Error -> {
-                    Text("Ошибка")
+                    SearchPlaceholder(
+                        title = stringResource(R.string.empty_state_server_error),
+                        imageRes = R.drawable.search_error
+                    )
                 }
             }
 
@@ -214,6 +216,40 @@ fun SearchInputField(
     )
 }
 
+@Composable
+fun SearchPlaceholder(
+    modifier: Modifier = Modifier,
+    @DrawableRes imageRes: Int,
+    title: String? = null,
+    ) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = Space16),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = null,
+                contentScale = ContentScale.Fit
+            )
+
+            if (title != null) {
+                Spacer(modifier = Modifier.height(Space16))
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
 @Preview(name = "Light", showBackground = true)
 @Preview(
     name = "Dark",
@@ -221,10 +257,64 @@ fun SearchInputField(
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-fun MainScreenPreview() {
+fun SearchScreenInitialPreview() {
     AppTheme {
         SearchScreen(
             state = SearchUiState.Initial(),
+            onFilterClick = {},
+            onQueryChange = {},
+            onVacancyClick = {}
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SearchScreenEmptyResultPreview() {
+    AppTheme {
+        SearchScreen(
+            state = SearchUiState.Empty(""),
+            onFilterClick = {},
+            onQueryChange = {},
+            onVacancyClick = {}
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SearchScreenNoInternetPreview() {
+    AppTheme {
+        SearchScreen(
+            state = SearchUiState.NoInternet(""),
+            onFilterClick = {},
+            onQueryChange = {},
+            onVacancyClick = {}
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SearchScreenServerErrorPreview() {
+    AppTheme {
+        SearchScreen(
+            state = SearchUiState.Error(""),
             onFilterClick = {},
             onQueryChange = {},
             onVacancyClick = {}
