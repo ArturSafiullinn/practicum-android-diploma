@@ -29,8 +29,7 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = Black,
 
     // цвет комментариев в окнах( поиск, выбор региона, ожидаемая зп)
-        inverseSurface = Gray400
-
+    inverseSurface = Gray400
 )
 
 private val DarkColorScheme = darkColorScheme(

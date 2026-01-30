@@ -41,11 +41,14 @@ import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Blue
 
 class SearchFragment : BaseComposeFragment() {
+
     @Composable
     override fun ScreenContent() {
+        val navController = findNavController()
+
         SearchScreen(
-            onFilterClick = { findNavController().navigate(R.id.action_searchFragment_to_filterSettingsFragment) },
-            onVacancyClick = { findNavController().navigate(R.id.action_searchFragment_to_vacancyFragment) }
+            onFilterClick = { navController.navigate(R.id.action_searchFragment_to_filterSettingsFragment) },
+            onVacancyClick = { navController.navigate(R.id.action_searchFragment_to_vacancyFragment) }
         )
     }
 }
@@ -66,7 +69,6 @@ fun SearchScreen(
             )
         }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,7 +79,7 @@ fun SearchScreen(
             SearchInputField(
                 query = query,
                 onQueryChange = { query = it }, // обновляем состояние
-                onClearQuery = { query = "" }  // очищаем поле
+                onClearQuery = { query = "" } // очищаем поле
             )
 
             Box(
@@ -188,9 +190,9 @@ fun SearchInputField(
 @Composable
 fun MainScreenPreview() {
     AppTheme {
-       SearchScreen(
+        SearchScreen(
             onFilterClick = {},
             onVacancyClick = {}
-       )
+        )
     }
 }
