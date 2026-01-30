@@ -6,7 +6,7 @@ const val DEBOUNCE_SEARCH_DELAY = 2000L
 
 // Аргументы
 const val SEARCH_FILTERS = "search_filters"
-const val VACANCY = "vacancy"
+const val ARGS_VACANCY = "vacancy"
 
 // API
 const val API_BASE_URL = "https://practicum-diploma-8bc38133faba.herokuapp.com/"
