@@ -221,7 +221,7 @@ fun SearchPlaceholder(
     modifier: Modifier = Modifier,
     @DrawableRes imageRes: Int,
     title: String? = null,
-    ) {
+) {
     Box(
         modifier = modifier
             .fillMaxSize()
