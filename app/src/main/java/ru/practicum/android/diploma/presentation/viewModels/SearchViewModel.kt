@@ -6,7 +6,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.ui.screens.searchFragment.SearchUiState
+import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
+
+private const val DELAY_MS = 1000L
 
 class SearchViewModel : ViewModel() {
 
@@ -16,6 +18,7 @@ class SearchViewModel : ViewModel() {
         )
 
     val state: StateFlow<SearchUiState> = _state
+
 
     fun onQueryChange(newQuery: String) {
         _state.value = SearchUiState.Initial(query = newQuery)
@@ -30,7 +33,7 @@ class SearchViewModel : ViewModel() {
 
         // Тут потом будет запрос в репозиторий
         viewModelScope.launch {
-            delay(1000)
+            delay(timeMillis = DELAY_MS)
             _state.value = SearchUiState.Empty(query)
         }
     }

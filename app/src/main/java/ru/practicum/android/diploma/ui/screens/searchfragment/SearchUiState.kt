@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.searchFragment
+package ru.practicum.android.diploma.ui.screens.searchfragment
 
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 
