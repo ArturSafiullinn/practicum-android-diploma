@@ -25,7 +25,7 @@ class SearchInteractorImpl(
                 }
 
                 response.resultCode == NOT_CONNECTED_CODE -> {
-                    Result.failure(IOException())
+                    Result.failure(IOException("Not Connected"))
                 }
 
                 else -> {
