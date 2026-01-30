@@ -17,6 +17,10 @@ import ru.practicum.android.diploma.data.VacanciesRequest
 import ru.practicum.android.diploma.data.VacanciesResponse
 import ru.practicum.android.diploma.data.VacancyDetailsRequest
 import ru.practicum.android.diploma.data.VacancyDetailsResponse
+import ru.practicum.android.diploma.util.HTTP_OK
+import ru.practicum.android.diploma.util.NOT_CONNECTED_CODE
+import ru.practicum.android.diploma.util.SERVER_INTERNAL_ERROR
+
 
 class RetrofitNetworkClient(
     private val context: Context,
@@ -78,11 +82,5 @@ class RetrofitNetworkClient(
                 it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                 it.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
         } ?: false
-    }
-
-    companion object {
-        private const val NOT_CONNECTED_CODE = -1
-        private const val HTTP_OK = 200
-        private const val SERVER_INTERNAL_ERROR = 500
     }
 }

@@ -8,12 +8,10 @@ const val DEBOUNCE_SEARCH_DELAY = 2000L
 const val SEARCH_FILTERS = "search_filters"
 const val VACANCY = "vacancy"
 
-// API
 const val API_BASE_URL = "https://practicum-diploma-8bc38133faba.herokuapp.com/"
-
-// Ошибки Retrofit
-const val INTERNAL_SERVER_ERROR = 500
-const val NOTHING_FOUND = 404
+const val HTTP_OK = 200
+const val NOT_CONNECTED_CODE = -1
+const val SERVER_INTERNAL_ERROR = 500
 
 // Параметры экрана поиска
 const val PAGE_SIZE = 20
