@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.vacancyDetail
+package ru.practicum.android.diploma.ui.screens.vacancy_detail
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -15,14 +15,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 import ru.practicum.android.diploma.ui.theme.Dimens.IconContainer
@@ -33,6 +32,8 @@ import ru.practicum.android.diploma.ui.theme.Gray100
 
 @Composable
 fun VacancyBanner(vacancy: VacancyDetailUi) {
+    val placeholderResId = remember { R.drawable.image_vacancy_logo_placeholder }
+
     Box(
         Modifier
             .fillMaxWidth()
@@ -47,13 +48,11 @@ fun VacancyBanner(vacancy: VacancyDetailUi) {
                 modifier = Modifier
                     .size(IconContainer, IconContainer)
                     .clip(RoundedCornerShape(Radius12)),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(vacancy.employerLogoLink)
-                    .build(),
+                model = vacancy.employerLogoLink,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
-                placeholder = painterResource(R.drawable.image_vacancy_logo_placeholder),
-                error = painterResource(R.drawable.image_vacancy_logo_placeholder),
+                placeholder = painterResource(placeholderResId),
+                error = painterResource(placeholderResId),
                 onLoading = {
                     Log.d("CoilDebug", "Загрузка началась: ${vacancy.employerLogoLink}")
                 },

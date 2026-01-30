@@ -9,6 +9,7 @@ fun formatSalarySpaced(amount: Int?): String {
 }
 
 // todo: Удалить, когда добавим переходы по реальным вакансиям
+@Suppress("MaximumLineLength")
 fun getMockVacancy(): VacancyDetailUi = VacancyDetailUi(
     id = "1",
     isFavorite = true,
