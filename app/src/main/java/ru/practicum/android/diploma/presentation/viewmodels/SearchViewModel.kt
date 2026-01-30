@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.viewModels
+package ru.practicum.android.diploma.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +18,6 @@ class SearchViewModel : ViewModel() {
         )
 
     val state: StateFlow<SearchUiState> = _state
-
 
     fun onQueryChange(newQuery: String) {
         _state.value = SearchUiState.Initial(query = newQuery)
