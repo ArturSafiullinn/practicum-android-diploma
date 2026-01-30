@@ -21,7 +21,6 @@ import ru.practicum.android.diploma.util.HTTP_OK
 import ru.practicum.android.diploma.util.NOT_CONNECTED_CODE
 import ru.practicum.android.diploma.util.SERVER_INTERNAL_ERROR
 
-
 class RetrofitNetworkClient(
     private val context: Context,
     private val apiService: ApiService,
