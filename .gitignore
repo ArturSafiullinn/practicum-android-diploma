@@ -1,20 +1,26 @@
-# IntelliJ
+# IDEA/Android Studio project files, because
+# the project can be imported from settings.gradle.kts
 *.iml
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-/.idea/kotlinc.xml
-/.idea/gradle.xml
-/.idea/compiler.xml
-/.idea/misc.xml
+.idea/*
+!.idea/copyright
+# Keep the code styles.
+!/.idea/codeStyles
+/.idea/codeStyles/*
+!/.idea/codeStyles/Project.xml
+!/.idea/codeStyles/codeStyleConfig.xml
 
 # Gradle files
 .gradle/
 build/
 out/
+
+# generated files
+bin/
+gen/
+
+# Eclipse project files
+.classpath
+.project
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -47,3 +53,6 @@ google-services.json
 # OS specific
 .DS_Store
 *.log
+
+# Sandbox stuff
+_sandbox
