@@ -40,6 +40,7 @@ import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Blue
+import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
 class SearchFragment : BaseComposeFragment() {
 
@@ -100,13 +101,12 @@ fun SearchScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 156.dp),
+                            .padding(horizontal = Space16),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
                             painter = painterResource(R.drawable.image_search),
                             contentDescription = null,
-                            modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Fit
                         )
                     }
