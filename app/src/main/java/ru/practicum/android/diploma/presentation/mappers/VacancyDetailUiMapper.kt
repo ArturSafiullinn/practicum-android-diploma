@@ -10,10 +10,13 @@ class VacancyDetailUiMapper(private val resourceProvider: ResourceProvider) {
 
     fun toUi(domain: VacancyDetail): VacancyDetailUi {
         return VacancyDetailUi(
+            id = domain.id,
+            isFavorite = domain.isFavorite,
             name = domain.name,
             description = domain.description,
             salary = getSalaryFormatted(domain.salary),
-            address = domain.address?.fullAddress,
+            city = domain.address?.city,
+            fullAddress = domain.address?.fullAddress,
             experience = domain.experience?.name,
             schedule = domain.schedule?.name,
             employment = domain.employment?.name,
@@ -22,6 +25,7 @@ class VacancyDetailUiMapper(private val resourceProvider: ResourceProvider) {
             contactsPhone = domain.contacts?.phone,
             employerName = domain.employer.name,
             employerLogoLink = domain.employer.logo,
+            area = domain.area.name,
             skills = domain.skills,
             url = domain.url,
             industry = domain.industry.name
