@@ -26,6 +26,7 @@ class SearchViewModel(
         lastQuery = query
 
         viewModelScope.launch {
+            _screenState.postValue(SearchUiState.Loading)
             searchInteractor.search(
                 SearchParams(
                     text = query
