@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.vacancy_detail
+package ru.practicum.android.diploma.ui.screens.vacancy
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

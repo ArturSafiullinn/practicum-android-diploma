@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.vacancy_detail
+package ru.practicum.android.diploma.ui.screens.vacancy
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image

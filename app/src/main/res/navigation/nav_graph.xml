@@ -71,7 +71,7 @@
 
     <fragment
         android:id="@+id/vacancyFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.vacancy_detail.VacancyFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.vacancy.VacancyFragment"
         android:label="VacancyFragment" />
 
 </navigation>
