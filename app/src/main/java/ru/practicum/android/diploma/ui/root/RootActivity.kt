@@ -40,10 +40,6 @@ class RootActivity : AppCompatActivity() {
             }
 
         }
-
-        // todo: Удалить, когда добавим переход по реальной вакансии
-        // Раскомментировать, чтобы посмотреть экран с тестовой вакансией
-        // navController.navigate(R.id.vacancyFragment, bundleOf(ARGS_VACANCY to getMockVacancy()))
     }
 
     private fun showBottomNav(bottomNavMenu: View, bottomNavMenuTopDividerLine: View, show: Boolean) {
