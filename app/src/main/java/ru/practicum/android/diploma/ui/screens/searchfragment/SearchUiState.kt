@@ -1,32 +1,17 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
-import ru.practicum.android.diploma.ui.models.VacancyListItemUi
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 
 sealed interface SearchUiState {
-    val query: String
-
-    data class Initial(
-        override val query: String = ""
-    ) : SearchUiState
-
-    data class Loading(
-        override val query: String
-    ) : SearchUiState
-
+    data object Initial : SearchUiState
+    data object NoResults : SearchUiState
+    data object NotConnected : SearchUiState
+    data object ServerError : SearchUiState
+    data object Loading : SearchUiState
+    data object PaginationLoading : SearchUiState
     data class Content(
-        override val query: String,
-        val vacancies: List<VacancyListItemUi>
-    ) : SearchUiState
-
-    data class Empty(
-        override val query: String
-    ) : SearchUiState
-
-    data class NoInternet(
-        override val query: String
-    ) : SearchUiState
-
-    data class Error(
-        override val query: String
+        val pages: Int,
+        val currentPage: Int,
+        val vacancies: List<VacancyDetail>
     ) : SearchUiState
 }
