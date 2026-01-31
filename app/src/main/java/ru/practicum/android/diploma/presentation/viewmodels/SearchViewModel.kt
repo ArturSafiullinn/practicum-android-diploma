@@ -12,7 +12,6 @@ import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
 import java.io.IOException
 
-
 class SearchViewModel(
     private val searchInteractor: SearchInteractor
 ) : ViewModel() {
