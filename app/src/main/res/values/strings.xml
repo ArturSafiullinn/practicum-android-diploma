@@ -80,4 +80,7 @@
     <string name="filters">Фильтры</string>
     <string name="back">Назад</string>
     <string name="share">Поделиться</string>
+
+    <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
+    <string name="server_error">Ошибка сервера</string>
 </resources>
