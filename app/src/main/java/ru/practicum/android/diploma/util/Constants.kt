@@ -6,7 +6,7 @@ const val DEBOUNCE_SEARCH_DELAY = 2000L
 
 // Аргументы
 const val SEARCH_FILTERS = "search_filters"
-const val VACANCY = "vacancy"
+const val ARGS_VACANCY = "vacancy"
 
 const val API_BASE_URL = "https://practicum-diploma-8bc38133faba.herokuapp.com/"
 const val HTTP_OK = 200
@@ -31,4 +31,5 @@ const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрыти�
 
 // region Тэги для логов
 const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
+const val TAG_COIL_DEBUG = "Coil Debug"
 // endregion

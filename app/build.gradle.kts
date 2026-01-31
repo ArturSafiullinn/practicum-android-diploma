@@ -82,6 +82,7 @@ dependencies {
     // Images
     implementation(libs.glide.core)
     kapt(libs.glide.compiler)
+    implementation(libs.coil.compose)
 
     implementation(libs.kotlinx.coroutines.android)
 

@@ -28,6 +28,7 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space4
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 import ru.practicum.android.diploma.ui.theme.Dimens.TopAppBarHeight
+import ru.practicum.android.diploma.ui.theme.Red
 
 @Composable
 fun DiplomaTopAppBar(
@@ -173,7 +174,8 @@ private fun FavoriteAction(
     IconButton(onClick = { onFavoriteClick?.invoke() }) {
         Icon(
             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-            contentDescription = stringResource(R.string.favorites)
+            contentDescription = stringResource(R.string.favorites),
+            tint = if (isFavorite) Red else MaterialTheme.colorScheme.onBackground
         )
     }
 }
