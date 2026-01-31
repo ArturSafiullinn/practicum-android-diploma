@@ -24,7 +24,6 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space24
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 import ru.practicum.android.diploma.util.ARGS_VACANCY
-import ru.practicum.android.diploma.util.getMockVacancy
 
 class VacancyFragment : BaseComposeFragment() {
     @Composable
@@ -101,7 +100,7 @@ fun VacancyScreenPreviewLight() {
             onBackClick = {},
             onShareClick = {},
             onFavoriteClick = {},
-            vacancy = getMockVacancy()
+            vacancy = null
         )
     }
 }
