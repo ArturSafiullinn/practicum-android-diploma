@@ -40,7 +40,7 @@
 
     <!-- Empty States (Заголовки экранов пустышек: нет интернета и т.д. -->
     <string name="empty_state_no_internet">Нет интернета</string>
-    <string name="empty_state_loading_vaccancies_error">Не удалось получить список вакансий</string>
+    <string name="empty_state_no_such_vaccancies">Не удалось получить список вакансий</string>
     <string name="empty_state_no_such_region">Нет такого региона</string>
     <string name="empty_state_loading_regions_error">Не удалось получить список</string>
     <string name="empty_state_vaccancy_load_error">Вакансия не найдена или удалена</string>

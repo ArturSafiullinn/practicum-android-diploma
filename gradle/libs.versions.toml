@@ -78,5 +78,5 @@ uiTests-espressoCore = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 [plugins]
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 [bundles]
