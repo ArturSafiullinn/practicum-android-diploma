@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.ui.screens.vacancy
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,9 +27,8 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Radius12
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 import ru.practicum.android.diploma.ui.theme.Gray100
-import ru.practicum.android.diploma.util.TAG_COIL_DEBUG
 import ru.practicum.android.diploma.util.DrawableRes
-import android.util.Log
+import ru.practicum.android.diploma.util.TAG_COIL_DEBUG
 
 @Composable
 fun VacancyBanner(vacancy: VacancyDetailUi) {
