@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.ui.screens
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -39,6 +41,8 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Blue
+import ru.practicum.android.diploma.ui.theme.Gray100
+import ru.practicum.android.diploma.ui.theme.White
 
 class SearchFragment : BaseComposeFragment() {
 
@@ -75,12 +79,13 @@ fun SearchScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // 🔍 Поле поиска
             SearchInputField(
                 query = query,
-                onQueryChange = { query = it }, // обновляем состояние
-                onClearQuery = { query = "" } // очищаем поле
+                onQueryChange = { query = it },
+                onClearQuery = { query = "" }
             )
+            VacancyCount(count = 1)
+            VacancyItem()
 
             Box(
                 modifier = Modifier
@@ -95,10 +100,6 @@ fun SearchScreen(
                     contentScale = ContentScale.Fit
                 )
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Кнопка
             Button(
                 onClick = onVacancyClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -140,7 +141,6 @@ fun SearchInputField(
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Текст + placeholder
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -158,7 +158,6 @@ fun SearchInputField(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // ОДНО место под иконку
                 if (query.isEmpty()) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
@@ -179,6 +178,88 @@ fun SearchInputField(
             }
         }
     )
+}
+
+@Composable
+fun VacancyItem() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { }
+            .padding(vertical = 17.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .border(
+                    width = 1.dp,
+                    color = Gray100,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .background( // ⬅️ фон
+                    color = MaterialTheme.colorScheme.background,
+                    shape = RoundedCornerShape(12.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_placeholder_vacancy),
+                contentDescription = null,
+                modifier = Modifier,
+                contentScale = ContentScale.Fit
+            )
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "Название вакансии с возможным переносом",
+                maxLines = 3,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Работодатель",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Text(
+                text = "Зарплата",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+fun VacancyCount(count: Int) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 11.dp, bottom = 12.dp)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .background(
+                color = Blue,
+                shape = RoundedCornerShape(12.dp)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.count_vacancy, 1),
+            style = MaterialTheme.typography.bodyLarge,
+            color = White,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        )
+    }
 }
 
 @Preview(name = "Light", showBackground = true)
