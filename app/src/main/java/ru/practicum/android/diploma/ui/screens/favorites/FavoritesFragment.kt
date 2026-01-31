@@ -9,13 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.FavoritesViewModel
 import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SimpleTitleTopAppBar
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : BaseComposeFragment() {
     private val viewModel: FavoritesViewModel by viewModel()
