@@ -69,10 +69,10 @@ class SearchViewModel(
 
     fun loadNextPage() {
         searchJob?.cancel()
+        val currentState = _screenState.value
+        if (currentState !is SearchUiState.Content) return
+        if (currentState.currentPage >= currentState.pages) return
         viewModelScope.launch {
-            val currentState = _screenState.value
-            if (currentState !is SearchUiState.Content) return@launch
-            if (currentState.currentPage >= currentState.pages) return@launch
             _screenState.postValue(SearchUiState.PaginationLoading)
             searchInteractor.search(
                 SearchParams(
@@ -90,7 +90,7 @@ class SearchViewModel(
                             )
                         )
                     }
-                    .onFailure { return@collect }
+                    .onFailure {}
             }
         }
     }
