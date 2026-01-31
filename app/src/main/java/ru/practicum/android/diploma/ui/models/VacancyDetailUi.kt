@@ -11,7 +11,7 @@ data class VacancyDetailUi(
     val description: String?,
     val salary: String,
     val city: String?,
-    val fullAddress: String?,
+    val address: String?,
     val experience: String?,
     val schedule: String?,
     val employment: String?,

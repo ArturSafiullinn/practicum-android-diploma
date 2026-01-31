@@ -27,6 +27,7 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Radius12
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 import ru.practicum.android.diploma.ui.theme.Gray100
+import ru.practicum.android.diploma.util.TAG_COIL_DEBUG
 import ru.practicum.android.diploma.util.DrawableRes
 
 @Composable
@@ -51,13 +52,13 @@ fun VacancyBanner(vacancy: VacancyDetailUi) {
                 placeholder = painterResource(DrawableRes.logoPlaceholder),
                 error = painterResource(DrawableRes.logoPlaceholder),
                 onLoading = {
-                    Log.d("CoilDebug", "Загрузка началась: ${vacancy.employerLogoLink}")
+                    Log.d(TAG_COIL_DEBUG, "Загрузка началась: ${vacancy.employerLogoLink}")
                 },
                 onSuccess = { state ->
-                    Log.d("CoilDebug", "Картинка загружена. Размер: ${state.painter.intrinsicSize}")
+                    Log.d(TAG_COIL_DEBUG, "Картинка загружена. Размер: ${state.painter.intrinsicSize}")
                 },
                 onError = { state ->
-                    Log.e("CoilDebug", "Ошибка загрузки изображения")
+                    Log.e(TAG_COIL_DEBUG, "Ошибка загрузки изображения")
                     state.result.throwable.printStackTrace()
                 }
             )

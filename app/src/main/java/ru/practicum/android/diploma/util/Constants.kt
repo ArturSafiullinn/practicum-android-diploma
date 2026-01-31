@@ -33,4 +33,5 @@ const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрыти�
 
 // region Тэги для логов
 const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
+const val TAG_COIL_DEBUG = "Coil Debug"
 // endregion
