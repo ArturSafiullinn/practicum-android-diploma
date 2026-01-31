@@ -12,7 +12,7 @@ import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.VacancyNot
 
 class VacancyViewModel(vacancy: VacancyDetail?, val vacancyDetailUiMapper: VacancyDetailUiMapper) : ViewModel() {
 
-    private val _screenState = MutableStateFlow<VacancyUiState>(VacancyNotFound)
+    private val _screenState = MutableStateFlow<VacancyUiState>(VacancyUiState.Loading)
     val screenState: StateFlow<VacancyUiState> = _screenState
 
     init {
@@ -33,7 +33,7 @@ class VacancyViewModel(vacancy: VacancyDetail?, val vacancyDetailUiMapper: Vacan
             if (vacancy != null) {
                 Vacancy(vacancyDetailUiMapper.toUi(vacancy))
             } else {
-                VacancyNotFound
+                VacancyNotFound()
             }
         }
     }
