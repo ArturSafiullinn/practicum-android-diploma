@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,13 +37,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import coil.compose.AsyncImage
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
+import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
+import ru.practicum.android.diploma.ui.theme.Gray100
+import ru.practicum.android.diploma.ui.theme.White
 
 class SearchFragment : BaseComposeFragment() {
 
@@ -61,7 +66,7 @@ class SearchFragment : BaseComposeFragment() {
                     R.id.action_searchFragment_to_filterSettingsFragment
                 )
             },
-            onVacancyClick = {
+            onVacancyClick = { vacancy ->
                 navController.navigate(
                     R.id.action_searchFragment_to_vacancyFragment
                 )
@@ -75,7 +80,7 @@ fun SearchScreen(
     state: SearchUiState,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
-    onVacancyClick: () -> Unit,
+    onVacancyClick: (VacancyListItemUi) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -110,7 +115,15 @@ fun SearchScreen(
                 }
 
                 is SearchUiState.Content -> {
-                    Text("Найдено вакансий: ${state.vacancies.size}")
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        VacancyCount(state.vacancies.size)
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        state.vacancies.forEach { vacancy ->
+                            VacancyItem(vacancy = vacancy, onClick = { onVacancyClick(vacancy) })
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                    }
                 }
 
                 is SearchUiState.Empty -> {
@@ -133,15 +146,6 @@ fun SearchScreen(
                         imageRes = R.drawable.search_error
                     )
                 }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = onVacancyClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(stringResource(R.string.open_test_vaccancy))
             }
         }
     }
@@ -175,7 +179,6 @@ fun SearchInputField(
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Текст + placeholder
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -193,7 +196,6 @@ fun SearchInputField(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // ОДНО место под иконку
                 if (query.isEmpty()) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
@@ -249,6 +251,96 @@ fun SearchPlaceholder(
         }
     }
 }
+
+@Composable
+fun VacancyItem(
+    vacancy: VacancyListItemUi,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .border(
+                    width = 1.dp,
+                    color = Gray100,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .background(
+                    color = MaterialTheme.colorScheme.background,
+                    shape = RoundedCornerShape(12.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (!vacancy.employerLogoUrl.isNullOrEmpty()) {
+                AsyncImage(
+                    model = vacancy.employerLogoUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.ic_placeholder_vacancy),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = vacancy.title,
+                maxLines = 3,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = vacancy.employerName ?: "Работодатель неизвестен",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = vacancy.salary ?: "Зарплата не указана",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+fun VacancyCount(count: Int) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 11.dp, bottom = 12.dp)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .background(
+                color = Blue,
+                shape = RoundedCornerShape(12.dp)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.count_vacancy, count),
+            style = MaterialTheme.typography.bodyLarge,
+            color = White,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        )
+    }
+}
+
 
 @Preview(name = "Light", showBackground = true)
 @Preview(
@@ -321,3 +413,39 @@ fun SearchScreenServerErrorPreview() {
         )
     }
 }
+
+@Preview(
+    name = "Light - Single Vacancy",
+    showBackground = true
+)
+@Preview(
+    name = "Dark - Single Vacancy",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SearchScreenSingleVacancyPreview() {
+    AppTheme {
+        val fakeVacancy = listOf(
+            VacancyListItemUi(
+                id = "1",
+                title = "Android Developer",
+                employerName = "Practicum",
+                area = "Moscow",
+                salary = "120 000 ₽",
+                employerLogoUrl = null // заглушка
+            )
+        )
+
+        SearchScreen(
+            state = SearchUiState.Content(
+                query = "Android",
+                vacancies = fakeVacancy
+            ),
+            onQueryChange = {},
+            onFilterClick = {},
+            onVacancyClick = {}
+        )
+    }
+}
+
