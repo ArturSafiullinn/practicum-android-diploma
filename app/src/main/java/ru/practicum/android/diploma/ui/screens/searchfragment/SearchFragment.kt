@@ -38,6 +38,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
+import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
@@ -100,7 +101,7 @@ fun SearchScreen(
 
             when (state) {
                 is SearchUiState.Initial -> {
-                    SearchPlaceholder(
+                    EmptyState(
                         imageRes = R.drawable.image_search
                     )
                 }
@@ -114,21 +115,21 @@ fun SearchScreen(
                 }
 
                 is SearchUiState.Empty -> {
-                    SearchPlaceholder(
+                    EmptyState(
                         title = stringResource(R.string.empty_state_no_such_vaccancies),
                         imageRes = R.drawable.empty_result
                     )
                 }
 
                 is SearchUiState.NoInternet -> {
-                    SearchPlaceholder(
+                    EmptyState(
                         title = stringResource(R.string.empty_state_no_internet),
                         imageRes = R.drawable.no_internet
                     )
                 }
 
                 is SearchUiState.Error -> {
-                    SearchPlaceholder(
+                    EmptyState(
                         title = stringResource(R.string.empty_state_server_error),
                         imageRes = R.drawable.search_error
                     )
@@ -214,40 +215,6 @@ fun SearchInputField(
             }
         }
     )
-}
-
-@Composable
-fun SearchPlaceholder(
-    modifier: Modifier = Modifier,
-    @DrawableRes imageRes: Int,
-    title: String? = null,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = Space16),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(imageRes),
-                contentDescription = null,
-                contentScale = ContentScale.Fit
-            )
-
-            if (title != null) {
-                Spacer(modifier = Modifier.height(Space16))
-
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    }
 }
 
 @Preview(name = "Light", showBackground = true)
