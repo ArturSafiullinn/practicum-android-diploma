@@ -29,7 +29,7 @@ import ru.practicum.android.diploma.util.getMockVacancy
 class VacancyFragment : BaseComposeFragment() {
     @Composable
     override fun ScreenContent() {
-        val vacancy: VacancyDetailUi? = if (Build.VERSION.SDK_INT >= 33) {
+        val vacancy: VacancyDetailUi? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requireArguments().getParcelable(ARGS_VACANCY, VacancyDetailUi::class.java)
         } else {
             @Suppress("DEPRECATION")
