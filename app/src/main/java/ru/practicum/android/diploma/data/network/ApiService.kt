@@ -27,7 +27,7 @@ interface ApiService {
         @Query("industry") industry: Int? = null,
         @Query("text") text: String? = null,
         @Query("salary") salary: Int? = null,
-        @Query("page") page: Int? = null,
+        @Query("page") page: Int? = 1,
         @Query("only_with_salary") onlyWithSalary: Boolean? = null,
         @Header("Authorization") token: String = API_TOKEN,
     ): VacancyResponseDto

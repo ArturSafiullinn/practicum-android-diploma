@@ -11,7 +11,7 @@ class VacancyResponseDtoMapper(
             found = dto.found,
             pages = dto.pages,
             page = dto.page,
-            vacancies = (dto.items ?: emptyList()).map { vacancyDetailMapper.toDomain(it) }
+            items = (dto.items ?: emptyList()).map { vacancyDetailMapper.toDomain(it) },
         )
     }
 }
