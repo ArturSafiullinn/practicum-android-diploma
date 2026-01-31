@@ -6,5 +6,5 @@ import ru.practicum.android.diploma.domain.api.FavoritesInteractor
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 
 class FavoritesInteractorStub : FavoritesInteractor {
-        override fun observeFavorites(): Flow<List<VacancyListItemUi>> = flowOf(emptyList())
+    override fun observeFavorites(): Flow<List<VacancyListItemUi>> = flowOf(emptyList())
 }

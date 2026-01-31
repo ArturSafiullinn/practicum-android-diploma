@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.stateIn
 import ru.practicum.android.diploma.domain.api.FavoritesInteractor
 import ru.practicum.android.diploma.ui.screens.favorites.FavoritesUiState
 
+private const val STOP_TIMEOUT_MILLIS = 5_000L
+
 class FavoritesViewModel(
     favoritesInteractor: FavoritesInteractor,
 ) : ViewModel() {
@@ -28,7 +30,7 @@ class FavoritesViewModel(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
                 initialValue = FavoritesUiState.Empty
             )
 }

@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ru.practicum.android.diploma.R
@@ -38,7 +39,7 @@ fun FavoritesScreen(
         when (state) {
             is FavoritesUiState.Content -> {
                 EmptyState(
-                    modifier = androidx.compose.ui.Modifier.padding(padding),//Заменить
+                    modifier = Modifier.padding(padding), // Заменить
                     imageRes = R.drawable.empty_favorites,
                     title = stringResource(R.string.empty_state_empty_favourites)
                 )
