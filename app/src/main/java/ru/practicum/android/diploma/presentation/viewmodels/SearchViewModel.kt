@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.SearchInteractor
 import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
+import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY
 import java.io.IOException
 
 class SearchViewModel(
@@ -62,7 +63,7 @@ class SearchViewModel(
         if (query.isBlank() || query == lastQuery) return
 
         searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
+            delay(DEBOUNCE_SEARCH_DELAY)
             onSearchSubmitted(query)
         }
     }
@@ -93,9 +94,5 @@ class SearchViewModel(
                     .onFailure {}
             }
         }
-    }
-
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
