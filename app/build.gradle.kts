@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
     id("org.jetbrains.kotlin.kapt")
-    id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {

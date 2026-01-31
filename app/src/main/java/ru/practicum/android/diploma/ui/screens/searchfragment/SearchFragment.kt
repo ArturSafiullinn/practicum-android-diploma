@@ -1,6 +1,7 @@
-package ru.practicum.android.diploma.ui.screens
+package ru.practicum.android.diploma.ui.screens.searchfragment
 
 import android.content.res.Configuration
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,45 +23,60 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
+import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Blue
+import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
 class SearchFragment : BaseComposeFragment() {
+
+    private val viewModel: SearchViewModel by viewModels()
 
     @Composable
     override fun ScreenContent() {
         val navController = findNavController()
+        val state by viewModel.state.collectAsState()
 
         SearchScreen(
-            onFilterClick = { navController.navigate(R.id.action_searchFragment_to_filterSettingsFragment) },
-            onVacancyClick = { navController.navigate(R.id.action_searchFragment_to_vacancyFragment) }
+            state = state,
+            onQueryChange = viewModel::onQueryChange,
+            onFilterClick = {
+                navController.navigate(
+                    R.id.action_searchFragment_to_filterSettingsFragment
+                )
+            },
+            onVacancyClick = {
+                navController.navigate(
+                    R.id.action_searchFragment_to_vacancyFragment
+                )
+            }
         )
     }
 }
 
 @Composable
 fun SearchScreen(
+    state: SearchUiState,
+    onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
     onVacancyClick: () -> Unit,
 ) {
-    // Локальное состояние строки поиска (живет пока экран на экране)
-    var query by remember { mutableStateOf("") }
-
     Scaffold(
         topBar = {
             SearchTopAppBar(
@@ -69,44 +85,63 @@ fun SearchScreen(
             )
         }
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // 🔍 Поле поиска
             SearchInputField(
-                query = query,
-                onQueryChange = { query = it }, // обновляем состояние
-                onClearQuery = { query = "" } // очищаем поле
+                query = state.query,
+                onQueryChange = onQueryChange,
+                onClearQuery = { onQueryChange("") }
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 156.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.image_search),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
+            when (state) {
+                is SearchUiState.Initial -> {
+                    SearchPlaceholder(
+                        imageRes = R.drawable.image_search
+                    )
+                }
+
+                is SearchUiState.Loading -> {
+                    Text("Загрузка...")
+                }
+
+                is SearchUiState.Content -> {
+                    Text("Найдено вакансий: ${state.vacancies.size}")
+                }
+
+                is SearchUiState.Empty -> {
+                    SearchPlaceholder(
+                        title = stringResource(R.string.empty_state_no_such_vaccancies),
+                        imageRes = R.drawable.empty_result
+                    )
+                }
+
+                is SearchUiState.NoInternet -> {
+                    SearchPlaceholder(
+                        title = stringResource(R.string.empty_state_no_internet),
+                        imageRes = R.drawable.no_internet
+                    )
+                }
+
+                is SearchUiState.Error -> {
+                    SearchPlaceholder(
+                        title = stringResource(R.string.empty_state_server_error),
+                        imageRes = R.drawable.search_error
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Кнопка
             Button(
                 onClick = onVacancyClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(
-                    text = stringResource(R.string.open_test_vaccancy),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                Text(stringResource(R.string.open_test_vaccancy))
             }
         }
     }
@@ -181,6 +216,40 @@ fun SearchInputField(
     )
 }
 
+@Composable
+fun SearchPlaceholder(
+    modifier: Modifier = Modifier,
+    @DrawableRes imageRes: Int,
+    title: String? = null,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = Space16),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = null,
+                contentScale = ContentScale.Fit
+            )
+
+            if (title != null) {
+                Spacer(modifier = Modifier.height(Space16))
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
 @Preview(name = "Light", showBackground = true)
 @Preview(
     name = "Dark",
@@ -188,10 +257,66 @@ fun SearchInputField(
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-fun MainScreenPreview() {
+fun SearchScreenInitialPreview() {
     AppTheme {
         SearchScreen(
+            state = SearchUiState.Initial(),
             onFilterClick = {},
+            onQueryChange = {},
+            onVacancyClick = {}
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SearchScreenEmptyResultPreview() {
+    AppTheme {
+        SearchScreen(
+            state = SearchUiState.Empty(""),
+            onFilterClick = {},
+            onQueryChange = {},
+            onVacancyClick = {}
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SearchScreenNoInternetPreview() {
+    AppTheme {
+        SearchScreen(
+            state = SearchUiState.NoInternet(""),
+            onFilterClick = {},
+            onQueryChange = {},
+            onVacancyClick = {}
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun SearchScreenServerErrorPreview() {
+    AppTheme {
+        SearchScreen(
+            state = SearchUiState.Error(""),
+            onFilterClick = {},
+            onQueryChange = {},
             onVacancyClick = {}
         )
     }
