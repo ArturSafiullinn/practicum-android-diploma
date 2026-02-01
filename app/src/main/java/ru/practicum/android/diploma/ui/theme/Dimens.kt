@@ -25,6 +25,7 @@ object Dimens {
     val IconContainer = 48.dp // контейнер иконок 48x48
     val IconSize = 24.dp // иконка 24x24
     val LoadingIconSize = 36.dp // у загрузки 36x36
+    val SmallIconSize = 24.dp
 
     val SearchFieldHeight = 56.dp // поле поиска
     val BottomBarHeight = 57.dp
