@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
     implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.compose.runtime.livedata)
     debugImplementation(libs.androidx.ui.tooling)
 
     // Navigation
@@ -82,6 +83,7 @@ dependencies {
     // Images
     implementation(libs.glide.core)
     kapt(libs.glide.compiler)
+    implementation(libs.coil.compose)
 
     implementation(libs.kotlinx.coroutines.android)
 

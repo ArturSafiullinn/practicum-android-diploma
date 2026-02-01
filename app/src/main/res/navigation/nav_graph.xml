@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/searchFragment">
 
@@ -19,7 +18,7 @@
 
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.FavoritesFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.favorites.FavoritesFragment"
         android:label="FavoritesFragment" />
 
     <fragment
@@ -72,7 +71,7 @@
 
     <fragment
         android:id="@+id/vacancyFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.VacancyFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.vacancy.VacancyFragment"
         android:label="VacancyFragment" />
 
 </navigation>
