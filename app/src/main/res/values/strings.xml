@@ -86,4 +86,6 @@
     <string name="filters">Фильтры</string>
     <string name="back">Назад</string>
     <string name="share">Поделиться</string>
+
+    <string name="server_error">Ошибка сервера</string>
 </resources>
