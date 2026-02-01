@@ -58,6 +58,12 @@
     <string name="no_such_vaccancies">Таких вакансий нет</string>
     <string name="enter_your_query">Введите запрос</string>
 
+    <!-- Vacancy Fragment -->
+    <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
+    <string name="required_experience">Требуемый опыт</string>
+    <string name="vacancy_description">Описание вакансии</string>
+    <string name="required_skills">Требуемые навыки</string>
+
     <!-- Filter Settings -->
     <string name="workplace">Место работы</string>
     <string name="industry">Отрасль</string>
@@ -80,4 +86,6 @@
     <string name="filters">Фильтры</string>
     <string name="back">Назад</string>
     <string name="share">Поделиться</string>
+
+    <string name="server_error">Ошибка сервера</string>
 </resources>

@@ -1,39 +1,98 @@
 package ru.practicum.android.diploma.presentation.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.api.SearchInteractor
+import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
+import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY
+import java.io.IOException
 
-private const val DELAY_MS = 1000L
+class SearchViewModel(
+    private val searchInteractor: SearchInteractor
+) : ViewModel() {
+    private var searchJob: Job? = null
+    private var lastQuery: String = ""
 
-class SearchViewModel : ViewModel() {
+    private val _screenState = MutableLiveData<SearchUiState>(SearchUiState.Initial)
+    val screenState: LiveData<SearchUiState> get() = _screenState
 
-    private val _state =
-        MutableStateFlow<SearchUiState>(
-            SearchUiState.Initial()
-        )
+    fun onSearchSubmitted(query: String) {
+        searchJob?.cancel()
+        lastQuery = query
 
-    val state: StateFlow<SearchUiState> = _state
-
-    fun onQueryChange(newQuery: String) {
-        _state.value = SearchUiState.Initial(query = newQuery)
+        viewModelScope.launch {
+            _screenState.postValue(SearchUiState.Loading)
+            searchInteractor.search(
+                SearchParams(
+                    text = query
+                )
+            ).collect { result ->
+                result
+                    .onSuccess { response ->
+                        if (response.items.isEmpty()) {
+                            _screenState.postValue(SearchUiState.NoResults)
+                        } else {
+                            _screenState.postValue(
+                                SearchUiState.Content(
+                                    pages = response.pages,
+                                    currentPage = response.page,
+                                    vacancies = response.items
+                                )
+                            )
+                        }
+                    }
+                    .onFailure { e ->
+                        if (e is IOException) {
+                            _screenState.postValue(SearchUiState.NotConnected)
+                        } else {
+                            _screenState.postValue(SearchUiState.ServerError)
+                        }
+                    }
+            }
+        }
     }
 
-    fun onSearchClick() {
-        val query = _state.value.query
+    fun onSearchQueryChanged(query: String) {
+        searchJob?.cancel()
+        if (query.isBlank() || query == lastQuery) return
 
-        if (query.isBlank()) return
+        searchJob = viewModelScope.launch {
+            delay(DEBOUNCE_SEARCH_DELAY)
+            onSearchSubmitted(query)
+        }
+    }
 
-        _state.value = SearchUiState.Loading(query)
-
-        // Тут потом будет запрос в репозиторий
+    fun loadNextPage() {
+        searchJob?.cancel()
+        val currentState = _screenState.value
+        if (currentState !is SearchUiState.Content) return
+        if (currentState.currentPage >= currentState.pages) return
         viewModelScope.launch {
-            delay(timeMillis = DELAY_MS)
-            _state.value = SearchUiState.Empty(query)
+            _screenState.postValue(SearchUiState.PaginationLoading)
+            searchInteractor.search(
+                SearchParams(
+                    text = lastQuery,
+                    page = currentState.currentPage + 1,
+                )
+            ).collect { result ->
+                result
+                    .onSuccess { response ->
+                        _screenState.postValue(
+                            SearchUiState.Content(
+                                pages = response.pages,
+                                currentPage = response.page,
+                                vacancies = currentState.vacancies + response.items
+                            )
+                        )
+                    }
+                    .onFailure {}
+            }
         }
     }
 }

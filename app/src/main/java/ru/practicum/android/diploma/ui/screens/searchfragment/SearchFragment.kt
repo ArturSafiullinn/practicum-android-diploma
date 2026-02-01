@@ -1,10 +1,8 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
-import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +21,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -32,40 +33,44 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
-import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
 class SearchFragment : BaseComposeFragment() {
 
-    private val viewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchViewModel by viewModel()
 
     @Composable
     override fun ScreenContent() {
         val navController = findNavController()
-        val state by viewModel.state.collectAsState()
+        val state by viewModel.screenState.observeAsState(SearchUiState.Initial)
+
+        var query by rememberSaveable { mutableStateOf("") }
 
         SearchScreen(
             state = state,
-            onQueryChange = viewModel::onQueryChange,
+            query = query,
+            onQueryChange = { newQuery ->
+                query = newQuery
+                viewModel.onSearchQueryChanged(newQuery)
+            },
+            onClearQuery = {
+                query = ""
+                viewModel.onSearchQueryChanged("")
+            },
             onFilterClick = {
-                navController.navigate(
-                    R.id.action_searchFragment_to_filterSettingsFragment
-                )
+                navController.navigate(R.id.action_searchFragment_to_filterSettingsFragment)
             },
             onVacancyClick = {
-                navController.navigate(
-                    R.id.action_searchFragment_to_vacancyFragment
-                )
+                navController.navigate(R.id.action_searchFragment_to_vacancyFragment)
             }
         )
     }
@@ -74,7 +79,9 @@ class SearchFragment : BaseComposeFragment() {
 @Composable
 fun SearchScreen(
     state: SearchUiState,
+    query: String,
     onQueryChange: (String) -> Unit,
+    onClearQuery: () -> Unit,
     onFilterClick: () -> Unit,
     onVacancyClick: () -> Unit,
 ) {
@@ -94,46 +101,31 @@ fun SearchScreen(
                 .padding(16.dp)
         ) {
             SearchInputField(
-                query = state.query,
+                query = query,
                 onQueryChange = onQueryChange,
-                onClearQuery = { onQueryChange("") }
+                onClearQuery = onClearQuery
             )
 
             when (state) {
-                is SearchUiState.Initial -> {
-                    EmptyState(
-                        imageRes = R.drawable.image_search
-                    )
-                }
+                SearchUiState.Initial -> SearchPlaceholder(imageRes = R.drawable.image_search)
+                SearchUiState.Loading -> Text("Загрузка...")
+                SearchUiState.PaginationLoading -> Text("Загрузка...")
+                SearchUiState.NoResults -> SearchPlaceholder(
+                    title = stringResource(R.string.empty_state_no_such_vaccancies),
+                    imageRes = R.drawable.empty_result
+                )
 
-                is SearchUiState.Loading -> {
-                    Text("Загрузка...")
-                }
+                SearchUiState.NotConnected -> SearchPlaceholder(
+                    title = stringResource(R.string.empty_state_no_internet),
+                    imageRes = R.drawable.no_internet
+                )
 
-                is SearchUiState.Content -> {
-                    Text("Найдено вакансий: ${state.vacancies.size}")
-                }
+                SearchUiState.ServerError -> SearchPlaceholder(
+                    title = stringResource(R.string.empty_state_server_error),
+                    imageRes = R.drawable.search_error
+                )
 
-                is SearchUiState.Empty -> {
-                    EmptyState(
-                        title = stringResource(R.string.empty_state_no_such_vaccancies),
-                        imageRes = R.drawable.empty_result
-                    )
-                }
-
-                is SearchUiState.NoInternet -> {
-                    EmptyState(
-                        title = stringResource(R.string.empty_state_no_internet),
-                        imageRes = R.drawable.no_internet
-                    )
-                }
-
-                is SearchUiState.Error -> {
-                    EmptyState(
-                        title = stringResource(R.string.empty_state_server_error),
-                        imageRes = R.drawable.search_error
-                    )
-                }
+                is SearchUiState.Content -> Text("Найдено вакансий: ${state.vacancies.size}")
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -207,8 +199,7 @@ fun SearchInputField(
                         painter = painterResource(R.drawable.ic_clear),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(16.dp)
-                            .clickable { onClearQuery() },
+                            .size(16.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -217,74 +208,36 @@ fun SearchInputField(
     )
 }
 
-@Preview(name = "Light", showBackground = true)
-@Preview(
-    name = "Dark",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
-fun SearchScreenInitialPreview() {
-    AppTheme {
-        SearchScreen(
-            state = SearchUiState.Initial(),
-            onFilterClick = {},
-            onQueryChange = {},
-            onVacancyClick = {}
-        )
-    }
-}
+fun SearchPlaceholder(
+    modifier: Modifier = Modifier,
+    @DrawableRes imageRes: Int,
+    title: String? = null,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = Space16),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = null,
+                contentScale = ContentScale.Fit
+            )
 
-@Preview(name = "Light", showBackground = true)
-@Preview(
-    name = "Dark",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun SearchScreenEmptyResultPreview() {
-    AppTheme {
-        SearchScreen(
-            state = SearchUiState.Empty(""),
-            onFilterClick = {},
-            onQueryChange = {},
-            onVacancyClick = {}
-        )
-    }
-}
+            if (title != null) {
+                Spacer(modifier = Modifier.height(Space16))
 
-@Preview(name = "Light", showBackground = true)
-@Preview(
-    name = "Dark",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun SearchScreenNoInternetPreview() {
-    AppTheme {
-        SearchScreen(
-            state = SearchUiState.NoInternet(""),
-            onFilterClick = {},
-            onQueryChange = {},
-            onVacancyClick = {}
-        )
-    }
-}
-
-@Preview(name = "Light", showBackground = true)
-@Preview(
-    name = "Dark",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun SearchScreenServerErrorPreview() {
-    AppTheme {
-        SearchScreen(
-            state = SearchUiState.Error(""),
-            onFilterClick = {},
-            onQueryChange = {},
-            onVacancyClick = {}
-        )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
