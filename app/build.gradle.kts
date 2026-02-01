@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
     implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.compose.runtime.livedata)
     debugImplementation(libs.androidx.ui.tooling)
 
     // Navigation
