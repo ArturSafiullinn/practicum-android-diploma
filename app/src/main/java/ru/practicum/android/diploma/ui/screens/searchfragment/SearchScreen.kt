@@ -18,6 +18,8 @@ import ru.practicum.android.diploma.ui.theme.Dimens
 @Composable
 fun SearchScreen(
     state: SearchUiState,
+    query: String,
+    onClearQuery: () -> Unit,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
     onVacancyClick: (String) -> Unit
@@ -38,9 +40,9 @@ fun SearchScreen(
                 .padding(Dimens.Space16)
         ) {
             SearchInputField(
-                query = state.query,
+                query = query,
                 onQueryChange = onQueryChange,
-                onClearQuery = { onQueryChange("") }
+                onClearQuery = onClearQuery
             )
 
             when (state) {
@@ -52,6 +54,10 @@ fun SearchScreen(
 
                 is SearchUiState.Loading -> {
                     Text("Загрузка...")
+                }
+
+                is SearchUiState.PaginationLoading -> {
+                    Text("Загрузка следующей страницы...") // Можно заменить на прогрессбар
                 }
 
                 is SearchUiState.Content -> {
@@ -69,21 +75,21 @@ fun SearchScreen(
                     }
                 }
 
-                is SearchUiState.Empty -> {
+                is SearchUiState.NoResults  -> {
                     SearchPlaceholder(
                         title = stringResource(R.string.empty_state_no_such_vaccancies),
                         imageRes = R.drawable.empty_result
                     )
                 }
 
-                is SearchUiState.NoInternet -> {
+                is SearchUiState.NotConnected  -> {
                     SearchPlaceholder(
                         title = stringResource(R.string.empty_state_no_internet),
                         imageRes = R.drawable.no_internet
                     )
                 }
 
-                is SearchUiState.Error -> {
+                is SearchUiState.ServerError  -> {
                     SearchPlaceholder(
                         title = stringResource(R.string.empty_state_server_error),
                         imageRes = R.drawable.search_error

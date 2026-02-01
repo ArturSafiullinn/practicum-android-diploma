@@ -58,8 +58,9 @@ dependencies {
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
     implementation(libs.ui.tooling.preview)
-    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.room.runtime)
     debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.compose.runtime.livedata)
 
     // Navigation
     implementation(libs.androidx.navigation.fragment)

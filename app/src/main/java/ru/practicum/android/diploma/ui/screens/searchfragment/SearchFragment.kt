@@ -3,12 +3,16 @@ package ru.practicum.android.diploma.ui.screens.searchfragment
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.os.bundleOf
-import androidx.fragment.app.viewModels
+import androidx.compose.runtime.setValue
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
@@ -59,9 +63,11 @@ class SearchFragment : BaseComposeFragment() {
 fun SearchScreenInitialPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.Initial(),
+            state = SearchUiState.Initial,
+            query = "",            // <- добавили
             onFilterClick = {},
             onQueryChange = {},
+            onClearQuery = {},
             onVacancyClick = {}
         )
     }
@@ -77,9 +83,11 @@ fun SearchScreenInitialPreview() {
 fun SearchScreenEmptyResultPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.Empty(""),
+            state = SearchUiState.NoResults,
+            query = "",            // <- добавили
             onFilterClick = {},
             onQueryChange = {},
+            onClearQuery = {},
             onVacancyClick = {}
         )
     }
@@ -95,9 +103,11 @@ fun SearchScreenEmptyResultPreview() {
 fun SearchScreenNoInternetPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.NoInternet(""),
+            state = SearchUiState.NotConnected,
+            query = "",            // <- добавили
             onFilterClick = {},
             onQueryChange = {},
+            onClearQuery = {},
             onVacancyClick = {}
         )
     }
@@ -113,44 +123,11 @@ fun SearchScreenNoInternetPreview() {
 fun SearchScreenServerErrorPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.Error(""),
+            state = SearchUiState.ServerError,
+            query = "",            // <- добавили
             onFilterClick = {},
             onQueryChange = {},
-            onVacancyClick = {}
-        )
-    }
-}
-
-@Preview(
-    name = "Light - Single Vacancy",
-    showBackground = true
-)
-@Preview(
-    name = "Dark - Single Vacancy",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun SearchScreenSingleVacancyPreview() {
-    AppTheme {
-        val fakeVacancy = listOf(
-            VacancyListItemUi(
-                id = "1",
-                title = "Android Developer",
-                employerName = "Practicum",
-                area = "Moscow",
-                salary = "120 000 ₽",
-                employerLogoUrl = null // заглушка
-            )
-        )
-
-        SearchScreen(
-            state = SearchUiState.Content(
-                query = "Android",
-                vacancies = fakeVacancy
-            ),
-            onQueryChange = {},
-            onFilterClick = {},
+            onClearQuery = {},
             onVacancyClick = {}
         )
     }

@@ -31,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.VacancyDetail
+import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens
@@ -141,7 +143,7 @@ fun SearchPlaceholder(
 
 @Composable
 fun VacancyItem(
-    vacancy: VacancyListItemUi,
+    vacancy: VacancyDetailUi,
     onClick: () -> Unit
 ) {
     Row(
@@ -166,9 +168,9 @@ fun VacancyItem(
                 .padding(Dimens.Space8),
             contentAlignment = Alignment.Center
         ) {
-            if (!vacancy.employerLogoUrl.isNullOrEmpty()) {
+            if (!vacancy.employerLogoLink.isNullOrEmpty()) {
                 AsyncImage(
-                    model = vacancy.employerLogoUrl,
+                    model = vacancy.employerLogoLink,
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
@@ -187,14 +189,14 @@ fun VacancyItem(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = vacancy.title,
+                text = vacancy.name,
                 maxLines = 3,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(Dimens.Space4))
             Text(
-                text = vacancy.employerName,
+                text = vacancy.employerName  ?:"нет работадателя",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
