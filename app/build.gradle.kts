@@ -94,4 +94,5 @@ dependencies {
     // endregion
 
     implementation(libs.koin.android)
+    implementation(libs.coil.compose)
 }

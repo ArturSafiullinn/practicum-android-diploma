@@ -24,6 +24,7 @@ okhttpLogging = "4.12.0"
 room = "2.6.1"
 glide = "4.16.0"
 coroutines = "1.8.1"
+coil = "2.6.0"
 
 [libraries]
 
@@ -76,6 +77,8 @@ unitTests-junit = "junit:junit:4.13.2"
 uiTests-junitExt = "androidx.test.ext:junit:1.1.5"
 uiTests-espressoCore = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 [plugins]
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }

@@ -45,7 +45,13 @@ import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Blue
+import ru.practicum.android.diploma.ui.theme.Dimens.IconContainer
+import ru.practicum.android.diploma.ui.theme.Dimens.Space1
+import ru.practicum.android.diploma.ui.theme.Dimens.Space11
+import ru.practicum.android.diploma.ui.theme.Dimens.Space12
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
+import ru.practicum.android.diploma.ui.theme.Dimens.Space4
+import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 import ru.practicum.android.diploma.ui.theme.Gray100
 import ru.practicum.android.diploma.ui.theme.White
 
@@ -117,11 +123,11 @@ fun SearchScreen(
                 is SearchUiState.Content -> {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         VacancyCount(state.vacancies.size)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Space16))
 
                         state.vacancies.forEach { vacancy ->
                             VacancyItem(vacancy = vacancy, onClick = { onVacancyClick(vacancy) })
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(Space8))
                         }
                     }
                 }
@@ -261,20 +267,20 @@ fun VacancyItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = 12.dp),
+            .padding(vertical = Space12),
         verticalAlignment = Alignment.Top
     ) {
         Box(
             modifier = Modifier
-                .size(48.dp)
+                .size(IconContainer)
                 .border(
-                    width = 1.dp,
+                    width = Space1,
                     color = Gray100,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(Space12)
                 )
                 .background(
                     color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(Space12)
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -295,7 +301,7 @@ fun VacancyItem(
             }
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(Space16))
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -304,14 +310,14 @@ fun VacancyItem(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Space4))
             Text(
-                text = vacancy.employerName ?: "Работодатель неизвестен",
+                text = vacancy.employerName ?: stringResource(R.string.unknown_workplace),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = vacancy.salary ?: "Зарплата не указана",
+                text = vacancy.salary ?: stringResource(R.string.salary_not_specified),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -324,11 +330,11 @@ fun VacancyCount(count: Int) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 11.dp, bottom = 12.dp)
+            .padding(top = Space11, bottom = Space12)
             .wrapContentWidth(Alignment.CenterHorizontally)
             .background(
                 color = Blue,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(Space12)
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -336,11 +342,10 @@ fun VacancyCount(count: Int) {
             text = stringResource(R.string.count_vacancy, count),
             style = MaterialTheme.typography.bodyLarge,
             color = White,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = Space12, vertical = Space4)
         )
     }
 }
-
 
 @Preview(name = "Light", showBackground = true)
 @Preview(

@@ -58,6 +58,8 @@
     <string name="no_such_vaccancies">Таких вакансий нет</string>
     <string name="enter_your_query">Введите запрос</string>
     <string name="count_vacancy">Найдено %d вакансий</string>
+    <string name="unknown_workplace">Работодатель неизвестен</string>
+
 
     <!-- Filter Settings -->
     <string name="workplace">Место работы</string>
