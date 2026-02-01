@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.di
 
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.scope.get
 import org.koin.dsl.module
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
@@ -30,5 +31,10 @@ val presentationModule = module {
             vacancyDetailUiMapper = get()
         )
     }
-    viewModel { SearchViewModel(searchInteractor = get()) }
+    viewModel {
+        SearchViewModel(
+            searchInteractor = get(),
+            vacancyDetailUiMapper = get()
+        )
+    }
 }

@@ -1,6 +1,6 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
-import ru.practicum.android.diploma.domain.models.VacancyDetail
+import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 
 sealed interface SearchUiState {
     data object Initial : SearchUiState
@@ -12,6 +12,6 @@ sealed interface SearchUiState {
     data class Content(
         val pages: Int,
         val currentPage: Int,
-        val vacancies: List<VacancyDetail>
+        val vacancies: List<VacancyDetailUi>
     ) : SearchUiState
 }

@@ -57,6 +57,9 @@
     <!-- Search Fragment -->
     <string name="no_such_vaccancies">Таких вакансий нет</string>
     <string name="enter_your_query">Введите запрос</string>
+    <string name="count_vacancy">Найдено %d вакансий</string>
+    <string name="unknown_workplace">Работодатель неизвестен</string>
+
 
     <!-- Vacancy Fragment -->
     <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
