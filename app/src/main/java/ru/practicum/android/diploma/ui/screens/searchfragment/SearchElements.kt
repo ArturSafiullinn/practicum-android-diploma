@@ -31,9 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
-import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
@@ -196,12 +194,12 @@ fun VacancyItem(
             )
             Spacer(modifier = Modifier.height(Dimens.Space4))
             Text(
-                text = vacancy.employerName  ?:"нет работадателя",
+                text = vacancy.employerName ?: "нет работодателя",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = vacancy.salary  ?: stringResource(R.string.salary_not_specified),
+                text = vacancy.salary ?: stringResource(R.string.salary_not_specified),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
