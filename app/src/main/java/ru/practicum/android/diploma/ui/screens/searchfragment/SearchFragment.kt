@@ -1,7 +1,5 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,19 +27,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
+import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.Blue
-import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
 class SearchFragment : BaseComposeFragment() {
 
@@ -106,20 +102,20 @@ fun SearchScreen(
             )
 
             when (state) {
-                SearchUiState.Initial -> SearchPlaceholder(imageRes = R.drawable.image_search)
+                SearchUiState.Initial -> EmptyState(imageRes = R.drawable.image_search)
                 SearchUiState.Loading -> Text("Загрузка...")
                 SearchUiState.PaginationLoading -> Text("Загрузка...")
-                SearchUiState.NoResults -> SearchPlaceholder(
+                SearchUiState.NoResults -> EmptyState(
                     title = stringResource(R.string.empty_state_no_such_vaccancies),
                     imageRes = R.drawable.empty_result
                 )
 
-                SearchUiState.NotConnected -> SearchPlaceholder(
+                SearchUiState.NotConnected -> EmptyState(
                     title = stringResource(R.string.empty_state_no_internet),
                     imageRes = R.drawable.no_internet
                 )
 
-                SearchUiState.ServerError -> SearchPlaceholder(
+                SearchUiState.ServerError -> EmptyState(
                     title = stringResource(R.string.empty_state_server_error),
                     imageRes = R.drawable.search_error
                 )
@@ -205,38 +201,4 @@ fun SearchInputField(
             }
         }
     )
-}
-
-@Composable
-fun SearchPlaceholder(
-    modifier: Modifier = Modifier,
-    @DrawableRes imageRes: Int,
-    title: String? = null,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = Space16),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(imageRes),
-                contentDescription = null,
-                contentScale = ContentScale.Fit
-            )
-
-            if (title != null) {
-                Spacer(modifier = Modifier.height(Space16))
-
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    }
 }
