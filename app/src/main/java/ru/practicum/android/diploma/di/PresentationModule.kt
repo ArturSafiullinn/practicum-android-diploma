@@ -6,6 +6,7 @@ import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 
 val presentationModule = module {
     // UI mappers
@@ -23,4 +24,5 @@ val presentationModule = module {
             vacancyDetailUiMapper = get()
         )
     }
+    viewModel { SearchViewModel(searchInteractor = get()) }
 }

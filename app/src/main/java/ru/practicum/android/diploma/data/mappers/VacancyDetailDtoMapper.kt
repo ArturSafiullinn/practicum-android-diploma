@@ -12,6 +12,7 @@ class VacancyDetailDtoMapper {
     fun toDomain(dto: VacancyDetailDto): VacancyDetail {
         return VacancyDetail(
             id = dto.id,
+            isFavorite = false,
             name = dto.name,
             description = dto.description,
             salary = salaryToDomain(dto.salary),
