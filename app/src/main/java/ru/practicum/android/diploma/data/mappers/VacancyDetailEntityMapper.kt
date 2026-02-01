@@ -25,41 +25,34 @@ class VacancyDetailEntityMapper {
             isFavorite = true,
             name = entity.name?.trim().orEmpty(),
             description = null,
-
             salary = VacancyDetail.Salary(
                 from = entity.salaryFrom,
                 to = entity.salaryTo,
                 currency = entity.currency
             ),
-
             address = VacancyDetail.Address(
                 city = entity.city.orEmpty(),
                 street = null,
                 building = null,
                 fullAddress = null
             ),
-
             experience = null,
             schedule = null,
             employment = null,
             contacts = null,
-
             employer = VacancyDetail.Employer(
                 id = "",
                 name = "",
                 logo = null
             ),
-
             area = FilterArea(
                 id = 0,
                 name = "",
                 parentId = null,
                 areas = emptyList()
             ),
-
             skills = emptyList(),
             url = "",
-
             industry = FilterIndustry(
                 id = 0,
                 name = entity.industry?.trim().orEmpty()
