@@ -12,9 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
-import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
 
@@ -64,7 +62,7 @@ fun SearchScreenInitialPreview() {
     AppTheme {
         SearchScreen(
             state = SearchUiState.Initial,
-            query = "",            // <- добавили
+            query = "",
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},
@@ -84,7 +82,7 @@ fun SearchScreenEmptyResultPreview() {
     AppTheme {
         SearchScreen(
             state = SearchUiState.NoResults,
-            query = "",            // <- добавили
+            query = "",
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},
@@ -104,7 +102,7 @@ fun SearchScreenNoInternetPreview() {
     AppTheme {
         SearchScreen(
             state = SearchUiState.NotConnected,
-            query = "",            // <- добавили
+            query = "",
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},
@@ -124,7 +122,7 @@ fun SearchScreenServerErrorPreview() {
     AppTheme {
         SearchScreen(
             state = SearchUiState.ServerError,
-            query = "",            // <- добавили
+            query = "",
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},

@@ -75,21 +75,21 @@ fun SearchScreen(
                     }
                 }
 
-                is SearchUiState.NoResults  -> {
+                is SearchUiState.NoResults -> {
                     SearchPlaceholder(
                         title = stringResource(R.string.empty_state_no_such_vaccancies),
                         imageRes = R.drawable.empty_result
                     )
                 }
 
-                is SearchUiState.NotConnected  -> {
+                is SearchUiState.NotConnected -> {
                     SearchPlaceholder(
                         title = stringResource(R.string.empty_state_no_internet),
                         imageRes = R.drawable.no_internet
                     )
                 }
 
-                is SearchUiState.ServerError  -> {
+                is SearchUiState.ServerError -> {
                     SearchPlaceholder(
                         title = stringResource(R.string.empty_state_server_error),
                         imageRes = R.drawable.search_error
