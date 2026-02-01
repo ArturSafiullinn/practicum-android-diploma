@@ -194,12 +194,12 @@ fun VacancyItem(
             )
             Spacer(modifier = Modifier.height(Dimens.Space4))
             Text(
-                text = vacancy.employerName ?: "нет работодателя",
+                text = vacancy.employerName,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = vacancy.salary ?: stringResource(R.string.salary_not_specified),
+                text = vacancy.salary,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
