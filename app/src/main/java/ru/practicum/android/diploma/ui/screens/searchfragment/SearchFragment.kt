@@ -140,7 +140,7 @@ fun SearchScreenSingleVacancyPreview() {
                 employerName = "Practicum",
                 area = "Moscow",
                 salary = "120 000 ₽",
-                employerLogoUrl = null
+                employerLogoUrl = null // заглушка
             )
         )
 
