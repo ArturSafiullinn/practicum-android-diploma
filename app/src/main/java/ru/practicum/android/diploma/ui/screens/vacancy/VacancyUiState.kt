@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.ui.screens.vacancy
 
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 
 sealed interface VacancyUiState {
@@ -15,5 +16,8 @@ sealed interface VacancyUiState {
         val textResId: Int = R.string.server_error
     ) : VacancyUiState
 
-    data class Vacancy(val vacancy: VacancyDetailUi) : VacancyUiState
+    data class Vacancy(
+        val vacancyDetailUi: VacancyDetailUi,
+        val vacancyDetailDomain: VacancyDetail
+    ) : VacancyUiState
 }

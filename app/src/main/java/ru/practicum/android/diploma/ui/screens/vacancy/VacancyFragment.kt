@@ -56,7 +56,7 @@ fun VacancyScreen(
         topBar = {
             VacancyTopAppBar(
                 title = stringResource(R.string.vaccancy),
-                isFavorite = false, // По умолчанию, перед загрузкой вакансии
+                isFavorite = (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.isFavorite ?: false,
                 onBackClick = onBackClick,
                 onShareClick = onShareClick,
                 onFavoriteClick = onFavoriteClick
@@ -86,7 +86,7 @@ fun VacancyScreen(
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = Space16, vertical = Space8),
-                    vacancy = screenState.vacancy
+                    vacancy = screenState.vacancyDetailUi
                 )
             }
 
