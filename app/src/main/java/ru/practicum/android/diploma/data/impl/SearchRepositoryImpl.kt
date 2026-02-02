@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.NetworkClient
 import ru.practicum.android.diploma.data.Response
 import ru.practicum.android.diploma.data.VacanciesRequest
+import ru.practicum.android.diploma.data.VacancyDetailsRequest
 import ru.practicum.android.diploma.domain.api.SearchRepository
 import ru.practicum.android.diploma.domain.models.SearchParams
 
@@ -21,6 +22,15 @@ class SearchRepositoryImpl(
                 salary = params.salary,
                 page = params.page,
                 onlyWithSalary = params.onlyWithSalary
+            )
+        )
+        emit(response)
+    }
+
+    override fun search(vacancyId: String): Flow<Response> = flow {
+        val response = networkClient.doRequest(
+            VacancyDetailsRequest(
+                id = vacancyId
             )
         )
         emit(response)
