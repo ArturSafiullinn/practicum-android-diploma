@@ -1,6 +1,6 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
-import ru.practicum.android.diploma.ui.models.VacancyDetailUi
+import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 
 sealed interface SearchUiState {
     data object Initial : SearchUiState
@@ -8,10 +8,11 @@ sealed interface SearchUiState {
     data object NotConnected : SearchUiState
     data object ServerError : SearchUiState
     data object Loading : SearchUiState
-    data object PaginationLoading : SearchUiState
     data class Content(
         val pages: Int,
         val currentPage: Int,
-        val vacancies: List<VacancyDetailUi>
+        val vacancies: List<VacancyListItemUi>,
+        val isLoadingNextPage: Boolean = false,
+        val found: Int = 0
     ) : SearchUiState
 }

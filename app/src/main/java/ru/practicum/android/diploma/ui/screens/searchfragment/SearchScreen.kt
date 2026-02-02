@@ -1,14 +1,26 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
@@ -22,7 +34,8 @@ fun SearchScreen(
     onClearQuery: () -> Unit,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
-    onVacancyClick: (String) -> Unit
+    onVacancyClick: (String) -> Unit,
+    onLoadNextPage: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -37,7 +50,7 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(Dimens.Space16)
+                .padding(horizontal = Dimens.Space16)
         ) {
             SearchInputField(
                 query = query,
@@ -45,55 +58,106 @@ fun SearchScreen(
                 onClearQuery = onClearQuery
             )
 
+            Spacer(modifier = Modifier.height(Dimens.Space12))
+
             when (state) {
                 is SearchUiState.Initial -> {
-                    SearchPlaceholder(
-                        imageRes = R.drawable.image_search
-                    )
+                    SearchPlaceholder(imageRes = R.drawable.image_search)
                 }
 
                 is SearchUiState.Loading -> {
-                    Text("Загрузка...")
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
                 }
 
-                is SearchUiState.PaginationLoading -> {
-                    Text("Загрузка следующей страницы...") // Можно заменить на прогрессбар
+                is SearchUiState.NoResults,
+                is SearchUiState.NotConnected,
+                is SearchUiState.ServerError -> {
+                    SearchPlaceholder(
+                        title = when (state) {
+                            is SearchUiState.NoResults -> stringResource(R.string.empty_state_no_such_vaccancies)
+                            is SearchUiState.NotConnected -> stringResource(R.string.empty_state_no_internet)
+                            else -> stringResource(R.string.empty_state_server_error)
+                        },
+                        imageRes = when (state) {
+                            is SearchUiState.NoResults -> R.drawable.empty_result
+                            is SearchUiState.NotConnected -> R.drawable.no_internet
+                            else -> R.drawable.search_error
+                        }
+                    )
                 }
 
                 is SearchUiState.Content -> {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        VacancyCount(state.vacancies.size)
-                        Spacer(modifier = Modifier.height(Dimens.Space8))
+                    val listState = rememberLazyListState()
 
-                        state.vacancies.forEach { vacancy ->
+                    // Условие подгрузки — как в задании
+                    val shouldLoadMore by remember {
+                        derivedStateOf {
+                            if (state.isLoadingNextPage) return@derivedStateOf false
+                            if (state.currentPage >= state.pages - 1) return@derivedStateOf false
+
+                            val layoutInfo = listState.layoutInfo
+                            val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+                            lastVisibleIndex >= layoutInfo.totalItemsCount - 1
+                        }
+                    }
+
+                    // Запускаем подгрузку, когда условие стало true
+                    LaunchedEffect(shouldLoadMore) {
+                        if (shouldLoadMore) {
+                            onLoadNextPage()
+                        }
+                    }
+
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(Dimens.Space8)
+                    ) {
+                        item {
+                            VacancyCount(state.found)
+                        }
+
+                        items(state.vacancies, key = { it.id }) { vacancy ->
                             VacancyItem(
                                 vacancy = vacancy,
                                 onClick = { onVacancyClick(vacancy.id) }
                             )
-                            Spacer(modifier = Modifier.height(Dimens.Space8))
+                        }
+
+                        // Индикатор загрузки следующей страницы
+                        if (state.isLoadingNextPage) {
+                            item(key = "loading_footer") {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = Dimens.Space16),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
+
+                        // Сообщение в конце списка
+                        if (!state.isLoadingNextPage && state.currentPage >= state.pages - 1 && state.vacancies.isNotEmpty()) {
+                            item(key = "end_of_list") {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = Dimens.Space24),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Все вакансии загружены",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
                         }
                     }
-                }
-
-                is SearchUiState.NoResults -> {
-                    SearchPlaceholder(
-                        title = stringResource(R.string.empty_state_no_such_vaccancies),
-                        imageRes = R.drawable.empty_result
-                    )
-                }
-
-                is SearchUiState.NotConnected -> {
-                    SearchPlaceholder(
-                        title = stringResource(R.string.empty_state_no_internet),
-                        imageRes = R.drawable.no_internet
-                    )
-                }
-
-                is SearchUiState.ServerError -> {
-                    SearchPlaceholder(
-                        title = stringResource(R.string.empty_state_server_error),
-                        imageRes = R.drawable.search_error
-                    )
                 }
             }
         }
