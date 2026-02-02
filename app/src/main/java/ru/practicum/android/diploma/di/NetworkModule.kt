@@ -1,5 +1,8 @@
 package ru.practicum.android.diploma.di
 
+import coil.ImageLoader
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -24,5 +27,29 @@ val networkModule = module {
             context = androidContext(),
             apiService = get()
         )
+    }
+
+    single<ImageLoader> {
+        val okHttpClient = OkHttpClient.Builder()
+            .addNetworkInterceptor { chain ->
+                val original = chain.request()
+                val request = original.newBuilder()
+                    .header(
+                        "User-Agent",
+                        "Practicum-Android-Diploma/1.0 https://github.com/ArturSafiullinn/practicum-android-diploma"
+                    )
+                    .header("Referer", "https://hh.ru/") // если сервер проверяет
+                    .build()
+                chain.proceed(request)
+            }
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BASIC // или .HEADERS для отладки
+            })
+            .build()
+
+        ImageLoader.Builder(androidContext())
+            .okHttpClient(okHttpClient)
+            .crossfade(true)
+            .build()
     }
 }
