@@ -93,9 +93,11 @@ fun SearchScreen(
 
                     val shouldLoadMore by remember {
                         derivedStateOf {
-                            if (state.isLoadingNextPage) false
-                            else if (state.currentPage >= state.pages - 1) false
-                            else {
+                            if (state.isLoadingNextPage) {
+                                false
+                            } else if (state.currentPage >= state.pages - 1) {
+                                false
+                            } else {
                                 val layoutInfo = listState.layoutInfo
                                 val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
                                 lastVisibleIndex >= layoutInfo.totalItemsCount - 1
