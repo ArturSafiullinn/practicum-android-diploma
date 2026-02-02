@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.di
 
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.scope.get
 import org.koin.dsl.module
 import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.impl.ExternalNavigatorImpl
@@ -41,6 +42,10 @@ val presentationModule = module {
             searchInteractor = get(),
         )
     }
-
-    viewModel { SearchViewModel(searchInteractor = get()) }
+    viewModel {
+        SearchViewModel(
+            searchInteractor = get(),
+            vacancyDetailUiMapper = get()
+        )
+    }
 }

@@ -9,12 +9,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.SearchInteractor
 import ru.practicum.android.diploma.domain.models.SearchParams
+import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
 import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY
 import java.io.IOException
 
 class SearchViewModel(
-    private val searchInteractor: SearchInteractor
+    private val searchInteractor: SearchInteractor,
+    private val vacancyDetailUiMapper: VacancyDetailUiMapper
 ) : ViewModel() {
     private var searchJob: Job? = null
     private var lastQuery: String = ""
@@ -38,11 +40,12 @@ class SearchViewModel(
                         if (response.items.isEmpty()) {
                             _screenState.postValue(SearchUiState.NoResults)
                         } else {
+                            val uiItems = response.items.map { vacancyDetailUiMapper.toUi(it) }
                             _screenState.postValue(
                                 SearchUiState.Content(
                                     pages = response.pages,
                                     currentPage = response.page,
-                                    vacancies = response.items
+                                    vacancies = uiItems
                                 )
                             )
                         }
@@ -73,6 +76,7 @@ class SearchViewModel(
         val currentState = _screenState.value
         if (currentState !is SearchUiState.Content) return
         if (currentState.currentPage >= currentState.pages) return
+
         viewModelScope.launch {
             _screenState.postValue(SearchUiState.PaginationLoading)
             searchInteractor.search(
@@ -83,15 +87,17 @@ class SearchViewModel(
             ).collect { result ->
                 result
                     .onSuccess { response ->
+                        val newUiItems = response.items.map { vacancyDetailUiMapper.toUi(it) }
+
                         _screenState.postValue(
                             SearchUiState.Content(
                                 pages = response.pages,
                                 currentPage = response.page,
-                                vacancies = currentState.vacancies + response.items
+                                vacancies = currentState.vacancies + newUiItems
                             )
                         )
                     }
-                    .onFailure {}
+                    .onFailure { }
             }
         }
     }
