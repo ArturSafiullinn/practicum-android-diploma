@@ -1,5 +1,15 @@
 package ru.practicum.android.diploma.di
 
 import org.koin.dsl.module
+import ru.practicum.android.diploma.data.impl.VacancyRepositoryImpl
+import ru.practicum.android.diploma.domain.api.VacancyRepository
 
-val storageModule = module {}
+val storageModule = module {
+    factory<VacancyRepository> {
+        VacancyRepositoryImpl(
+            networkClient = get(),
+            vacancyDetailDao = get(),
+            entityMapper = get()
+        )
+    }
+}
