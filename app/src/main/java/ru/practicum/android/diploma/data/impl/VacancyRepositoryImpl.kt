@@ -1,8 +1,10 @@
 package ru.practicum.android.diploma.data.impl
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import ru.practicum.android.diploma.data.NetworkClient
 import ru.practicum.android.diploma.data.Response
 import ru.practicum.android.diploma.data.VacancyDetailsRequest
@@ -34,13 +36,21 @@ class VacancyRepositoryImpl(
         vacancyDetailDao.delete(vacancyId)
     }
 
-    override suspend fun isFavorite(vacancyId: String): Boolean {
-        return vacancyDetailDao.exists(vacancyId)
+    override suspend fun isFavorite(vacancyId: String): Boolean = withContext(Dispatchers.IO) {
+        vacancyDetailDao.exists(vacancyId)
     }
 
     override fun getVacancies(): Flow<List<VacancyDetail>> {
         return vacancyDetailDao.getAll().map { entities ->
             entities.map { entityMapper.toDomain(it) }
+        }
+    }
+
+    override suspend fun toggleFavorite(vacancy: VacancyDetail) {
+        if (isFavorite(vacancy.id)) {
+            removeVacancy(vacancy.id)
+        } else {
+            saveVacancy(vacancy)
         }
     }
 }

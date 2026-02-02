@@ -53,4 +53,7 @@ class VacancyInteractorImpl(
         return repository.getVacancies()
     }
 
+    override suspend fun toggleFavorite(vacancy: VacancyDetail) {
+        repository.toggleFavorite(vacancy)
+    }
 }
