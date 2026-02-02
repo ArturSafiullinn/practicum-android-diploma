@@ -15,6 +15,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.AppTheme
+import ru.practicum.android.diploma.util.ARGS_VACANCY_ID
 
 class SearchFragment : BaseComposeFragment() {
 
@@ -44,7 +45,7 @@ class SearchFragment : BaseComposeFragment() {
             onVacancyClick = { vacancyId ->
                 navController.navigate(
                     R.id.action_searchFragment_to_vacancyFragment,
-                    bundleOf("vacancyId" to vacancyId)
+                    bundleOf(ARGS_VACANCY_ID to vacancyId)
                 )
             },
             onLoadNextPage = {

@@ -17,7 +17,8 @@ val appModule = module {
     factory<SearchInteractor> {
         SearchInteractorImpl(
             repository = get(),
-            vacancyResponseMapper = get()
+            vacancyResponseMapper = get(),
+            vacancyDetailDtoMapper = get()
         )
     }
 

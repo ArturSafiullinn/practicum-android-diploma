@@ -5,4 +5,3 @@ fun formatSalarySpaced(amount: Int?): String {
         "%,d".format(it).replace(',', ' ')
     } ?: ""
 }
-

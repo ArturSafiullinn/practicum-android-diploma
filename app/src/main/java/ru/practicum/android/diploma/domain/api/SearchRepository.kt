@@ -6,4 +6,5 @@ import ru.practicum.android.diploma.domain.models.SearchParams
 
 interface SearchRepository {
     fun search(params: SearchParams): Flow<Response>
+    fun search(vacancyId: String): Flow<Response>
 }
