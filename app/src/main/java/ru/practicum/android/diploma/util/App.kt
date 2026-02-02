@@ -1,6 +1,8 @@
 package ru.practicum.android.diploma.util
 
 import android.app.Application
+import coil.Coil
+import coil.ImageLoader
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
@@ -27,5 +29,6 @@ class App : Application(), KoinComponent {
                 presentationModule
             )
         }
+        Coil.setImageLoader(getKoin().get<ImageLoader>())
     }
 }
