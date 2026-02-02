@@ -92,7 +92,7 @@ class VacancyViewModel(
 
         _screenState.update { currentState ->
             if (currentState !is Vacancy) {
-                return@update currentState
+                currentState
             } else {
                 Vacancy(
                     vacancyDetailUi = currentState.vacancyDetailUi.copy(isFavorite = isFavorite),
