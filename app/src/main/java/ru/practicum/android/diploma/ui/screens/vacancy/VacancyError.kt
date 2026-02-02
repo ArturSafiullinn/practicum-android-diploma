@@ -22,7 +22,7 @@ import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
 @Composable
-fun VacancyNotFound() {
+fun VacancyError(imageResId: Int, textResId: Int) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -34,12 +34,12 @@ fun VacancyNotFound() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.image_vacancy_not_found),
+                painter = painterResource(imageResId),
                 contentDescription = null
             )
             Spacer(Modifier.height(Space16))
             Text(
-                text = stringResource(R.string.vacancy_not_found_or_deleted),
+                text = stringResource(textResId),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -49,16 +49,16 @@ fun VacancyNotFound() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
-fun VacancyNotFoundLightPreview() {
+fun VacancyErrorLightPreview() {
     AppTheme {
-        VacancyNotFound()
+        VacancyError(R.drawable.image_vacancy_server_error, R.string.server_error)
     }
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun VacancyNotFoundNightPreview() {
+fun VacancyErrorNightPreview() {
     AppTheme {
-        VacancyNotFound()
+        VacancyError(R.drawable.image_vacancy_not_found, R.string.vacancy_not_found_or_deleted)
     }
 }
