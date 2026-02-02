@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/teamFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.TeamFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.team.TeamFragment"
         android:label="TeamFragment" />
 
     <fragment
