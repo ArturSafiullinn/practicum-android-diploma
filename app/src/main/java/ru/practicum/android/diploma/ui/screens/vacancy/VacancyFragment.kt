@@ -9,10 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -34,7 +34,7 @@ class VacancyFragment : BaseComposeFragment() {
 
     @Composable
     override fun ScreenContent() {
-        val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+        val screenState by viewModel.screenState.collectAsState()
 
         VacancyScreen(
             screenState = screenState,

@@ -35,5 +35,3 @@ const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
 const val TAG_COIL_DEBUG = "Coil Debug"
 const val TAG_VACANCY_VIEW_MODEL = "VacancyViewModel"
 // endregion
-
-const val TEST_VACANCY_ID = "0001266a-3da9-4af8-b384-2377f0ea5453"
