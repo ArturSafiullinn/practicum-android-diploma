@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.ui.models.VacancyDetailUi
+import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
@@ -141,7 +141,7 @@ fun SearchPlaceholder(
 
 @Composable
 fun VacancyItem(
-    vacancy: VacancyDetailUi,
+    vacancy: VacancyListItemUi,
     onClick: () -> Unit
 ) {
     Row(
@@ -159,47 +159,36 @@ fun VacancyItem(
                     color = Gray100,
                     shape = RoundedCornerShape(Dimens.Radius12)
                 )
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(Dimens.Radius12)
-                )
                 .padding(Dimens.Space8),
             contentAlignment = Alignment.Center
         ) {
-            if (!vacancy.employerLogoLink.isNullOrEmpty()) {
-                AsyncImage(
-                    model = vacancy.employerLogoLink,
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize()
-                )
-            } else {
-                Image(
-                    painter = painterResource(R.drawable.ic_placeholder_vacancy),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            AsyncImage(
+                model = vacancy.employerLogoUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize(),
+                placeholder = painterResource(R.drawable.ic_placeholder_vacancy),
+                error = painterResource(R.drawable.ic_placeholder_vacancy)
+            )
         }
 
         Spacer(modifier = Modifier.width(Space16))
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = vacancy.name,
+                text = vacancy.title,
                 maxLines = 3,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(Dimens.Space4))
             Text(
-                text = vacancy.employerName,
+                text = vacancy.employerName ?: "",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = vacancy.salary,
+                text = vacancy.salary ?: "",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )

@@ -46,6 +46,9 @@ class SearchFragment : BaseComposeFragment() {
                     R.id.action_searchFragment_to_vacancyFragment,
                     bundleOf("vacancyId" to vacancyId)
                 )
+            },
+            onLoadNextPage = {
+                viewModel.loadNextPage()
             }
         )
     }
@@ -66,7 +69,8 @@ fun SearchScreenInitialPreview() {
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},
-            onVacancyClick = {}
+            onVacancyClick = {},
+            onLoadNextPage = {}
         )
     }
 }
@@ -86,7 +90,8 @@ fun SearchScreenEmptyResultPreview() {
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},
-            onVacancyClick = {}
+            onVacancyClick = {},
+            onLoadNextPage = {}
         )
     }
 }
@@ -106,7 +111,8 @@ fun SearchScreenNoInternetPreview() {
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},
-            onVacancyClick = {}
+            onVacancyClick = {},
+            onLoadNextPage = {}
         )
     }
 }
@@ -126,7 +132,8 @@ fun SearchScreenServerErrorPreview() {
             onFilterClick = {},
             onQueryChange = {},
             onClearQuery = {},
-            onVacancyClick = {}
+            onVacancyClick = {},
+            onLoadNextPage = {}
         )
     }
 }
