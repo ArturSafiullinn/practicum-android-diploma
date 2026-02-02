@@ -1,7 +1,5 @@
 package ru.practicum.android.diploma.ui.screens.vacancy
 
-import android.content.res.Configuration
-import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,109 +9,114 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
+import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.components.VacancyTopAppBar
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
-import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space24
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
-import ru.practicum.android.diploma.util.ARGS_VACANCY
+import ru.practicum.android.diploma.util.ARGS_VACANCY_ID
 
 class VacancyFragment : BaseComposeFragment() {
+    private val viewModel: VacancyViewModel by viewModel {
+        parametersOf(requireArguments().getString(ARGS_VACANCY_ID))
+    }
+
     @Composable
     override fun ScreenContent() {
-        val vacancy: VacancyDetailUi? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireArguments().getParcelable(ARGS_VACANCY, VacancyDetailUi::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            requireArguments().getParcelable(ARGS_VACANCY)
-        }
+        val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
         VacancyScreen(
+            screenState = screenState,
             onBackClick = { findNavController().popBackStack() },
-            onShareClick = {},
-            onFavoriteClick = {},
-            vacancy = vacancy
+            onShareClick = { viewModel.onShareClicked() },
+            onFavoriteClick = { viewModel.onFavoriteClicked() }
         )
     }
 }
 
 @Composable
 fun VacancyScreen(
+    screenState: VacancyUiState,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    onFavoriteClick: () -> Unit,
-    vacancy: VacancyDetailUi?
+    onFavoriteClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
             VacancyTopAppBar(
                 title = stringResource(R.string.vaccancy),
-                isFavorite = vacancy?.isFavorite ?: false,
+                isFavorite = false, // По умолчанию, перед загрузкой вакансии
                 onBackClick = onBackClick,
                 onShareClick = onShareClick,
                 onFavoriteClick = onFavoriteClick
             )
         }
     ) { paddingValues ->
-        if (vacancy == null) {
-            VacancyNotFound()
-        } else {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(paddingValues)
-                    .padding(horizontal = Space16, vertical = Space8)
-            ) {
-                Spacer(Modifier.height(Space16))
+        when (screenState) {
+            is VacancyUiState.Loading -> {
+                CustomLoadingIndicator(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                )
+            }
 
-                VacancyNameAndSalary(vacancy)
+            is VacancyUiState.ServerError -> {
+                VacancyError(
+                    imageResId = R.drawable.image_vacancy_server_error,
+                    textResId = R.string.server_error
+                )
+            }
 
-                Spacer(Modifier.height(Space16))
+            is VacancyUiState.Vacancy -> {
+                VacancyContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = Space16, vertical = Space8),
+                    vacancy = screenState.vacancy
+                )
+            }
 
-                VacancyBanner(vacancy)
-
-                Spacer(Modifier.height(Space24))
-
-                VacancyExperienceAndSchedule(vacancy)
-
-                VacancyDescription(vacancy)
-
-                VacancySkills(vacancy)
+            is VacancyUiState.VacancyNotFound -> {
+                VacancyError(
+                    imageResId = R.drawable.image_vacancy_not_found,
+                    textResId = R.string.vacancy_not_found_or_deleted
+                )
             }
         }
     }
 }
 
-@Preview(name = "Light", showBackground = true)
 @Composable
-fun VacancyScreenPreviewLight() {
-    AppTheme(darkTheme = false) {
-        VacancyScreen(
-            onBackClick = {},
-            onShareClick = {},
-            onFavoriteClick = {},
-            vacancy = null
-        )
-    }
-}
+fun VacancyContent(modifier: Modifier, vacancy: VacancyDetailUi) {
+    Column(modifier = modifier) {
+        Spacer(Modifier.height(Space16))
 
-@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun VacancyScreenPreviewDark() {
-    AppTheme(darkTheme = true) {
-        VacancyScreen(
-            onBackClick = {},
-            onShareClick = {},
-            onFavoriteClick = {},
-            vacancy = null
-        )
+        VacancyNameAndSalary(vacancy)
+
+        Spacer(Modifier.height(Space16))
+
+        VacancyBanner(vacancy)
+
+        Spacer(Modifier.height(Space24))
+
+        VacancyExperienceAndSchedule(vacancy)
+
+        VacancyDescription(vacancy)
+
+        VacancySkills(vacancy)
     }
 }
