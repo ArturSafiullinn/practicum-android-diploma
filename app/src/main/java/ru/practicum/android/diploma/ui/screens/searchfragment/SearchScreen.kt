@@ -91,25 +91,22 @@ fun SearchScreen(
                 is SearchUiState.Content -> {
                     val listState = rememberLazyListState()
 
-                    // Условие подгрузки — как в задании
                     val shouldLoadMore by remember {
                         derivedStateOf {
-                            if (state.isLoadingNextPage) return@derivedStateOf false
-                            if (state.currentPage >= state.pages - 1) return@derivedStateOf false
-
-                            val layoutInfo = listState.layoutInfo
-                            val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
-                            lastVisibleIndex >= layoutInfo.totalItemsCount - 1
+                            if (state.isLoadingNextPage) false
+                            else if (state.currentPage >= state.pages - 1) false
+                            else {
+                                val layoutInfo = listState.layoutInfo
+                                val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+                                lastVisibleIndex >= layoutInfo.totalItemsCount - 1
+                            }
                         }
                     }
-
-                    // Запускаем подгрузку, когда условие стало true
                     LaunchedEffect(shouldLoadMore) {
                         if (shouldLoadMore) {
                             onLoadNextPage()
                         }
                     }
-
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize(),
@@ -125,8 +122,6 @@ fun SearchScreen(
                                 onClick = { onVacancyClick(vacancy.id) }
                             )
                         }
-
-                        // Индикатор загрузки следующей страницы
                         if (state.isLoadingNextPage) {
                             item(key = "loading_footer") {
                                 Box(
@@ -139,9 +134,10 @@ fun SearchScreen(
                                 }
                             }
                         }
+                        val isLastPageLoaded = !state.isLoadingNextPage &&
+                            state.currentPage >= state.pages - 1
 
-                        // Сообщение в конце списка
-                        if (!state.isLoadingNextPage && state.currentPage >= state.pages - 1 && state.vacancies.isNotEmpty()) {
+                        if (isLastPageLoaded && state.vacancies.isNotEmpty()) {
                             item(key = "end_of_list") {
                                 Box(
                                     modifier = Modifier
