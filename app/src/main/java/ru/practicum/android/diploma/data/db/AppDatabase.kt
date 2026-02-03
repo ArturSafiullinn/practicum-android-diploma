@@ -7,7 +7,7 @@ import ru.practicum.android.diploma.data.db.entity.VacancyDetailEntity
 
 @Database(
     entities = [VacancyDetailEntity::class],
-    version = 1
+    version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun vacancyDao(): VacancyDetailDao

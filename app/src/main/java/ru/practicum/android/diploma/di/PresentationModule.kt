@@ -30,7 +30,8 @@ val presentationModule = module {
     // View Models
     viewModel {
         FavoritesViewModel(
-            favoritesInteractor = get()
+            vacancyInteractor = get(),
+            vacancyListItemUiMapper = get(),
         )
     }
     viewModel<VacancyViewModel> { (vacancyId: String) ->

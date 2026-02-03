@@ -13,7 +13,9 @@ val dataModule = module {
             androidContext(),
             AppDatabase::class.java,
             "database.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     single<VacancyDetailDao> {
