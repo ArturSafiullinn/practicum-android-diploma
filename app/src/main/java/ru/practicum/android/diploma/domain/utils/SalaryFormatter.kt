@@ -6,7 +6,8 @@ import ru.practicum.android.diploma.util.ResourceProvider
 import ru.practicum.android.diploma.util.formatSalarySpaced
 
 class SalaryFormatter(
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val currencyFormatter: CurrencyFormatter
 ) {
 
     fun format(salary: VacancyDetail.Salary?): String {
@@ -16,7 +17,7 @@ class SalaryFormatter(
 
         val from = formatSalarySpaced(salary.from)
         val to = formatSalarySpaced(salary.to)
-        val currency = salary.currency ?: ""
+        val currency = currencyFormatter.format(salary.currency)
 
         return when {
             salary.from != null && salary.to != null ->
