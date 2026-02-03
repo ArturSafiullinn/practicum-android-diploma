@@ -12,9 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -24,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.theme.Dimens
 
@@ -62,7 +61,7 @@ fun SearchScreen(
 
             when (state) {
                 is SearchUiState.Initial -> {
-                    SearchPlaceholder(imageRes = R.drawable.image_search)
+                    EmptyState(imageRes = R.drawable.image_search)
                 }
 
                 is SearchUiState.Loading -> {
@@ -74,7 +73,7 @@ fun SearchScreen(
                 is SearchUiState.NoResults,
                 is SearchUiState.NotConnected,
                 is SearchUiState.ServerError -> {
-                    SearchPlaceholder(
+                    EmptyState(
                         title = when (state) {
                             is SearchUiState.NoResults -> stringResource(R.string.empty_state_no_such_vaccancies)
                             is SearchUiState.NotConnected -> stringResource(R.string.empty_state_no_internet)
@@ -109,52 +108,36 @@ fun SearchScreen(
                             onLoadNextPage()
                         }
                     }
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(Dimens.Space8)
-                    ) {
-                        item {
-                            VacancyCount(state.found)
-                        }
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(Dimens.Space8)
+                        ) {
+                            item {
+                                VacancyCount(state.found)
+                            }
 
-                        items(state.vacancies, key = { it.id }) { vacancy ->
-                            VacancyItem(
-                                vacancy = vacancy,
-                                onClick = { onVacancyClick(vacancy.id) }
-                            )
-                        }
-                        if (state.isLoadingNextPage) {
-                            item(key = "loading_footer") {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = Dimens.Space16),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
+                            items(state.vacancies, key = { it.id }) { vacancy ->
+                                VacancyItem(
+                                    vacancy = vacancy,
+                                    onClick = { onVacancyClick(vacancy.id) }
+                                )
+                            }
+                            if (state.isLoadingNextPage) {
+                                item(key = "loading_footer") {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = Dimens.Space16),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
                                 }
                             }
                         }
-                        val isLastPageLoaded = !state.isLoadingNextPage &&
-                            state.currentPage >= state.pages - 1
-
-                        if (isLastPageLoaded && state.vacancies.isNotEmpty()) {
-                            item(key = "end_of_list") {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = Dimens.Space24),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "Все вакансии загружены",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-                        }
+                        VacancyCount(count = state.found)
                     }
                 }
             }
