@@ -29,7 +29,9 @@ fun VacancyDescription(vacancy: VacancyDetailUi) {
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(Modifier.height(Space24))
+            if (vacancy.skills.isNotEmpty()) {
+                Spacer(Modifier.height(Space24))
+            }
         }
     }
 }

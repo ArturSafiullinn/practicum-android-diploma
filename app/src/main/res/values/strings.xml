@@ -65,7 +65,7 @@
     <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
     <string name="required_experience">Требуемый опыт</string>
     <string name="vacancy_description">Описание вакансии</string>
-    <string name="required_skills">Требуемые навыки</string>
+    <string name="required_skills">Ключевые навыки</string>
 
     <!-- Filter Settings -->
     <string name="workplace">Место работы</string>

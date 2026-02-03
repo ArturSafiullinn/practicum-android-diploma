@@ -30,7 +30,7 @@ fun VacancySkills(vacancy: VacancyDetailUi) {
             vacancy.skills.forEach {
                 Row {
                     Text(
-                        modifier = Modifier.padding(end = Space8),
+                        modifier = Modifier.padding(horizontal = Space8),
                         text = "•",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
