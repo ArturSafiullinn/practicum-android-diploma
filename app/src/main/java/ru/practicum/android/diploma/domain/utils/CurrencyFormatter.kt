@@ -19,15 +19,22 @@ class CurrencyFormatter {
     )
 
     fun format(code: String?): String {
-        if (code.isNullOrBlank()) return ""
+        val normalized = code?.trim()?.uppercase()
 
-        customSymbols[code]?.let { return it }
+        val result = when {
+            normalized.isNullOrBlank() -> ""
 
-        return try {
-            val currency = Currency.getInstance(code)
-            currency.getSymbol(Locale.getDefault())
-        } catch (e: IllegalArgumentException) {
-            code
+            customSymbols.containsKey(normalized) ->
+                customSymbols[normalized].orEmpty()
+
+            else -> try {
+                Currency.getInstance(normalized)
+                    .getSymbol(Locale.getDefault())
+            } catch (e: IllegalArgumentException) {
+                normalized
+            }
         }
+
+        return result
     }
 }
