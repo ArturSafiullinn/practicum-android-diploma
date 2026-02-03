@@ -17,14 +17,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.theme.Dimens
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import ru.practicum.android.diploma.ui.theme.Dimens.ListSpacerInitialHeight
 
 @Composable
 fun SearchScreen(
@@ -109,13 +117,15 @@ fun SearchScreen(
                         }
                     }
                     Box(modifier = Modifier.fillMaxSize()) {
+                        val density = LocalDensity.current
+                        var spacerHeight by remember { mutableStateOf(ListSpacerInitialHeight) }
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(Dimens.Space8)
                         ) {
-                            item {
-                                VacancyCount(state.found)
+                            item(key = "vacancy_count_spacer") {
+                                Spacer(modifier = Modifier.height(spacerHeight))
                             }
 
                             items(state.vacancies, key = { it.id }) { vacancy ->
@@ -137,7 +147,15 @@ fun SearchScreen(
                                 }
                             }
                         }
-                        VacancyCount(count = state.found)
+                        VacancyCount(
+                            count = state.found,
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .onSizeChanged { size ->
+                                    spacerHeight = with(density) { size.height.toDp() }
+                                }
+                                .zIndex(1f)
+                        )
                     }
                 }
             }

@@ -160,7 +160,10 @@ fun VacancyItem(
 }
 
 @Composable
-fun VacancyCount(count: Int) {
+fun VacancyCount(
+    count: Int,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
