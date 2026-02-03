@@ -18,23 +18,23 @@ class CurrencyFormatter {
         "SEK" to "kr"
     )
 
+    private val availableCodes =
+        Currency.getAvailableCurrencies().map { it.currencyCode }.toSet()
+
     fun format(code: String?): String {
         val normalized = code?.trim()?.uppercase()
 
-        val result = when {
+        return when {
             normalized.isNullOrBlank() -> ""
 
             customSymbols.containsKey(normalized) ->
                 customSymbols[normalized].orEmpty()
 
-            else -> try {
+            normalized in availableCodes ->
                 Currency.getInstance(normalized)
                     .getSymbol(Locale.getDefault())
-            } catch (e: IllegalArgumentException) {
-                normalized
-            }
-        }
 
-        return result
+            else -> normalized
+        }
     }
 }
