@@ -40,7 +40,7 @@ class VacancyDetailEntityMapper {
             contacts = null,
             employer = VacancyDetail.Employer(
                 id = "",
-                name = entity.name.orEmpty(),
+                name = entity.employer.orEmpty(),
                 logo = entity.logo
             ),
             area = FilterArea(id = 0, name = "", parentId = null, areas = emptyList()),
