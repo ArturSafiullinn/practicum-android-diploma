@@ -12,9 +12,11 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 
 @Composable
 fun VacancyNameAndSalary(vacancy: VacancyDetailUi) {
-    Column(Modifier
-        .fillMaxWidth()
-        .padding(vertical = Space8)) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = Space8)
+    ) {
         Text(
             text = vacancy.name,
             style = MaterialTheme.typography.displaySmall,
