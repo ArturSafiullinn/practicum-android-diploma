@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.SearchInteractor
 import ru.practicum.android.diploma.domain.models.SearchParams
-import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
@@ -19,7 +18,6 @@ import java.io.IOException
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
-    private val vacancyDetailUiMapper: VacancyDetailUiMapper,
     private val vacancyListItemUiMapper: VacancyListItemUiMapper
 ) : ViewModel() {
 
@@ -136,7 +134,6 @@ class SearchViewModel(
         super.onCleared()
     }
 }
-
 
 private fun mergeUnique(
     old: List<VacancyListItemUi>,

@@ -24,14 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.theme.Dimens
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import ru.practicum.android.diploma.ui.theme.Dimens.ListSpacerInitialHeight
 
 @Composable
