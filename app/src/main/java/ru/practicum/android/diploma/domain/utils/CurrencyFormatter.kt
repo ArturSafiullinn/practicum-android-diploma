@@ -26,7 +26,7 @@ class CurrencyFormatter {
         return try {
             val currency = Currency.getInstance(code)
             currency.getSymbol(Locale.getDefault())
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
             code
         }
     }
