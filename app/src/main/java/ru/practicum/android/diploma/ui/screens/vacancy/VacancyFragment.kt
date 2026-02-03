@@ -56,7 +56,7 @@ fun VacancyScreen(
     Scaffold(
         topBar = {
             VacancyTopAppBar(
-                title = stringResource(R.string.vaccancy),
+                title = stringResource(R.string.vacancy),
                 isFavorite = (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.isFavorite ?: false,
                 onBackClick = onBackClick,
                 onShareClick = onShareClick,
