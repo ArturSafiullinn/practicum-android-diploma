@@ -62,8 +62,6 @@ fun FavoritesScreen(
                         .padding(horizontal = Dimens.Space16),
                     verticalArrangement = Arrangement.spacedBy(Dimens.Space8)
                 ) {
-
-
                     items(state.vacancies, key = { it.id }) { vacancy ->
                         VacancyItem(
                             vacancy = vacancy,
