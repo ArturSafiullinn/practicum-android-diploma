@@ -16,11 +16,17 @@ import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
 val presentationModule = module {
     // UI mappers and utility classes
     single {
-        VacancyDetailUiMapper(salaryFormatter = get())
+        VacancyDetailUiMapper(
+            salaryFormatter = get(),
+            titleFormatter = get()
+        )
     }
 
     single {
-        VacancyListItemUiMapper(salaryFormatter = get())
+        VacancyListItemUiMapper(
+            salaryFormatter = get(),
+            titleFormatter = get()
+        )
     }
 
     single<ExternalNavigator> {

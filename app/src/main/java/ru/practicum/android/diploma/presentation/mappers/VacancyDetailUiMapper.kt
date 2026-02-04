@@ -2,14 +2,21 @@ package ru.practicum.android.diploma.presentation.mappers
 
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.domain.utils.SalaryFormatter
+import ru.practicum.android.diploma.domain.utils.TitleFormatter
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 
-class VacancyDetailUiMapper(private val salaryFormatter: SalaryFormatter) {
+class VacancyDetailUiMapper(
+    private val salaryFormatter: SalaryFormatter,
+    private val titleFormatter: TitleFormatter
+) {
     fun toUi(domain: VacancyDetail): VacancyDetailUi {
         return VacancyDetailUi(
             id = domain.id,
             isFavorite = domain.isFavorite,
-            name = domain.name,
+            name = titleFormatter.formatRemoveEmployer(
+                title = domain.name,
+                employerName = domain.employer.name
+            ),
             description = domain.description,
             salary = salaryFormatter.format(domain.salary),
             city = domain.address?.city,
