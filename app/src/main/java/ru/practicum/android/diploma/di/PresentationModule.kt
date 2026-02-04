@@ -39,7 +39,6 @@ val presentationModule = module {
             vacancyId = vacancyId,
             externalNavigator = get(),
             vacancyDetailUiMapper = get(),
-            searchInteractor = get(),
             vacancyInteractor = get(),
         )
     }

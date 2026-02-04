@@ -53,4 +53,9 @@ class VacancyRepositoryImpl(
             saveVacancy(vacancy)
         }
     }
+
+    override suspend fun getVacancyLocal(vacancyId: String): VacancyDetail? =
+        withContext(Dispatchers.IO) {
+            vacancyDetailDao.getById(vacancyId)?.let(entityMapper::toDomain)
+        }
 }

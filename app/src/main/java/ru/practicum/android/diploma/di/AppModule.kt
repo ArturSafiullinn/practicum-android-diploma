@@ -30,5 +30,5 @@ val appModule = module {
 
     single { VacancyDetailDtoMapper() }
     single { VacancyResponseDtoMapper(get()) }
-    single { VacancyDetailEntityMapper() }
+    single { VacancyDetailEntityMapper(get()) }
 }

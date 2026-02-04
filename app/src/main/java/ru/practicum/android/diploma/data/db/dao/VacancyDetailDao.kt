@@ -24,5 +24,11 @@ interface VacancyDetailDao {
     fun getAll(): Flow<List<VacancyDetailEntity>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM vacancies WHERE remoteId = :remoteId)")
-    fun exists(remoteId: String): Boolean
+    suspend fun exists(remoteId: String): Boolean
+
+    @Query("SELECT * FROM vacancies WHERE remoteId = :vacancyId LIMIT 1")
+    suspend fun getById(vacancyId: String): VacancyDetailEntity?
+
+    @Query("UPDATE vacancies SET detailsJson = :detailsJson WHERE remoteId = :remoteId")
+    suspend fun updateDetailsJson(remoteId: String, detailsJson: String)
 }

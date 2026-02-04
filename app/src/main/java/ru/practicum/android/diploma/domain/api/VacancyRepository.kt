@@ -12,4 +12,5 @@ interface VacancyRepository {
     suspend fun isFavorite(vacancyId: String): Boolean
     fun getVacancies(): Flow<List<VacancyDetail>>
     suspend fun toggleFavorite(vacancy: VacancyDetail)
+    suspend fun getVacancyLocal(vacancyId: String): VacancyDetail?
 }
