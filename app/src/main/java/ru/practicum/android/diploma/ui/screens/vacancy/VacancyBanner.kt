@@ -72,7 +72,7 @@ fun VacancyBanner(vacancy: VacancyDetailUi) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = vacancy.area,
+                    text = vacancy.city ?: vacancy.area,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

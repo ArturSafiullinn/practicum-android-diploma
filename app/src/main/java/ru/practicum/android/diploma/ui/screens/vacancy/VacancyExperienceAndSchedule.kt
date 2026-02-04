@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 import ru.practicum.android.diploma.ui.theme.Dimens.Space32
+import ru.practicum.android.diploma.ui.theme.Dimens.Space4
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 
 @Composable
@@ -23,9 +24,12 @@ fun VacancyExperienceAndSchedule(vacancy: VacancyDetailUi) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
+
+            Spacer(Modifier.height(Space4))
+
             Text(
                 text = vacancy.experience,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }

@@ -47,7 +47,7 @@ fun FavoritesScreen(
 
             FavoritesUiState.Empty -> {
                 EmptyState(
-                    modifier = androidx.compose.ui.Modifier.padding(padding),
+                    modifier = Modifier.padding(padding),
                     imageRes = R.drawable.empty_favorites,
                     title = stringResource(R.string.empty_state_empty_favourites)
                 )
@@ -55,9 +55,9 @@ fun FavoritesScreen(
 
             FavoritesUiState.Error -> {
                 EmptyState(
-                    modifier = androidx.compose.ui.Modifier.padding(padding),
+                    modifier = Modifier.padding(padding),
                     imageRes = R.drawable.empty_result,
-                    title = stringResource(R.string.empty_state_no_such_vaccancies)
+                    title = stringResource(R.string.empty_state_no_such_vacancies)
                 )
             }
         }

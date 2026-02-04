@@ -20,18 +20,18 @@
 
     <!-- Отображение зарплаты -->
     <string name="salary_not_specified">Зарплата не указана</string>
-    <string name="salary_from">От %1$s %2$s</string>
-    <string name="salary_to">До %1$s %2$s</string>
-    <string name="salary_range">От %1$s до %2$s %3$s</string>
+    <string name="salary_from">от %1$s %2$s</string>
+    <string name="salary_to">до %1$s %2$s</string>
+    <string name="salary_range">от %1$s до %2$s %3$s</string>
 
     <!-- Fragment Titles -->
-    <string name="search_vaccancies">Поиск вакансий</string>
+    <string name="search_vacancies">Поиск вакансий</string>
     <string name="filter_settings">Настроийки фильтрации</string>
     <string name="select_country">Выбор страны</string>
-    <string name="select_workkplace">Выбор места работы</string>
+    <string name="select_workplace">Выбор места работы</string>
     <string name="select_region">Выбор региона</string>
     <string name="select_industry">Выбор отрасли</string>
-    <string name="vaccancy">Вакансия</string>
+    <string name="vacancy">Вакансия</string>
 
     <!-- Text Inputs Placeholders -->
     <string name="search_placeholder">Введите запрос</string>
@@ -40,10 +40,10 @@
 
     <!-- Empty States (Заголовки экранов пустышек: нет интернета и т.д. -->
     <string name="empty_state_no_internet">Нет интернета</string>
-    <string name="empty_state_no_such_vaccancies">Не удалось получить список вакансий</string>
+    <string name="empty_state_no_such_vacancies">Не удалось получить список вакансий</string>
     <string name="empty_state_no_such_region">Нет такого региона</string>
     <string name="empty_state_loading_regions_error">Не удалось получить список</string>
-    <string name="empty_state_vaccancy_load_error">Вакансия не найдена или удалена</string>
+    <string name="empty_state_vacancy_load_error">Вакансия не найдена или удалена</string>
     <string name="empty_state_server_error">Ошибка сервера</string>
     <string name="empty_state_empty_favourites">Список пуст</string>
 
@@ -55,7 +55,7 @@
     <string name="razrab4">Иван Гаренских</string>
 
     <!-- Search Fragment -->
-    <string name="no_such_vaccancies">Таких вакансий нет</string>
+    <string name="no_such_vacancies">Таких вакансий нет</string>
     <string name="enter_your_query">Введите запрос</string>
     <string name="count_vacancy">Найдено %d вакансий</string>
     <string name="unknown_workplace">Работодатель неизвестен</string>
@@ -65,7 +65,7 @@
     <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
     <string name="required_experience">Требуемый опыт</string>
     <string name="vacancy_description">Описание вакансии</string>
-    <string name="required_skills">Требуемые навыки</string>
+    <string name="required_skills">Ключевые навыки</string>
 
     <!-- Filter Settings -->
     <string name="workplace">Место работы</string>
@@ -78,10 +78,10 @@
     <string name="cancel_button_text">Сбросить</string>
 
     <!-- Test Texts -->
-    <string name="open_test_vaccancy">Открыть тестовую вакансию</string>
+    <string name="open_test_vacancy">Открыть тестовую вакансию</string>
     <string name="Russia_test">Россия (тест)</string>
     <string name="Moscow_test">Москва (тест)</string>
-    <string name="vaccancy_test_description">Здесь будет описание вакансии</string>
+    <string name="vacancy_test_description">Здесь будет описание вакансии</string>
     <string name="industries_test_text">Список отраслей появится здесь</string>
     <string name="favorites_screen_test_description">Экран избранного</string>
 

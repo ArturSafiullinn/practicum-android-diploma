@@ -40,7 +40,7 @@ fun SearchScreen(
     Scaffold(
         topBar = {
             SearchTopAppBar(
-                title = stringResource(R.string.search_vaccancies),
+                title = stringResource(R.string.search_vacancies),
                 onFilterClick = onFilterClick
             )
         }
@@ -76,7 +76,7 @@ fun SearchScreen(
                 is SearchUiState.ServerError -> {
                     SearchPlaceholder(
                         title = when (state) {
-                            is SearchUiState.NoResults -> stringResource(R.string.empty_state_no_such_vaccancies)
+                            is SearchUiState.NoResults -> stringResource(R.string.empty_state_no_such_vacancies)
                             is SearchUiState.NotConnected -> stringResource(R.string.empty_state_no_internet)
                             else -> stringResource(R.string.empty_state_server_error)
                         },

@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -55,7 +56,7 @@ fun VacancyScreen(
     Scaffold(
         topBar = {
             VacancyTopAppBar(
-                title = stringResource(R.string.vaccancy),
+                title = stringResource(R.string.vacancy),
                 isFavorite = (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.isFavorite ?: false,
                 onBackClick = onBackClick,
                 onShareClick = onShareClick,
@@ -119,4 +120,14 @@ fun VacancyContent(modifier: Modifier, vacancy: VacancyDetailUi) {
 
         VacancySkills(vacancy)
     }
+}
+
+@Composable
+@Preview
+fun Preview1() {
+    VacancyScreen(
+        screenState = VacancyUiState.ServerError(),
+        onBackClick = { },
+        onShareClick = { }
+    ) { }
 }
