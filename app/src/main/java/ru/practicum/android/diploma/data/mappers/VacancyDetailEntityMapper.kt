@@ -16,6 +16,8 @@ class VacancyDetailEntityMapper {
             salaryFrom = model.salary?.from,
             currency = model.salary?.currency,
             salaryTo = model.salary?.to,
+            employer = model.employer.name,
+            logo = model.employer.logo,
         )
     }
 
@@ -38,8 +40,8 @@ class VacancyDetailEntityMapper {
             contacts = null,
             employer = VacancyDetail.Employer(
                 id = "",
-                name = "",
-                logo = null
+                name = entity.employer.orEmpty(),
+                logo = entity.logo
             ),
             area = FilterArea(id = 0, name = "", parentId = null, areas = emptyList()),
             skills = emptyList(),

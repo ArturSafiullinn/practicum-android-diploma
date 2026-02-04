@@ -2,7 +2,6 @@ package ru.practicum.android.diploma.di
 
 import coil.ImageLoader
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -42,9 +41,6 @@ val networkModule = module {
                     .build()
                 chain.proceed(request)
             }
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BASIC // или .HEADERS для отладки
-            })
             .build()
 
         ImageLoader.Builder(androidContext())

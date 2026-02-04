@@ -8,6 +8,8 @@ data class VacancyDetailEntity(
     @PrimaryKey val remoteId: String,
     val name: String?,
     val city: String?,
+    val employer: String?,
+    val logo: String?,
     val industry: String?,
     val currency: String?,
     val salaryFrom: Int?,

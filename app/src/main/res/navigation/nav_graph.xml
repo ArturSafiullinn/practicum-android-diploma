@@ -20,6 +20,9 @@
         android:id="@+id/favoritesFragment"
         android:name="ru.practicum.android.diploma.ui.screens.favorites.FavoritesFragment"
         android:label="FavoritesFragment" />
+    <action
+        android:id="@+id/action_favoritesFragment_to_vacancyFragment"
+        app:destination="@id/vacancyFragment" />
 
     <fragment
         android:id="@+id/teamFragment"
@@ -63,7 +66,7 @@
     <fragment
         android:id="@+id/selectIndustryFragment"
         android:name="ru.practicum.android.diploma.ui.screens.SelectIndustryFragment"
-        android:label="SelectIndustryFragment" >
+        android:label="SelectIndustryFragment">
         <action
             android:id="@+id/action_selectIndustryFragment_to_filterSettingsFragment"
             app:destination="@id/filterSettingsFragment" />

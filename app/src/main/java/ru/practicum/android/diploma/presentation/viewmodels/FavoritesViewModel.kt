@@ -2,35 +2,39 @@ package ru.practicum.android.diploma.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import ru.practicum.android.diploma.domain.api.FavoritesInteractor
+import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.api.VacancyInteractor
+import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.ui.screens.favorites.FavoritesUiState
 
-private const val STOP_TIMEOUT_MILLIS = 5_000L
-
 class FavoritesViewModel(
-    favoritesInteractor: FavoritesInteractor,
+    private val vacancyInteractor: VacancyInteractor,
+    private val vacancyListItemUiMapper: VacancyListItemUiMapper
 ) : ViewModel() {
 
-    val state: StateFlow<FavoritesUiState> =
-        favoritesInteractor.observeFavorites()
-            .map { vacancies ->
-                if (vacancies.isEmpty()) {
-                    FavoritesUiState.Empty
-                } else {
-                    FavoritesUiState.Content(vacancies = vacancies)
+    private val _screenState = MutableStateFlow<FavoritesUiState>(FavoritesUiState.Empty)
+    val screenState: StateFlow<FavoritesUiState> = _screenState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            vacancyInteractor.getVacancies()
+                .catch {
+                    _screenState.value = FavoritesUiState.Error
                 }
-            }
-            .catch {
-                emit(FavoritesUiState.Error)
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
-                initialValue = FavoritesUiState.Empty
-            )
+                .collect { vacancyDetail ->
+                    val vacanciesUi = vacancyDetail.map(vacancyListItemUiMapper::toUi)
+
+                    _screenState.value =
+                        if (vacanciesUi.isEmpty()) {
+                            FavoritesUiState.Empty
+                        } else {
+                            FavoritesUiState.Content(vacanciesUi)
+                        }
+                }
+        }
+    }
 }
