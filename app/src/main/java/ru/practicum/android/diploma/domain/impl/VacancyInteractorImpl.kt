@@ -20,29 +20,54 @@ class VacancyInteractorImpl(
     override fun fetchVacancy(vacancyId: String): Flow<Result<VacancyDetail>> {
         return repository.fetchVacancy(vacancyId)
             .transform { response ->
-                if (response.resultCode == HTTP_OK && response is VacancyDetailsResponse) {
-                    emit(Result.success(vacancyDetailsResponseMapper.toDomain(response.data)))
-                } else {
-                    val local = repository.getVacancyLocal(vacancyId)
-                    if (local != null) {
-                        emit(Result.success(local))
-                    } else {
-                        if (response.resultCode == NOT_CONNECTED_CODE) {
-                            emit(Result.failure(IOException("Not Connected")))
-                        } else {
-                            emit(Result.failure(Throwable("Failed with code=${response.resultCode}")))
-                        }
-                    }
-                }
+                emit(handleResponse(vacancyId, response))
             }
             .catch { e ->
-                val local = repository.getVacancyLocal(vacancyId)
-                if (local != null) {
-                    emit(Result.success(local))
-                } else {
-                    emit(Result.failure(IOException("Not Connected", e)))
-                }
+                emit(handleException(vacancyId, e))
             }
+    }
+
+    private suspend fun handleResponse(
+        vacancyId: String,
+        response: ru.practicum.android.diploma.data.Response
+    ): Result<VacancyDetail> {
+        return if (response.resultCode == HTTP_OK && response is VacancyDetailsResponse) {
+            Result.success(vacancyDetailsResponseMapper.toDomain(response.data))
+        } else {
+            fallbackToLocalOrError(vacancyId, response.resultCode)
+        }
+    }
+
+    private suspend fun handleException(
+        vacancyId: String,
+        throwable: Throwable
+    ): Result<VacancyDetail> {
+        val local = repository.getVacancyLocal(vacancyId)
+        return if (local != null) {
+            Result.success(local)
+        } else {
+            Result.failure(IOException("Not Connected", throwable))
+        }
+    }
+
+    private suspend fun fallbackToLocalOrError(
+        vacancyId: String,
+        resultCode: Int
+    ): Result<VacancyDetail> {
+        val local = repository.getVacancyLocal(vacancyId)
+        return if (local != null) {
+            Result.success(local)
+        } else {
+            networkError(resultCode)
+        }
+    }
+
+    private fun networkError(resultCode: Int): Result<VacancyDetail> {
+        return if (resultCode == NOT_CONNECTED_CODE) {
+            Result.failure(IOException("Not Connected"))
+        } else {
+            Result.failure(Throwable("Failed with code=$resultCode"))
+        }
     }
 
     override suspend fun saveVacancy(vacancy: VacancyDetail) {
