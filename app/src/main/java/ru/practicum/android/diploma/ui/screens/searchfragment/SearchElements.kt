@@ -1,7 +1,5 @@
 package ru.practicum.android.diploma.ui.screens.searchfragment
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,7 +26,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
@@ -106,40 +103,6 @@ fun SearchInputField(
 }
 
 @Composable
-fun SearchPlaceholder(
-    modifier: Modifier = Modifier,
-    @DrawableRes imageRes: Int,
-    title: String? = null,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = Space16),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(imageRes),
-                contentDescription = null,
-                contentScale = ContentScale.Fit
-            )
-
-            if (title != null) {
-                Spacer(modifier = Modifier.height(Space16))
-
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun VacancyItem(
     vacancy: VacancyListItemUi,
     onClick: () -> Unit
@@ -197,7 +160,10 @@ fun VacancyItem(
 }
 
 @Composable
-fun VacancyCount(count: Int) {
+fun VacancyCount(
+    count: Int,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

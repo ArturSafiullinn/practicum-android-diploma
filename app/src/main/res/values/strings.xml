@@ -59,7 +59,8 @@
     <string name="enter_your_query">Введите запрос</string>
     <string name="count_vacancy">Найдено %d вакансий</string>
     <string name="unknown_workplace">Работодатель неизвестен</string>
-
+    <string name="toast_check_internet">Проверьте подключение к интернету</string>
+    <string name="toast_error">Произошла ошибка</string>
 
     <!-- Vacancy Fragment -->
     <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
