@@ -103,63 +103,6 @@ fun SearchInputField(
 }
 
 @Composable
-fun VacancyItem(
-    vacancy: VacancyListItemUi,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = Dimens.Space12),
-        verticalAlignment = Alignment.Top
-    ) {
-        Box(
-            modifier = Modifier
-                .size(Dimens.IconContainer)
-                .border(
-                    width = Dimens.Space1,
-                    color = Gray100,
-                    shape = RoundedCornerShape(Dimens.Radius12)
-                )
-                .padding(Dimens.Space8),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                model = vacancy.employerLogoUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxSize(),
-                placeholder = painterResource(R.drawable.ic_placeholder_vacancy),
-                error = painterResource(R.drawable.ic_placeholder_vacancy)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(Space16))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = vacancy.title,
-                maxLines = 3,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(modifier = Modifier.height(Dimens.Space4))
-            Text(
-                text = vacancy.employerName ?: "",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = vacancy.salary ?: "",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-
-@Composable
 fun VacancyCount(
     count: Int,
     modifier: Modifier = Modifier
