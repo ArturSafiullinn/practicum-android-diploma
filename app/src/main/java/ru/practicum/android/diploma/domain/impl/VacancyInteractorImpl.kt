@@ -32,7 +32,13 @@ class VacancyInteractorImpl(
         response: ru.practicum.android.diploma.data.Response
     ): Result<VacancyDetail> {
         return if (response.resultCode == HTTP_OK && response is VacancyDetailsResponse) {
-            Result.success(vacancyDetailsResponseMapper.toDomain(response.data))
+            val fresh = vacancyDetailsResponseMapper.toDomain(response.data)
+
+            if (repository.isFavorite(vacancyId)) {
+                repository.updateVacancy(fresh.copy(isFavorite = true))
+            }
+
+            Result.success(fresh)
         } else {
             fallbackToLocalOrError(vacancyId, response.resultCode)
         }
