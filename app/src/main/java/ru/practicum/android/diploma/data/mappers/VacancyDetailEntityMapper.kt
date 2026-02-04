@@ -25,17 +25,8 @@ class VacancyDetailEntityMapper(
         )
 
     fun toDomain(entity: VacancyDetailEntity): VacancyDetail {
-        val json = entity.detailsJson
-
-        if (!json.isNullOrBlank()) {
-            runCatching {
-                gson.fromJson(json, VacancyDetail::class.java)
-            }.getOrNull()?.let { restored ->
-                return restored.copy(isFavorite = true)
-            }
-        }
-
-        return VacancyDetail(
+        val jsonRestored = parseJson(entity.detailsJson)
+        return jsonRestored?.copy(isFavorite = true) ?: VacancyDetail(
             id = entity.remoteId,
             isFavorite = true,
             name = entity.name?.trim().orEmpty(),
@@ -65,5 +56,15 @@ class VacancyDetailEntityMapper(
             url = "",
             industry = FilterIndustry(id = 0, name = entity.industry?.trim().orEmpty())
         )
+    }
+
+    private fun parseJson(json: String?): VacancyDetail? {
+        return if (!json.isNullOrBlank()) {
+            runCatching {
+                gson.fromJson(json, VacancyDetail::class.java)
+            }.getOrNull()
+        } else {
+            null
+        }
     }
 }
