@@ -22,26 +22,26 @@ class VacancyInteractorImpl(
             .transform { response ->
                 if (response.resultCode == HTTP_OK && response is VacancyDetailsResponse) {
                     emit(Result.success(vacancyDetailsResponseMapper.toDomain(response.data)))
-                    return@transform
-                }
-
-                val local = repository.getVacancyLocal(vacancyId)
-                if (local != null) {
-                    emit(Result.success(local))
                 } else {
-                    emit(
+                    val local = repository.getVacancyLocal(vacancyId)
+                    if (local != null) {
+                        emit(Result.success(local))
+                    } else {
                         if (response.resultCode == NOT_CONNECTED_CODE) {
-                            Result.failure(IOException("Not Connected"))
+                            emit(Result.failure(IOException("Not Connected")))
                         } else {
-                            Result.failure(Throwable("Failed with code=${response.resultCode}"))
+                            emit(Result.failure(Throwable("Failed with code=${response.resultCode}")))
                         }
-                    )
+                    }
                 }
             }
             .catch { e ->
                 val local = repository.getVacancyLocal(vacancyId)
-                if (local != null) emit(Result.success(local))
-                else emit(Result.failure(IOException("Not Connected", e)))
+                if (local != null) {
+                    emit(Result.success(local))
+                } else {
+                    emit(Result.failure(IOException("Not Connected", e)))
+                }
             }
     }
 
