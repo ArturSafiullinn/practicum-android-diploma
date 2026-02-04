@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
 import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
+import ru.practicum.android.diploma.presentation.utils.DescriptionParser
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.ServerError
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.Vacancy
@@ -19,7 +20,8 @@ class VacancyViewModel(
     private val vacancyId: String,
     private val externalNavigator: ExternalNavigator,
     private val vacancyInteractor: VacancyInteractor,
-    private val vacancyDetailUiMapper: VacancyDetailUiMapper
+    private val vacancyDetailUiMapper: VacancyDetailUiMapper,
+    private val descriptionParser: DescriptionParser
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow<VacancyUiState>(VacancyUiState.Loading)
@@ -32,9 +34,20 @@ class VacancyViewModel(
                     .onSuccess { vacancy ->
                         val isFavorite = vacancyInteractor.isFavorite(vacancy.id)
                         val complete = vacancy.copy(isFavorite = isFavorite)
+
+                        val ui = vacancyDetailUiMapper.toUi(complete)
+
+                        val description = ui.description?.trim().orEmpty()
+                        val blocks = if (description.isBlank()) {
+                            emptyList()
+                        } else {
+                            descriptionParser.parseDescription(description)
+                        }
+
                         _screenState.value = Vacancy(
                             vacancyDetailDomain = complete,
-                            vacancyDetailUi = vacancyDetailUiMapper.toUi(complete)
+                            vacancyDetailUi = ui,
+                            descriptionBlocks = blocks
                         )
                     }
                     .onFailure { e ->
@@ -66,7 +79,7 @@ class VacancyViewModel(
         val isFavorite = vacancyInteractor.isFavorite(vacancyId)
         val current = _screenState.value
         if (current is Vacancy) {
-            _screenState.value = Vacancy(
+            _screenState.value = current.copy(
                 vacancyDetailUi = current.vacancyDetailUi.copy(isFavorite = isFavorite),
                 vacancyDetailDomain = current.vacancyDetailDomain.copy(isFavorite = isFavorite)
             )
