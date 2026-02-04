@@ -7,6 +7,8 @@ import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.impl.ExternalNavigatorImpl
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
+import ru.practicum.android.diploma.presentation.utils.DescriptionParser
+import ru.practicum.android.diploma.presentation.utils.HeadingDictionary
 import ru.practicum.android.diploma.presentation.viewmodels.FavoritesViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
@@ -39,8 +41,8 @@ val presentationModule = module {
             vacancyId = vacancyId,
             externalNavigator = get(),
             vacancyDetailUiMapper = get(),
-            searchInteractor = get(),
             vacancyInteractor = get(),
+            descriptionParser = get()
         )
     }
     viewModel {
@@ -49,4 +51,7 @@ val presentationModule = module {
             vacancyListItemUiMapper = get()
         )
     }
+
+    single { HeadingDictionary(get()) }
+    single { DescriptionParser(get()) }
 }

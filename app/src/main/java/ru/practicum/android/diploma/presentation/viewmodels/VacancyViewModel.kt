@@ -5,101 +5,84 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.api.SearchInteractor
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
-import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
+import ru.practicum.android.diploma.presentation.utils.DescriptionParser
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.ServerError
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.Vacancy
-import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.VacancyNotFound
 import ru.practicum.android.diploma.util.TAG_VACANCY_VIEW_MODEL
 
 class VacancyViewModel(
     private val vacancyId: String,
     private val externalNavigator: ExternalNavigator,
-    private val searchInteractor: SearchInteractor,
     private val vacancyInteractor: VacancyInteractor,
-    private val vacancyDetailUiMapper: VacancyDetailUiMapper
+    private val vacancyDetailUiMapper: VacancyDetailUiMapper,
+    private val descriptionParser: DescriptionParser
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow<VacancyUiState>(VacancyUiState.Loading)
-    val screenState: StateFlow<VacancyUiState> = _screenState
+    val screenState: StateFlow<VacancyUiState> = _screenState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            val searchResult = searchInteractor.search(vacancyId).first()
-            processResult(searchResult)
+            vacancyInteractor.fetchVacancy(vacancyId).collect { result ->
+                result
+                    .onSuccess { vacancy ->
+                        val isFavorite = vacancyInteractor.isFavorite(vacancy.id)
+                        val complete = vacancy.copy(isFavorite = isFavorite)
+
+                        val ui = vacancyDetailUiMapper.toUi(complete)
+
+                        val description = ui.description?.trim().orEmpty()
+                        val blocks = if (description.isBlank()) {
+                            emptyList()
+                        } else {
+                            descriptionParser.parseDescription(description)
+                        }
+
+                        _screenState.value = Vacancy(
+                            vacancyDetailDomain = complete,
+                            vacancyDetailUi = ui,
+                            descriptionBlocks = blocks
+                        )
+                    }
+                    .onFailure { e ->
+                        _screenState.value = ServerError()
+                        Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString(), e)
+                    }
+            }
         }
     }
 
     fun onFavoriteClicked() {
-        val currentState = _screenState.value
-        if (currentState !is Vacancy) return
+        val current = _screenState.value
+        if (current !is Vacancy) return
 
         viewModelScope.launch {
-            vacancyInteractor.toggleFavorite(currentState.vacancyDetailDomain)
+            vacancyInteractor.toggleFavorite(current.vacancyDetailDomain)
             updateIsFavorite()
         }
     }
 
     fun onShareClicked() {
-        val currentState = _screenState.value
-
-        if (currentState is Vacancy) {
-            val link = (_screenState.value as Vacancy).vacancyDetailUi.url
-            externalNavigator.shareLink(link)
+        val current = _screenState.value
+        if (current is Vacancy) {
+            externalNavigator.shareLink(current.vacancyDetailUi.url)
         }
-    }
-
-    private fun processResult(result: Result<VacancyDetail>) {
-        result
-            .onSuccess { vacancyFromApi ->
-                viewModelScope.launch {
-                    val isFavorite = vacancyInteractor.isFavorite(vacancyFromApi.id)
-                    _screenState.update { _ ->
-                        val completeDomainVacancy = vacancyFromApi.copy(isFavorite = isFavorite)
-                        Vacancy(
-                            vacancyDetailDomain = completeDomainVacancy,
-                            vacancyDetailUi = vacancyDetailUiMapper.toUi(completeDomainVacancy)
-                        )
-                    }
-                }
-            }
-            .onFailure { e ->
-                if (e is NoSuchElementException) {
-                    viewModelScope.launch {
-                        // Вакансия не найдена через API -> проверяем, сохранена ли в нашей БД и удаляем, если да
-                        val existsInDataBase = vacancyInteractor.isFavorite(vacancyId)
-                        if (existsInDataBase) {
-                            vacancyInteractor.removeVacancy(vacancyId)
-                            _screenState.update { VacancyNotFound() }
-                        }
-                    }
-                } else {
-                    _screenState.update { ServerError() }
-                    Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString())
-                }
-            }
     }
 
     private suspend fun updateIsFavorite() {
         val isFavorite = vacancyInteractor.isFavorite(vacancyId)
-
-        _screenState.update { currentState ->
-            if (currentState !is Vacancy) {
-                currentState
-            } else {
-                Vacancy(
-                    vacancyDetailUi = currentState.vacancyDetailUi.copy(isFavorite = isFavorite),
-                    vacancyDetailDomain = currentState.vacancyDetailDomain.copy(isFavorite = isFavorite)
-                )
-            }
-
+        val current = _screenState.value
+        if (current is Vacancy) {
+            _screenState.value = current.copy(
+                vacancyDetailUi = current.vacancyDetailUi.copy(isFavorite = isFavorite),
+                vacancyDetailDomain = current.vacancyDetailDomain.copy(isFavorite = isFavorite)
+            )
         }
     }
 }

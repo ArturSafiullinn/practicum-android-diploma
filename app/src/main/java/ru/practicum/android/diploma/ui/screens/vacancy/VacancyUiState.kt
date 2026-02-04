@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.ui.screens.vacancy
 
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.VacancyDetail
+import ru.practicum.android.diploma.presentation.utils.DescriptionBlock
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 
 sealed interface VacancyUiState {
@@ -18,6 +19,7 @@ sealed interface VacancyUiState {
 
     data class Vacancy(
         val vacancyDetailUi: VacancyDetailUi,
-        val vacancyDetailDomain: VacancyDetail
+        val vacancyDetailDomain: VacancyDetail,
+        val descriptionBlocks: List<DescriptionBlock>
     ) : VacancyUiState
 }

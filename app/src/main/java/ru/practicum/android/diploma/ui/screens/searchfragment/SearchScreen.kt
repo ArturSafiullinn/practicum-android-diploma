@@ -30,6 +30,7 @@ import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
 import ru.practicum.android.diploma.ui.theme.Dimens
 import androidx.compose.runtime.setValue
+import ru.practicum.android.diploma.ui.components.VacancyItem
 import ru.practicum.android.diploma.ui.theme.Dimens.ListSpacerInitialHeight
 
 @Composable

@@ -18,8 +18,8 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.FavoritesViewModel
 import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SimpleTitleTopAppBar
+import ru.practicum.android.diploma.ui.components.VacancyItem
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
-import ru.practicum.android.diploma.ui.screens.searchfragment.VacancyItem
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.util.ARGS_VACANCY_ID
 

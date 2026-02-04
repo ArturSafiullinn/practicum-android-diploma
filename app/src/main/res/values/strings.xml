@@ -92,4 +92,17 @@
     <string name="share">Поделиться</string>
 
     <string name="server_error">Ошибка сервера</string>
+
+    <!-- Заголовки секций вакансии -->
+    <string name="heading_about">О нас</string>
+    <string name="heading_tech">Технологии</string>
+    <string name="heading_stack">Стек</string>
+    <string name="heading_task">Задача</string>
+
+    <string name="heading_expectations">Что тебя ожидает</string>
+    <string name="heading_requirements">Требования</string>
+    <string name="heading_conditions">Условия</string>
+    <string name="heading_skills">Ключевые навыки</string>
+    <string name="heading_nice_to_have">Будет здорово, если у тебя есть</string>
+    <string name="heading_we_need">У того, кто нам нужен, есть</string>
 </resources>

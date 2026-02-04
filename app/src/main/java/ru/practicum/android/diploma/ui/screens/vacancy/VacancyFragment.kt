@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.utils.DescriptionBlock
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.components.VacancyTopAppBar
@@ -87,7 +88,8 @@ fun VacancyScreen(
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = Space16, vertical = Space8),
-                    vacancy = screenState.vacancyDetailUi
+                    vacancy = screenState.vacancyDetailUi,
+                    descriptionBlocks = screenState.descriptionBlocks
                 )
             }
 
@@ -102,7 +104,11 @@ fun VacancyScreen(
 }
 
 @Composable
-fun VacancyContent(modifier: Modifier, vacancy: VacancyDetailUi) {
+fun VacancyContent(
+    modifier: Modifier,
+    vacancy: VacancyDetailUi,
+    descriptionBlocks: List<DescriptionBlock>
+) {
     Column(modifier = modifier) {
         Spacer(Modifier.height(Space16))
 
@@ -116,7 +122,10 @@ fun VacancyContent(modifier: Modifier, vacancy: VacancyDetailUi) {
 
         VacancyExperienceAndSchedule(vacancy)
 
-        VacancyDescription(vacancy)
+        VacancyDescription(
+            blocks = descriptionBlocks,
+            hasSkills = vacancy.skills.isNotEmpty()
+        )
 
         VacancySkills(vacancy)
     }

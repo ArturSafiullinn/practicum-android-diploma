@@ -13,5 +13,6 @@ data class VacancyDetailEntity(
     val industry: String?,
     val currency: String?,
     val salaryFrom: Int?,
-    val salaryTo: Int?
+    val salaryTo: Int?,
+    val detailsJson: String?
 )
