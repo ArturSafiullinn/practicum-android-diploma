@@ -30,7 +30,7 @@ class SearchViewModel(
     private val _screenState = MutableLiveData<SearchUiState>(SearchUiState.Initial)
     val screenState: LiveData<SearchUiState> get() = _screenState
 
-    fun onSearchSubmitted(query: String) {
+    private fun onSearchSubmitted(query: String) {
         searchJob?.cancel()
         lastQuery = query.trim()
         requestedPages.clear()
@@ -82,45 +82,41 @@ class SearchViewModel(
 
     fun loadNextPage() {
         val current = _screenState.value as? SearchUiState.Content ?: return
-        if (current.isLoadingNextPage) return
-        if (current.currentPage >= current.pages - 1) return
+        if (shouldLoadNextPage(current)) {
+            _screenState.postValue(current.copy(isLoadingNextPage = true))
+            val nextPage = current.currentPage + 1
 
-        val nextPage = current.currentPage + 1
-
-        if (requestedPages.contains(nextPage)) return
-
-        _screenState.postValue(current.copy(isLoadingNextPage = true))
-
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            searchInteractor.search(
-                SearchParams(
-                    text = lastQuery,
-                    page = nextPage
-                )
-            ).collect { result ->
-                result
-                    .onSuccess { response ->
-                        requestedPages.add(nextPage)
-                        val newItems = response.items.map { vacancyListItemUiMapper.toUi(it) }
-                        _screenState.postValue(
-                            current.copy(
-                                pages = response.pages,
-                                currentPage = response.page,
-                                vacancies = mergeUnique(current.vacancies, newItems),
-                                isLoadingNextPage = false,
-                                found = response.found
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                searchInteractor.search(
+                    SearchParams(
+                        text = lastQuery,
+                        page = nextPage
+                    )
+                ).collect { result ->
+                    result
+                        .onSuccess { response ->
+                            requestedPages.add(nextPage)
+                            val newItems = response.items.map { vacancyListItemUiMapper.toUi(it) }
+                            _screenState.postValue(
+                                current.copy(
+                                    pages = response.pages,
+                                    currentPage = response.page,
+                                    vacancies = mergeUnique(current.vacancies, newItems),
+                                    isLoadingNextPage = false,
+                                    found = response.found
+                                )
                             )
-                        )
-                    }
-                    .onFailure { e ->
-                        _screenState.postValue(current.copy(isLoadingNextPage = false))
-                        val messageRes = when (e) {
-                            is IOException -> R.string.toast_check_internet
-                            else -> R.string.toast_error
                         }
-                        _toast.postValue(messageRes)
-                    }
+                        .onFailure { e ->
+                            _screenState.postValue(current.copy(isLoadingNextPage = false))
+                            val messageRes = when (e) {
+                                is IOException -> R.string.toast_check_internet
+                                else -> R.string.toast_error
+                            }
+                            _toast.postValue(messageRes)
+                        }
+                }
             }
         }
     }
@@ -132,6 +128,15 @@ class SearchViewModel(
     override fun onCleared() {
         searchJob?.cancel()
         super.onCleared()
+    }
+
+    private fun shouldLoadNextPage(current: SearchUiState.Content): Boolean {
+        return when {
+            current.isLoadingNextPage -> false
+            current.currentPage >= current.pages - 1 -> false
+            requestedPages.contains(current.currentPage + 1) -> false
+            else -> true
+        }
     }
 }
 
