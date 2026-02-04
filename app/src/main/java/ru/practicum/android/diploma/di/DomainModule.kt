@@ -5,12 +5,15 @@ import ru.practicum.android.diploma.domain.api.FavoritesInteractor
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
 import ru.practicum.android.diploma.domain.impl.FavoritesInteractorStub
 import ru.practicum.android.diploma.domain.impl.VacancyInteractorImpl
+import ru.practicum.android.diploma.domain.utils.CurrencyFormatter
 import ru.practicum.android.diploma.domain.utils.SalaryFormatter
 
 val domainModule = module {
     // Domain utils
+    single { CurrencyFormatter() }
+
     single {
-        SalaryFormatter(get())
+        SalaryFormatter(get(), get())
     }
 
     factory<FavoritesInteractor> {
