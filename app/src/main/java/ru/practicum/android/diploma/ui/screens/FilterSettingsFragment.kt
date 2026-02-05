@@ -18,12 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
 class FilterSettingsFragment : BaseComposeFragment() {
+    private val filterViewModel: FilterSharedViewModel by navGraphViewModels(R.id.nav_graph_filter) {
+        defaultViewModelProviderFactory
+    }
+
     @Composable
     override fun ScreenContent() {
         FilterSettingsScreen(

@@ -9,6 +9,7 @@ import org.koin.core.context.startKoin
 import ru.practicum.android.diploma.di.appModule
 import ru.practicum.android.diploma.di.dataModule
 import ru.practicum.android.diploma.di.domainModule
+import ru.practicum.android.diploma.di.filterModule
 import ru.practicum.android.diploma.di.networkModule
 import ru.practicum.android.diploma.di.presentationModule
 import ru.practicum.android.diploma.di.storageModule
@@ -26,7 +27,8 @@ class App : Application(), KoinComponent {
                 dataModule,
                 storageModule,
                 domainModule,
-                presentationModule
+                presentationModule,
+                filterModule
             )
         }
         Coil.setImageLoader(getKoin().get<ImageLoader>())
