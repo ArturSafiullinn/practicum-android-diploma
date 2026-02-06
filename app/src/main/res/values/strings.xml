@@ -108,4 +108,7 @@
     <string name="heading_skills">Ключевые навыки</string>
     <string name="heading_nice_to_have">Будет здорово, если у тебя есть</string>
     <string name="heading_we_need">У того, кто нам нужен, есть</string>
+
+    <!-- Окончание VacancyDetail.name ("в ${vacancy.employer.name}") -->
+    <string name="suffix_vacancy_title_employer">"в %s"</string>
 </resources>
