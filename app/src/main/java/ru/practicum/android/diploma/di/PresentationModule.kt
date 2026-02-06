@@ -10,6 +10,7 @@ import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.presentation.utils.DescriptionParser
 import ru.practicum.android.diploma.presentation.utils.HeadingDictionary
 import ru.practicum.android.diploma.presentation.viewmodels.FavoritesViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
 
@@ -49,6 +50,11 @@ val presentationModule = module {
         SearchViewModel(
             searchInteractor = get(),
             vacancyListItemUiMapper = get()
+        )
+    }
+    viewModel {
+        FilterSharedViewModel(
+            interactor = get()
         )
     }
 
