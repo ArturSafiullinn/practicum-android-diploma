@@ -1,21 +1,21 @@
-package ru.practicum.android.diploma.ui.screens
+package ru.practicum.android.diploma.ui.screens.filter
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
+import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
+import ru.practicum.android.diploma.ui.screens.searchfragment.SearchInputField
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 
@@ -27,7 +27,7 @@ class SelectRegionFragment : BaseComposeFragment() {
             onBackClick = { findNavController().popBackStack() },
             onRegionSelect = {
                 findNavController().popBackStack()
-            }
+            },
         )
     }
 }
@@ -35,7 +35,11 @@ class SelectRegionFragment : BaseComposeFragment() {
 @Composable
 fun SelectRegionScreen(
     onBackClick: () -> Unit,
-    onRegionSelect: () -> Unit
+    query: String = "",
+    onClearQuery: () -> Unit = {},
+    onQueryChange: (String) -> Unit = {},
+    regions: List<String> = emptyList(),
+    onRegionSelect: (String) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -45,18 +49,30 @@ fun SelectRegionScreen(
             )
         }
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(Space16),
-            contentAlignment = Alignment.Center
+                .padding(Space16)
         ) {
-            Button(
-                onClick = onRegionSelect,
-                modifier = Modifier.fillMaxWidth()
+            SearchInputField(
+                query = query,
+                placeholder = stringResource(R.string.enter_region),
+                onQueryChange = onQueryChange,
+                onClearQuery = onClearQuery
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = Space16)
             ) {
-                Text(text = stringResource(R.string.Moscow_test))
+                items(regions) { region ->
+                    FilterClickable(
+                        text = region,
+                        onClick = { onRegionSelect(region) }
+                    )
+                }
             }
         }
     }

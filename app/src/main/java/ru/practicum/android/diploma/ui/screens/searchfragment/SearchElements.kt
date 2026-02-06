@@ -30,6 +30,7 @@ import ru.practicum.android.diploma.ui.theme.White
 @Composable
 fun SearchInputField(
     query: String,
+    placeholder: String,
     onQueryChange: (String) -> Unit,
     onClearQuery: () -> Unit
 ) {
@@ -62,7 +63,7 @@ fun SearchInputField(
                 ) {
                     if (query.isEmpty()) {
                         Text(
-                            text = stringResource(R.string.enter_your_query),
+                            text = placeholder,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.inverseSurface
                         )
