@@ -55,12 +55,12 @@ fun ExpectedSalaryField(
         singleLine = true,
 
         keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done // 👈 кнопка "Готово / Применить"
+            imeAction = ImeAction.Done
         ),
 
         keyboardActions = KeyboardActions(
             onDone = {
-                focusManager.clearFocus() // 👈 фокус ушёл, клавиатура закрылась
+                focusManager.clearFocus()
             }
         ),
 
@@ -204,10 +204,7 @@ fun FilterClickableField(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 if (value.isNullOrEmpty()) {
                     Text(
                         text = placeholder,
@@ -228,20 +225,24 @@ fun FilterClickableField(
                 }
             }
 
+            val iconRes = if (value.isNullOrEmpty()) {
+                R.drawable.ic_arrow_forward
+            } else {
+                R.drawable.ic_clear
+            }
+
             Icon(
-                painter = painterResource(
-                    if (value.isNullOrEmpty())
-                        R.drawable.ic_arrow_forward
-                    else
-                        R.drawable.ic_clear
-                ),
+                painter = painterResource(iconRes),
                 contentDescription = null,
                 modifier = Modifier
                     .size(Dimens.SmallIconSize)
                     .clickable(
-                        enabled = !value.isNullOrEmpty(),
-                        onClick = onClear
-                    ),
+                        enabled = !value.isNullOrEmpty()
+                    ) {
+                        if (!value.isNullOrEmpty()) {
+                            onClear()
+                        }
+                    },
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -291,7 +292,7 @@ fun ApplyButton(
                 color = Blue,
                 shape = RoundedCornerShape(Dimens.Radius12)
             )
-            .clickable(onClick = onClick),
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -313,7 +314,7 @@ fun ResetButton(
         modifier = modifier
             .fillMaxWidth()
             .height(Dimens.BottomApplyHeight)
-            .clickable(onClick = onClick),
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
