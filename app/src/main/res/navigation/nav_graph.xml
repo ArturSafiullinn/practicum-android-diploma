@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/filterSettingsFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.FilterSettingsFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.FilterSettingsFragment"
         android:label="FilterSettingsFragment">
         <action
             android:id="@+id/action_filterSettingsFragment_to_workPlaceFragment"
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/workPlaceFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.WorkPlaceFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.selectworkplace.WorkPlaceFragment"
         android:label="WorkPlaceFragment">
         <action
             android:id="@+id/action_workPlaceFragment_to_selectCountryFragment"
