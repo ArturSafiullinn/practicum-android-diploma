@@ -32,7 +32,6 @@ fun FilterSettingsScreen(
     workplace: String? = null,
     industry: String? = null,
 ) {
-
     var salary by remember { mutableStateOf("") }
     var noSalaryChecked by remember { mutableStateOf(false) }
 
@@ -51,7 +50,6 @@ fun FilterSettingsScreen(
                 .padding(Dimens.Space16),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -102,7 +100,6 @@ fun FilterSettingsScreen(
         }
     }
 }
-
 
 @Preview(name = "Light", showBackground = true)
 @Preview(

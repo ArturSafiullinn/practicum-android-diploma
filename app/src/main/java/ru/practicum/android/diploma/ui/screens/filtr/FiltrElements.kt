@@ -2,17 +2,17 @@ package ru.practicum.android.diploma.ui.screens.filtr
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
@@ -27,8 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.theme.Blue
@@ -45,15 +47,23 @@ fun ExpectedSalaryField(
     modifier: Modifier = Modifier
 ) {
     var isFocused by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     BasicTextField(
         value = value,
-        onValueChange = { newText ->
-            if (newText.isEmpty() || newText.all { it.isDigit() }) {
-                onValueChange(newText)
-            }
-        },
+        onValueChange = { handleSalaryInput(it, onValueChange) },
         singleLine = true,
+
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done // 👈 кнопка "Готово / Применить"
+        ),
+
+        keyboardActions = KeyboardActions(
+            onDone = {
+                focusManager.clearFocus() // 👈 фокус ушёл, клавиатура закрылась
+            }
+        ),
+
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -62,72 +72,115 @@ fun ExpectedSalaryField(
             .fillMaxWidth()
             .height(Dimens.SalaryImputHeihgt)
             .onFocusChanged { isFocused = it.isFocused },
-
         decorationBox = { innerTextField ->
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(Dimens.Radius12)
-                    )
-                    .padding(horizontal = Dimens.Space16, vertical = Dimens.Space8)
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.salary_label),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = if (isFocused || value.isNotEmpty())
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.inverseSurface,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            )
-
-
-                            Box {
-                                if (value.isEmpty() && !isFocused) {
-                                    Text(
-                                        text = stringResource(R.string.salary_placeholder),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.inverseSurface,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
-
-                                innerTextField()
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .size(Dimens.SmallIconSize)
-                        ) {
-                            if (isFocused && value.isNotEmpty()) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_clear),
-                                    contentDescription = "Очистить",
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .clickable(onClick = onClear),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            SalaryDecoration(
+                value = value,
+                isFocused = isFocused,
+                onClear = onClear,
+                innerTextField = innerTextField
+            )
         }
+    )
+}
+
+private fun handleSalaryInput(
+    newText: String,
+    onValueChange: (String) -> Unit
+) {
+    if (newText.isEmpty() || newText.all(Char::isDigit)) {
+        onValueChange(newText)
+    }
+}
+
+@Composable
+private fun SalaryDecoration(
+    value: String,
+    isFocused: Boolean,
+    onClear: () -> Unit,
+    innerTextField: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(Dimens.Radius12)
+            )
+            .padding(horizontal = Dimens.Space16, vertical = Dimens.Space8)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SalaryTextContent(
+                value = value,
+                isFocused = isFocused,
+                innerTextField = innerTextField,
+                modifier = Modifier.weight(1f)
+            )
+
+            SalaryClearIcon(
+                visible = isFocused && value.isNotEmpty(),
+                onClick = onClear
+            )
+        }
+    }
+}
+
+@Composable
+private fun SalaryTextContent(
+    value: String,
+    isFocused: Boolean,
+    innerTextField: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        SalaryLabel(isFocused, value)
+
+        Box {
+            if (value.isEmpty() && !isFocused) {
+                Text(
+                    text = stringResource(R.string.salary_placeholder),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.inverseSurface
+                )
+            }
+            innerTextField()
+        }
+    }
+}
+
+@Composable
+private fun SalaryLabel(
+    isFocused: Boolean,
+    value: String
+) {
+    Text(
+        text = stringResource(R.string.salary_label),
+        style = MaterialTheme.typography.labelMedium,
+        color = if (isFocused) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
+    )
+}
+
+@Composable
+private fun SalaryClearIcon(
+    visible: Boolean,
+    onClick: () -> Unit
+) {
+    if (!visible) {
+        return
+    }
+
+    Icon(
+        painter = painterResource(R.drawable.ic_clear),
+        contentDescription = null,
+        modifier = Modifier
+            .size(Dimens.SmallIconSize)
+            .clickable(onClick = onClick),
+        tint = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
 
