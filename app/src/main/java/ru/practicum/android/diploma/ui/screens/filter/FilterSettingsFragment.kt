@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.filtr
+package ru.practicum.android.diploma.ui.screens.filter
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.fragment.findNavController

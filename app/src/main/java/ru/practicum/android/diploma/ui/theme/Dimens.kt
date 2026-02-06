@@ -29,7 +29,7 @@ object Dimens {
     val ListSpacerInitialHeight = 38.dp
 
     val SearchFieldHeight = 56.dp // поле поиска
-    val SalaryImputHeihgt = 51.dp
+    val SalaryInputHeight = 51.dp
     val BottomBarHeight = 57.dp
     val BottomApplyHeight = 59.dp
     val TopAppBarHeight = 64.dp

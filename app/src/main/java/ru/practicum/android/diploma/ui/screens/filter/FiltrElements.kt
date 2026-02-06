@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.filtr
+package ru.practicum.android.diploma.ui.screens.filter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -70,7 +70,7 @@ fun ExpectedSalaryField(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .height(Dimens.SalaryImputHeihgt)
+            .height(Dimens.SalaryInputHeight)
             .onFocusChanged { isFocused = it.isFocused },
         decorationBox = { innerTextField ->
             SalaryDecoration(
@@ -254,7 +254,6 @@ fun SalaryFilterItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically

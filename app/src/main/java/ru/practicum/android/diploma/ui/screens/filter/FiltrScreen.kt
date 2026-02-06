@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.filtr
+package ru.practicum.android.diploma.ui.screens.filter
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement

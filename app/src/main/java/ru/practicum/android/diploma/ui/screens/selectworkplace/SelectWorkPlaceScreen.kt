@@ -13,8 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
-import ru.practicum.android.diploma.ui.screens.filtr.ApplyButton
-import ru.practicum.android.diploma.ui.screens.filtr.FilterClickableField
+import ru.practicum.android.diploma.ui.screens.filter.ApplyButton
+import ru.practicum.android.diploma.ui.screens.filter.FilterClickableField
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens
 

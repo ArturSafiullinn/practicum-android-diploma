@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/filterSettingsFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.filtr.FilterSettingsFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.FilterSettingsFragment"
         android:label="FilterSettingsFragment">
         <action
             android:id="@+id/action_filterSettingsFragment_to_workPlaceFragment"
