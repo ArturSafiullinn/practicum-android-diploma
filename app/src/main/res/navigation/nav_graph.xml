@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/workPlaceFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.WorkPlaceFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.selectworkplace.WorkPlaceFragment"
         android:label="WorkPlaceFragment">
         <action
             android:id="@+id/action_workPlaceFragment_to_selectCountryFragment"

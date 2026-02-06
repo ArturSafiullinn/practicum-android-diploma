@@ -277,10 +277,12 @@ fun SalaryFilterItem(
 
 @Composable
 fun ApplyButton(
-    text: String = stringResource(R.string.apply_button_text),
+    text: String? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val buttonText = text ?: stringResource(R.string.apply_button_text)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -293,7 +295,7 @@ fun ApplyButton(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = text,
+            text = buttonText,
             color = White,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center

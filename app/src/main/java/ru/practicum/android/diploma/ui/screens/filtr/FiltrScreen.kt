@@ -90,6 +90,7 @@ fun FilterSettingsScreen(
                 verticalArrangement = Arrangement.spacedBy(Dimens.Space8)
             ) {
                 ApplyButton(
+                    text = stringResource(R.string.apply_button_text),
                     onClick = onApplyClick
                 )
 
