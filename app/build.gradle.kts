@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
     id("org.jetbrains.kotlin.kapt")
-    id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {
@@ -58,7 +58,9 @@ dependencies {
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
     implementation(libs.ui.tooling.preview)
+    implementation(libs.room.runtime)
     debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.compose.runtime.livedata)
 
     // Navigation
     implementation(libs.androidx.navigation.fragment)
@@ -82,6 +84,7 @@ dependencies {
     // Images
     implementation(libs.glide.core)
     kapt(libs.glide.compiler)
+    implementation(libs.coil.compose)
 
     implementation(libs.kotlinx.coroutines.android)
 
@@ -94,4 +97,5 @@ dependencies {
     // endregion
 
     implementation(libs.koin.android)
+    implementation(libs.coil.compose)
 }

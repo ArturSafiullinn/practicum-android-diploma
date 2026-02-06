@@ -6,14 +6,13 @@ const val DEBOUNCE_SEARCH_DELAY = 2000L
 
 // Аргументы
 const val SEARCH_FILTERS = "search_filters"
-const val VACANCY = "vacancy"
+const val ARGS_VACANCY_ID = "vacancy_id"
 
-// API
 const val API_BASE_URL = "https://practicum-diploma-8bc38133faba.herokuapp.com/"
-
-// Ошибки Retrofit
-const val INTERNAL_SERVER_ERROR = 500
-const val NOTHING_FOUND = 404
+const val HTTP_OK = 200
+const val NOT_CONNECTED_CODE = -1
+const val SERVER_INTERNAL_ERROR = 500
+const val NOT_FOUND_CODE = 404
 
 // Параметры экрана поиска
 const val PAGE_SIZE = 20
@@ -33,4 +32,6 @@ const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрыти�
 
 // region Тэги для логов
 const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
+const val TAG_COIL_DEBUG = "Coil Debug"
+const val TAG_VACANCY_VIEW_MODEL = "VacancyViewModel"
 // endregion

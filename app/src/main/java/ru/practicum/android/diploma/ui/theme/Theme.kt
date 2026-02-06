@@ -24,9 +24,12 @@ private val LightColorScheme = lightColorScheme(
     surface = White,
     onSurface = Black,
 
-    // Серые контейнеры (TextField фон и т.п.) в светлой теме -> Gray100
+    // Серые контейнеры (TextField фон и т.п.)
     surfaceVariant = Gray100,
-    onSurfaceVariant = Black
+    onSurfaceVariant = Black,
+
+    // цвет комментариев в окнах( поиск, выбор региона, ожидаемая зп)
+    inverseSurface = Gray400
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -44,7 +47,10 @@ private val DarkColorScheme = darkColorScheme(
 
     // Серые контейнеры (TextField фон и т.п.) в тёмной теме -> Gray400
     surfaceVariant = Gray400,
-    onSurfaceVariant = Black
+    onSurfaceVariant = Black,
+
+    // цвет комментариев в окнах( поиск, выбор региона, ожидаемая зп)
+    inverseSurface = White
 )
 
 @Composable
