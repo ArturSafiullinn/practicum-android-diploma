@@ -74,6 +74,7 @@
     <string name="no_salary_checkbox">Не показывать без зарплаты</string>
     <string name="country">Страна</string>
     <string name="region">Регион</string>
+    <string name="enter_region">Введите регион</string>
 
 
     <!-- Button Texts -->
