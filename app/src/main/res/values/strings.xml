@@ -72,6 +72,9 @@
     <string name="workplace">Место работы</string>
     <string name="industry">Отрасль</string>
     <string name="no_salary_checkbox">Не показывать без зарплаты</string>
+    <string name="country">Страна</string>
+    <string name="region">Регион</string>
+
 
     <!-- Button Texts -->
     <string name="select_button_text">Выбрать</string>
