@@ -55,12 +55,12 @@
 
     <fragment
         android:id="@+id/selectCountryFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectCountryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.SelectCountryFragment"
         android:label="SelectCountryFragment" />
 
     <fragment
         android:id="@+id/selectRegionFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectRegionFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.SelectRegionFragment"
         android:label="SelectRegionFragment" />
 
     <fragment

@@ -42,6 +42,7 @@ fun SearchScreen(
         ) {
             SearchInputField(
                 query = query,
+                placeholder = stringResource(R.string.enter_your_query),
                 onQueryChange = onQueryChange,
                 onClearQuery = onClearQuery
             )

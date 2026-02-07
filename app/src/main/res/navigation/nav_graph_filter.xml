@@ -20,11 +20,11 @@
     </fragment>
     <fragment
         android:id="@+id/selectCountryFragment2"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectCountryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.SelectCountryFragment"
         android:label="SelectCountryFragment" />
     <fragment
         android:id="@+id/selectRegionFragment2"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectRegionFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.SelectRegionFragment"
         android:label="SelectRegionFragment" />
     <fragment
         android:id="@+id/workPlaceFragment2"
