@@ -19,9 +19,11 @@ val domainModule = module {
         SalaryFormatter(get(), get())
     }
 
-    single { TitleFormatter(
-        resourceProvider = get()
-    ) }
+    single {
+        TitleFormatter(
+            resourceProvider = get()
+        )
+    }
 
     factory<VacancyInteractor> {
         VacancyInteractorImpl(

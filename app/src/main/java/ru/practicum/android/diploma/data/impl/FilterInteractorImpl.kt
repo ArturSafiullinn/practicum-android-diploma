@@ -2,12 +2,12 @@ package ru.practicum.android.diploma.data.impl
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.practicum.android.diploma.data.storage.PrefsStorageClient
+import ru.practicum.android.diploma.data.StorageClient
 import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.domain.models.FilterParameters
 
 class FilterInteractorImpl(
-    private val storage: PrefsStorageClient<FilterParameters>
+    val storage: StorageClient<FilterParameters>
 ) : FilterInteractor {
 
     private var filter: FilterParameters = storage.getData() ?: FilterParameters()
