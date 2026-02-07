@@ -58,7 +58,7 @@ class SelectRegionFragment : BaseComposeFragment() {
                 viewModel.onSearchQueryChanged(query)
             },
             onRegionSelect = { area ->
-                sharedViewModel.saveCountry(area)
+                sharedViewModel.saveRegion(area)
                 findNavController().popBackStack()
             },
         )
