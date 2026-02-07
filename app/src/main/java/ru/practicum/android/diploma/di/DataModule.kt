@@ -7,6 +7,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import ru.practicum.android.diploma.data.db.AppDatabase
 import ru.practicum.android.diploma.data.db.dao.VacancyDetailDao
+import ru.practicum.android.diploma.data.impl.IndustriesRepositoryImpl
+import ru.practicum.android.diploma.domain.api.IndustriesRepository
 
 val dataModule = module {
 
@@ -28,5 +30,11 @@ val dataModule = module {
         GsonBuilder()
             .serializeNulls()
             .create()
+    }
+
+    factory<IndustriesRepository> {
+        IndustriesRepositoryImpl(
+            networkClient = get()
+        )
     }
 }
