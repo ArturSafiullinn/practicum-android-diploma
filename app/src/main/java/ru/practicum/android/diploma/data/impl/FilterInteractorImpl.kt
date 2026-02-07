@@ -7,7 +7,7 @@ import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.domain.models.FilterParameters
 
 class FilterInteractorImpl(
-    val storage: StorageClient<FilterParameters>
+    private val storage: StorageClient<FilterParameters>
 ) : FilterInteractor {
 
     private var filter: FilterParameters = storage.getData() ?: FilterParameters()
