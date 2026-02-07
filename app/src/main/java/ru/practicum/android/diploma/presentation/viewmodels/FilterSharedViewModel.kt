@@ -43,7 +43,6 @@ class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewMode
     private var country: Area? = null
     private var region: Area? = null
 
-
     fun saveCountry(area: Area) {
         country = area
         region = null
