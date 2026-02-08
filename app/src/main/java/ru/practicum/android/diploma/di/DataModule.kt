@@ -43,7 +43,7 @@ val dataModule = module {
             networkClient = get()
         )
     }
-    
+
     single<StorageClient<FilterParameters>> {
         PrefsStorageClient(
             context = get(),
