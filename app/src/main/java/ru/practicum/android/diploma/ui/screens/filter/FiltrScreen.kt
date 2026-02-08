@@ -51,7 +51,6 @@ fun FilterSettingsScreen(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
-
                 FilterClickableField(
                     label = stringResource(R.string.workplace),
                     value = state.jobLocation.takeIf { it.isNotBlank() },

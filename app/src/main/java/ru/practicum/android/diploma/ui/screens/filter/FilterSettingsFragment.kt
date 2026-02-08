@@ -25,8 +25,12 @@ class FilterSettingsFragment : BaseComposeFragment() {
         FilterSettingsScreen(
             state = state as FilterUiState.FilterDisplay,
             onBackClick = { findNavController().popBackStack() },
-            onWorkPlaceClick = { findNavController().navigate(R.id.action_filterSettingsFragment_to_workPlaceFragment) },
-            onIndustryClick = { findNavController().navigate(R.id.action_filterSettingsFragment_to_selectIndustryFragment) },
+            onWorkPlaceClick = {
+                findNavController().navigate(R.id.action_filterSettingsFragment_to_workPlaceFragment)
+            },
+            onIndustryClick = {
+                findNavController().navigate(R.id.action_filterSettingsFragment_to_selectIndustryFragment)
+            },
 
             onSalaryChange = { viewModel.saveSalary(it) },
             onWithSalaryChange = { viewModel.saveOnlyWithSalary(it) },
