@@ -10,10 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,17 +20,21 @@ import ru.practicum.android.diploma.ui.theme.Dimens
 
 @Composable
 fun FilterSettingsScreen(
+    state: FilterUiState.FilterDisplay,
     onBackClick: () -> Unit,
     onWorkPlaceClick: () -> Unit,
     onIndustryClick: () -> Unit,
+
+    onSalaryChange: (String) -> Unit,
+    onWithSalaryChange: (Boolean) -> Unit,
+
+    onClearWorkplace: () -> Unit,
+    onClearIndustry: () -> Unit,
+    onClearSalary: () -> Unit,
+
     onApplyClick: () -> Unit,
     onResetClick: () -> Unit,
-    workplace: String? = null,
-    industry: String? = null,
 ) {
-    var salary by remember { mutableStateOf("") }
-    var noSalaryChecked by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             BackTopAppBar(
@@ -50,38 +50,37 @@ fun FilterSettingsScreen(
                 .padding(Dimens.Space16),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+
                 FilterClickableField(
                     label = stringResource(R.string.workplace),
-                    value = workplace,
-                    placeholder = "Место работы",
+                    value = state.jobLocation.takeIf { it.isNotBlank() },
+                    placeholder = stringResource(R.string.workplace),
                     onClick = onWorkPlaceClick,
-                    onClear = {}
+                    onClear = onClearWorkplace
                 )
 
                 FilterClickableField(
                     label = stringResource(R.string.industry),
-                    value = industry,
-                    placeholder = "Отрасль",
+                    value = state.industry.takeIf { it.isNotBlank() },
+                    placeholder = stringResource(R.string.industry),
                     onClick = onIndustryClick,
-                    onClear = {}
+                    onClear = onClearIndustry
                 )
 
                 Spacer(modifier = Modifier.height(Dimens.Space24))
 
                 ExpectedSalaryField(
-                    value = salary,
-                    onValueChange = { salary = it },
-                    onClear = { salary = "" }
+                    value = state.salary,
+                    onValueChange = onSalaryChange,
+                    onClear = onClearSalary
                 )
 
                 Spacer(modifier = Modifier.height(Dimens.Space24))
 
                 SalaryFilterItem(
-                    checked = noSalaryChecked,
-                    onCheckedChange = { noSalaryChecked = it }
+                    checked = state.withSalary,
+                    onCheckedChange = onWithSalaryChange
                 )
             }
 
@@ -94,27 +93,27 @@ fun FilterSettingsScreen(
                     onClick = onApplyClick
                 )
 
-                ResetButton(
-                    onClick = onResetClick
-                )
+                ResetButton(onClick = onResetClick)
             }
         }
     }
 }
 
 @Preview(name = "Light", showBackground = true)
-@Preview(
-    name = "Dark",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
+@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun FilterSettingsScreenPreview() {
     AppTheme {
         FilterSettingsScreen(
+            state = FilterUiState.FilterDisplay(),
             onBackClick = {},
             onWorkPlaceClick = {},
             onIndustryClick = {},
+            onSalaryChange = {},
+            onWithSalaryChange = {},
+            onClearWorkplace = {},
+            onClearIndustry = {},
+            onClearSalary = {},
             onApplyClick = {},
             onResetClick = {}
         )
@@ -122,20 +121,25 @@ fun FilterSettingsScreenPreview() {
 }
 
 @Preview(name = "Filled - Light", showBackground = true)
-@Preview(
-    name = "Filled - Dark",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
+@Preview(name = "Filled - Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun FilterSettingsFilledPreview() {
     AppTheme {
         FilterSettingsScreen(
+            state = FilterUiState.FilterDisplay(
+                jobLocation = "Удалённая работа",
+                industry = "IT / Разработка",
+                salary = "200000",
+                withSalary = true
+            ),
             onBackClick = {},
             onWorkPlaceClick = {},
             onIndustryClick = {},
-            workplace = "Удалённая работа",
-            industry = "IT / Разработка",
+            onSalaryChange = {},
+            onWithSalaryChange = {},
+            onClearWorkplace = {},
+            onClearIndustry = {},
+            onClearSalary = {},
             onApplyClick = {},
             onResetClick = {}
         )

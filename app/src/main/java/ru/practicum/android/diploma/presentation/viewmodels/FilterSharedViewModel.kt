@@ -72,4 +72,20 @@ class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewMode
             updateScreen()
         }
     }
+
+    fun saveSalary(value: String) {
+        salary = value
+        updateScreen()
+        viewModelScope.launch {
+            interactor.saveSalary(value)
+        }
+    }
+
+    fun saveOnlyWithSalary(enabled: Boolean) {
+        withSalary = enabled
+        updateScreen()
+        viewModelScope.launch {
+            interactor.saveOnlyWithSalary(enabled)
+        }
+    }
 }
