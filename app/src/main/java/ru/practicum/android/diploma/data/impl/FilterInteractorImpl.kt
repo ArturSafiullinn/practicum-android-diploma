@@ -24,20 +24,30 @@ class FilterInteractorImpl(
         storage.storeData(filter)
     }
 
-    override suspend fun updateIndustry(industryId: Int?, industryDisplayName: String?) = withContext(Dispatchers.IO) {
+    override suspend fun updateIndustry(
+        industryId: Int?,
+        industryDisplayName: String?
+    ) = withContext(Dispatchers.IO) {
         filter = filter.copy(
             industryId = industryId,
-            industryDisplayName = if (industryId == null) null else (industryDisplayName ?: filter.industryDisplayName)
+            industryDisplayName = if (industryId == null)
+                null
+            else
+                industryDisplayName ?: filter.industryDisplayName
         )
-        storage.storeData(filter)
     }
 
-    override suspend fun updateArea(areaId: Int?, areaDisplayName: String?) = withContext(Dispatchers.IO) {
+    override suspend fun updateArea(
+        areaId: Int?,
+        areaDisplayName: String?
+    ) = withContext(Dispatchers.IO) {
         filter = filter.copy(
             areaId = areaId,
-            areaDisplayName = if (areaId == null) null else (areaDisplayName ?: filter.areaDisplayName)
+            areaDisplayName = if (areaId == null)
+                null
+            else
+                areaDisplayName ?: filter.areaDisplayName
         )
-        storage.storeData(filter)
     }
 
     override suspend fun reset() = withContext(Dispatchers.IO) {
