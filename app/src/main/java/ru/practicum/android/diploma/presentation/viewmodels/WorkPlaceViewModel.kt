@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.ui.screens.selectworkplace.WorkPlaceUiState
 
-
 class WorkPlaceViewModel(private val filterInteractor: FilterInteractor) : ViewModel() {
 
     private val _state = MutableStateFlow(WorkPlaceUiState())
