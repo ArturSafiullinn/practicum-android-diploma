@@ -11,7 +11,6 @@ import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewMode
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 
 class FilterSettingsFragment : BaseComposeFragment() {
-
     private val viewModel: FilterSharedViewModel by viewModel()
 
     @Composable
@@ -23,10 +22,8 @@ class FilterSettingsFragment : BaseComposeFragment() {
             viewModel.updateScreen()
         }
 
-        val displayState = (state as? FilterUiState.FilterDisplay) ?: FilterUiState.FilterDisplay()
-
         FilterSettingsScreen(
-            state = displayState,
+            state = state as FilterUiState.FilterDisplay,
             onBackClick = { findNavController().popBackStack() },
             onWorkPlaceClick = { findNavController().navigate(R.id.action_filterSettingsFragment_to_workPlaceFragment) },
             onIndustryClick = { findNavController().navigate(R.id.action_filterSettingsFragment_to_selectIndustryFragment) },
