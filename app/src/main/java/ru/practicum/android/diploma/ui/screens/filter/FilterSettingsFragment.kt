@@ -31,9 +31,7 @@ class FilterSettingsFragment : BaseComposeFragment() {
         }
 
         // For testing: show all vars
-        Column(Modifier
-            .fillMaxSize()
-            .padding(40.dp)) {
+        Column(Modifier.fillMaxSize().padding(40.dp)) {
             filter?.let {
                 Text(text = "Job Location: ${it.jobLocation}")
                 Text(text = "Industry: ${it.industry}")
