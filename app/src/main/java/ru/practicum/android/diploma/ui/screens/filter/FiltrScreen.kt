@@ -10,31 +10,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens
 
 @Composable
 fun FilterSettingsScreen(
+    filterState: FilterParameters,
     onBackClick: () -> Unit,
     onWorkPlaceClick: () -> Unit,
     onIndustryClick: () -> Unit,
     onApplyClick: () -> Unit,
     onResetClick: () -> Unit,
-    workplace: String? = null,
-    industry: String? = null,
+    onSalaryChange: (String) -> Unit,
+    onOnlyWithSalaryChange: (Boolean) -> Unit,
+    onClearWorkplace: () -> Unit,
+    onClearIndustry: () -> Unit,
 ) {
-    var salary by remember { mutableStateOf("") }
-    var noSalaryChecked by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             BackTopAppBar(
@@ -55,33 +52,33 @@ fun FilterSettingsScreen(
             ) {
                 FilterClickableField(
                     label = stringResource(R.string.workplace),
-                    value = workplace,
-                    placeholder = "Место работы",
+                    value = filterState.areaDisplayName,
+                    placeholder = stringResource(R.string.workplace),
                     onClick = onWorkPlaceClick,
-                    onClear = {}
+                    onClear = onClearWorkplace
                 )
 
                 FilterClickableField(
                     label = stringResource(R.string.industry),
-                    value = industry,
-                    placeholder = "Отрасль",
+                    value = filterState.industryDisplayName,
+                    placeholder = stringResource(R.string.industry),
                     onClick = onIndustryClick,
-                    onClear = {}
+                    onClear = onClearIndustry
                 )
 
                 Spacer(modifier = Modifier.height(Dimens.Space24))
 
                 ExpectedSalaryField(
-                    value = salary,
-                    onValueChange = { salary = it },
-                    onClear = { salary = "" }
+                    value = filterState.salary,
+                    onValueChange = onSalaryChange,
+                    onClear = { onSalaryChange("") }
                 )
 
                 Spacer(modifier = Modifier.height(Dimens.Space24))
 
                 SalaryFilterItem(
-                    checked = noSalaryChecked,
-                    onCheckedChange = { noSalaryChecked = it }
+                    checked = filterState.onlyWithSalary,
+                    onCheckedChange = onOnlyWithSalaryChange
                 )
             }
 
@@ -112,11 +109,16 @@ fun FilterSettingsScreen(
 fun FilterSettingsScreenPreview() {
     AppTheme {
         FilterSettingsScreen(
+            filterState = FilterParameters(),
             onBackClick = {},
             onWorkPlaceClick = {},
             onIndustryClick = {},
             onApplyClick = {},
-            onResetClick = {}
+            onResetClick = {},
+            onSalaryChange = {},
+            onOnlyWithSalaryChange = {},
+            onClearWorkplace = {},
+            onClearIndustry = {}
         )
     }
 }
@@ -131,13 +133,19 @@ fun FilterSettingsScreenPreview() {
 fun FilterSettingsFilledPreview() {
     AppTheme {
         FilterSettingsScreen(
+            filterState = FilterParameters(
+                areaDisplayName = "Удалённая работа",
+                industryDisplayName = "IT / Разработка"
+            ),
             onBackClick = {},
             onWorkPlaceClick = {},
             onIndustryClick = {},
-            workplace = "Удалённая работа",
-            industry = "IT / Разработка",
             onApplyClick = {},
-            onResetClick = {}
+            onResetClick = {},
+            onSalaryChange = {},
+            onOnlyWithSalaryChange = {},
+            onClearWorkplace = {},
+            onClearIndustry = {}
         )
     }
 }

@@ -22,6 +22,7 @@ fun SearchScreen(
     onClearQuery: () -> Unit,
     onQueryChange: (String) -> Unit,
     onFilterClick: () -> Unit,
+    filtersActive: Boolean = false,
     onVacancyClick: (String) -> Unit,
     onLoadNextPage: () -> Unit
 ) {
@@ -29,7 +30,8 @@ fun SearchScreen(
         topBar = {
             SearchTopAppBar(
                 title = stringResource(R.string.search_vacancies),
-                onFilterClick = onFilterClick
+                onFilterClick = onFilterClick,
+                filtersActive = filtersActive
             )
         }
     ) { paddingValues ->
