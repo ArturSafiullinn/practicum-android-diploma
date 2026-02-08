@@ -30,9 +30,12 @@ class SelectRegionViewModel(
                 .collect { result ->
                     result
                         .onSuccess { response ->
-                            regions = response
-                                .filter { it.parentId == parentId }
-                                .sortedWith(compareBy { it.id != MOSCOW_REGION_ID })
+                            regions = if (parentId != null) {
+                                response.filter { it.parentId == parentId }
+                            } else {
+                                response.filter { it.parentId != null }
+                            }.sortedWith(compareBy { it.id != MOSCOW_REGION_ID })
+
                             _screenState.postValue(
                                 AreaUIState.Content(regions)
                             )
