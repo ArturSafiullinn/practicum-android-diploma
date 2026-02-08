@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.FilterInteractor
+import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.FilterParameters
 
 class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewModel() {
@@ -38,7 +39,22 @@ class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewMode
         }
     }
 
-    // Обновление области / региона
+    // Работа с фильтрами страны и региона
+    private var country: Area? = null
+    private var region: Area? = null
+
+    fun saveCountry(area: Area) {
+        country = area
+        region = null
+    }
+
+    fun saveRegion(area: Area) {
+        region = area
+    }
+
+    fun getCountry(): Area? = country
+    fun getRegion(): Area? = region
+
     fun updateArea(areaId: Int?) {
         viewModelScope.launch {
             interactor.updateArea(areaId)
