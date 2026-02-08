@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.filter.areafilter
+package ru.practicum.android.diploma.ui.screens.selectworkplace.selectarea
 
 import ru.practicum.android.diploma.domain.models.Area
 

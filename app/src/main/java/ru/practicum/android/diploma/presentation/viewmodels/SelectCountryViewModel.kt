@@ -8,7 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.AreaInteractor
 import ru.practicum.android.diploma.domain.models.Area
-import ru.practicum.android.diploma.ui.screens.filter.areafilter.AreaUIState
+import ru.practicum.android.diploma.ui.screens.selectworkplace.selectarea.AreaUIState
 import ru.practicum.android.diploma.util.OTHER_REGIONS_ID
 
 class SelectCountryViewModel(
