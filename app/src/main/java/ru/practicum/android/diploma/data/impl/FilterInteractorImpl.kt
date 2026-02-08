@@ -30,10 +30,11 @@ class FilterInteractorImpl(
     ) = withContext(Dispatchers.IO) {
         filter = filter.copy(
             industryId = industryId,
-            industryDisplayName = if (industryId == null)
+            industryDisplayName = if (industryId == null) {
                 null
-            else
+            } else {
                 industryDisplayName ?: filter.industryDisplayName
+            }
         )
     }
 
@@ -43,10 +44,11 @@ class FilterInteractorImpl(
     ) = withContext(Dispatchers.IO) {
         filter = filter.copy(
             areaId = areaId,
-            areaDisplayName = if (areaId == null)
+            areaDisplayName = if (areaId == null) {
                 null
-            else
+            } else {
                 areaDisplayName ?: filter.areaDisplayName
+            }
         )
     }
 
