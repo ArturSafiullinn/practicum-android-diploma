@@ -13,6 +13,8 @@ import ru.practicum.android.diploma.data.storage.PrefsStorageClient
 import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.util.SEARCH_FILTERS
 import ru.practicum.android.diploma.util.SHARED_PREFERENCES
+import ru.practicum.android.diploma.data.impl.IndustriesRepositoryImpl
+import ru.practicum.android.diploma.domain.api.IndustriesRepository
 
 val dataModule = module {
 
@@ -36,6 +38,12 @@ val dataModule = module {
             .create()
     }
 
+    factory<IndustriesRepository> {
+        IndustriesRepositoryImpl(
+            networkClient = get()
+        )
+    }
+    
     single<StorageClient<FilterParameters>> {
         PrefsStorageClient(
             context = get(),
