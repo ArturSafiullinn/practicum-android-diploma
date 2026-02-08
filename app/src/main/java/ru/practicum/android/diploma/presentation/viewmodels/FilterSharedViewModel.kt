@@ -58,7 +58,7 @@ class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewMode
         }
     }
 
-    fun getCountry(): Area? = country
+    suspend fun getCountry(): Area? = interactor.getCountry()
 
     // Сброс всех фильтров
     fun resetFilters() {
