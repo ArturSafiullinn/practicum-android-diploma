@@ -8,6 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.domain.api.SearchInteractor
 import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
@@ -18,8 +19,22 @@ import java.io.IOException
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
+    private val filterInteractor: FilterInteractor,
     private val vacancyListItemUiMapper: VacancyListItemUiMapper
 ) : ViewModel() {
+
+    private fun buildSearchParams(text: String, page: Int? = null): SearchParams {
+        val filter = filterInteractor.getFilter()
+        val salaryInt = filter.salary.trim().toIntOrNull()
+        return SearchParams(
+            text = text,
+            area = filter.areaId,
+            industry = filter.industryId,
+            salary = salaryInt,
+            onlyWithSalary = filter.onlyWithSalary.takeIf { it },
+            page = page
+        )
+    }
 
     private var searchJob: Job? = null
     private var lastQuery: String = ""
@@ -38,7 +53,7 @@ class SearchViewModel(
         viewModelScope.launch {
             _screenState.postValue(SearchUiState.Loading)
 
-            searchInteractor.search(SearchParams(text = lastQuery))
+            searchInteractor.search(buildSearchParams(lastQuery))
                 .collect { result ->
                     result
                         .onSuccess { response ->
@@ -88,12 +103,7 @@ class SearchViewModel(
 
             searchJob?.cancel()
             searchJob = viewModelScope.launch {
-                searchInteractor.search(
-                    SearchParams(
-                        text = lastQuery,
-                        page = nextPage
-                    )
-                ).collect { result ->
+                searchInteractor.search(buildSearchParams(lastQuery, page = nextPage)).collect { result ->
                     result
                         .onSuccess { response ->
                             requestedPages.add(nextPage)

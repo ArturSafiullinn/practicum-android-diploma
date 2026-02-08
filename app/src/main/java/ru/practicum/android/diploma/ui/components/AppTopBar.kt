@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
@@ -35,6 +36,7 @@ fun DiplomaTopAppBar(
     title: String,
     showBack: Boolean,
     showFilter: Boolean = false,
+    filtersActive: Boolean = false,
     showShare: Boolean = false,
     showFavorite: Boolean = false,
     isFavorite: Boolean = false,
@@ -62,6 +64,7 @@ fun DiplomaTopAppBar(
 
             AppBarActions(
                 showFilter = showFilter,
+                filtersActive = filtersActive,
                 showShare = showShare,
                 showFavorite = showFavorite,
                 isFavorite = isFavorite,
@@ -114,6 +117,7 @@ private enum class AppBarAction { Filter, Share, Favorite }
 @Composable
 private fun AppBarActions(
     showFilter: Boolean,
+    filtersActive: Boolean = false,
     showShare: Boolean,
     showFavorite: Boolean,
     isFavorite: Boolean,
@@ -135,7 +139,10 @@ private fun AppBarActions(
     ) {
         actions.forEach { action ->
             when (action) {
-                AppBarAction.Filter -> FilterAction(onFilterClick)
+                AppBarAction.Filter -> FilterAction(
+                    onFilterClick = onFilterClick,
+                    filtersActive = filtersActive
+                )
                 AppBarAction.Share -> ShareAction(onShareClick)
                 AppBarAction.Favorite -> FavoriteAction(
                     isFavorite = isFavorite,
@@ -147,11 +154,17 @@ private fun AppBarActions(
 }
 
 @Composable
-private fun FilterAction(onFilterClick: (() -> Unit)?) {
+private fun FilterAction(
+    onFilterClick: (() -> Unit)?,
+    filtersActive: Boolean = false
+) {
     IconButton(onClick = { onFilterClick?.invoke() }) {
         Icon(
-            painter = painterResource(R.drawable.ic_filter),
-            contentDescription = stringResource(R.string.filters)
+            painter = painterResource(
+                if (filtersActive) R.drawable.ic_filter_on else R.drawable.ic_filter
+            ),
+            contentDescription = stringResource(R.string.filters),
+            tint = if (filtersActive) Color.Unspecified else MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -183,12 +196,14 @@ private fun FavoriteAction(
 @Composable
 fun SearchTopAppBar(
     title: String,
-    onFilterClick: () -> Unit
+    onFilterClick: () -> Unit,
+    filtersActive: Boolean = false
 ) {
     DiplomaTopAppBar(
         title = title,
         showBack = false,
         showFilter = true,
+        filtersActive = filtersActive,
         onFilterClick = onFilterClick
     )
 }

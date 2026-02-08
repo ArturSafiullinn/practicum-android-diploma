@@ -7,8 +7,8 @@ interface FilterInteractor {
 
     suspend fun updateSalary(salary: String)
     suspend fun updateOnlyWithSalary(enabled: Boolean)
-    suspend fun updateIndustry(industryId: Int?)
-    suspend fun updateArea(areaId: Int?)
+    suspend fun updateIndustry(industryId: Int?, industryDisplayName: String? = null)
+    suspend fun updateArea(areaId: Int?, areaDisplayName: String? = null)
 
     suspend fun reset()
 }

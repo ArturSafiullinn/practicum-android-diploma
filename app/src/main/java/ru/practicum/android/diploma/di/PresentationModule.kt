@@ -57,6 +57,7 @@ val presentationModule = module {
     viewModel {
         SearchViewModel(
             searchInteractor = get(),
+            filterInteractor = get(),
             vacancyListItemUiMapper = get()
         )
     }
