@@ -21,6 +21,7 @@ class SelectRegionViewModel(
     val screenState: LiveData<AreaUIState> get() = _screenState
 
     private var regions: List<Area> = emptyList()
+    private var countries: List<Area> = emptyList()
 
     fun getRegions(parentId: Int?) {
         searchJob?.cancel()
@@ -39,6 +40,7 @@ class SelectRegionViewModel(
                             _screenState.postValue(
                                 AreaUIState.Content(regions)
                             )
+                            countries = response.filter { it.parentId == null }
                         }
                         .onFailure { _screenState.postValue(AreaUIState.Error) }
                 }
@@ -53,6 +55,10 @@ class SelectRegionViewModel(
         }
 
         _screenState.postValue(AreaUIState.Content(filtered))
+    }
+
+    fun getCountryByRegion(region: Area): Area {
+        return countries.first { it.id == region.parentId }
     }
 
     override fun onCleared() {

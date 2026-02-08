@@ -58,6 +58,8 @@ class SelectRegionFragment : BaseComposeFragment() {
                 viewModel.onSearchQueryChanged(query)
             },
             onRegionSelect = { area ->
+                val country = viewModel.getCountryByRegion(area)
+                sharedViewModel.saveCountry(country)
                 sharedViewModel.saveRegion(area)
                 findNavController().popBackStack()
             },
