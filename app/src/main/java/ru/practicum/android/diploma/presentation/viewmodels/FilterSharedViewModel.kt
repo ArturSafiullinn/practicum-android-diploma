@@ -47,7 +47,7 @@ class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewMode
         region = null
         viewModelScope.launch {
             interactor.saveCountry(area)
-            interactor.removeRegion()
+            interactor.saveRegion(null)
         }
     }
 

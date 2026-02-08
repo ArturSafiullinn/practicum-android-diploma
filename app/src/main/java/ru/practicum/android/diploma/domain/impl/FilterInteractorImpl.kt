@@ -13,7 +13,7 @@ class FilterInteractorImpl(
         repository.saveCountry(area)
     }
 
-    override suspend fun saveRegion(area: Area) {
+    override suspend fun saveRegion(area: Area?) {
         repository.saveRegion(area)
     }
 
@@ -51,9 +51,5 @@ class FilterInteractorImpl(
 
     override suspend fun reset() {
         repository.reset()
-    }
-
-    override suspend fun removeRegion() {
-        repository.removeRegion()
     }
 }

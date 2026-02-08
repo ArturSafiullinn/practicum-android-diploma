@@ -24,10 +24,11 @@ class FilterRepositoryImpl(
         }
     }
 
-    override suspend fun saveRegion(area: Area) {
-        val json = gson.toJson(area)
+    override suspend fun saveRegion(area: Area?) {
         prefs.edit {
-            putString(SELECTED_REGION, json)
+            area
+                ?.let { putString(SELECTED_REGION, gson.toJson(it)) }
+                ?: remove(SELECTED_REGION)
         }
     }
 
@@ -79,9 +80,5 @@ class FilterRepositoryImpl(
         prefs.edit { remove(SELECTED_INDUSTRY) }
         prefs.edit { remove(SELECTED_SALARY) }
         prefs.edit { remove(ONLY_WITH_SALARY) }
-    }
-
-    override suspend fun removeRegion() {
-        prefs.edit { remove(SELECTED_REGION) }
     }
 }

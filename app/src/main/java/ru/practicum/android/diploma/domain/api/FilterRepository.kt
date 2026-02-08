@@ -5,7 +5,7 @@ import ru.practicum.android.diploma.domain.models.FilterIndustry
 
 interface FilterRepository {
     suspend fun saveCountry(area: Area)
-    suspend fun saveRegion(area: Area)
+    suspend fun saveRegion(area: Area?)
     suspend fun saveIndustry(industry: FilterIndustry)
     suspend fun saveSalary(salary: String)
     suspend fun saveOnlyWithSalary(enabled: Boolean)
@@ -17,6 +17,4 @@ interface FilterRepository {
     suspend fun getOnlyWithSalary(): Boolean
 
     suspend fun reset()
-
-    suspend fun removeRegion()
 }
