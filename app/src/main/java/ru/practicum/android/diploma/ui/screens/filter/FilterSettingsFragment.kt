@@ -30,20 +30,16 @@ class FilterSettingsFragment : BaseComposeFragment() {
             viewModel.updateScreen()
         }
 
+        // For testing: show all vars
         Column(Modifier
             .fillMaxSize()
             .padding(40.dp)) {
-            // For testing: show all vars
-            Text(
-                text = filter?.let {
-                    """
-                Job Location: ${it.jobLocation}
-                Industry: ${it.industry}
-                Salary: ${it.salary}
-                With Salary: ${it.withSalary}
-                """.trimIndent()
-                } ?: "No filter selected"
-            )
+            filter?.let {
+                Text(text = "Job Location: ${it.jobLocation}")
+                Text(text = "Industry: ${it.industry}")
+                Text(text = "Salary: ${it.salary}")
+                Text(text = "With Salary: ${it.withSalary}")
+            }
             FilterSettingsScreen(
                 onBackClick = { findNavController().popBackStack() },
                 onWorkPlaceClick = {
@@ -58,4 +54,3 @@ class FilterSettingsFragment : BaseComposeFragment() {
         }
     }
 }
-

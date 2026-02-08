@@ -12,9 +12,9 @@ import ru.practicum.android.diploma.ui.screens.filter.FilterUiState
 
 class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewModel() {
 
-    lateinit var jobLocation: String
-    lateinit var industry: String
-    lateinit var salary: String
+    var jobLocation = ""
+    var industry = ""
+    var salary = ""
     var withSalary = false
 
     private val _filterState = MutableStateFlow<FilterUiState>(FilterUiState.FilterDisplay())
