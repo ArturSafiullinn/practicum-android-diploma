@@ -71,6 +71,7 @@
     <!-- Filter Settings -->
     <string name="workplace">Место работы</string>
     <string name="industry">Отрасль</string>
+    <string name="filter_not_selected">Не выбрано</string>
     <string name="no_salary_checkbox">Не показывать без зарплаты</string>
     <string name="country">Страна</string>
     <string name="region">Регион</string>
