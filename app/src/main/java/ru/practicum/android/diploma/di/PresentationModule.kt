@@ -67,7 +67,12 @@ val presentationModule = module {
     }
 
     viewModel { SelectCountryViewModel(areaInteractor = get()) }
-    viewModel { SelectRegionViewModel(areaInteractor = get()) }
+    viewModel {
+        SelectRegionViewModel(
+            areaInteractor = get(),
+            filterInteractor = get()
+        )
+    }
 
     single { HeadingDictionary(get()) }
     single { DescriptionParser(get()) }

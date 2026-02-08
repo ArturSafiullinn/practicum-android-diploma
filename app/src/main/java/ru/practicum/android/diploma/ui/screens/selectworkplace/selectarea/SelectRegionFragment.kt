@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.filter.areafilter
+package ru.practicum.android.diploma.ui.screens.selectworkplace.selectarea
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

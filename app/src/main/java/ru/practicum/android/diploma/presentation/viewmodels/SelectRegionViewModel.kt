@@ -7,12 +7,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.AreaInteractor
+import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.domain.models.Area
-import ru.practicum.android.diploma.ui.screens.filter.areafilter.AreaUIState
+import ru.practicum.android.diploma.ui.screens.selectworkplace.selectarea.AreaUIState
 import ru.practicum.android.diploma.util.MOSCOW_REGION_ID
 
 class SelectRegionViewModel(
     private val areaInteractor: AreaInteractor,
+    private val filterInteractor: FilterInteractor,
 ) : ViewModel() {
 
     private var searchJob: Job? = null
@@ -58,7 +60,12 @@ class SelectRegionViewModel(
     }
 
     fun getCountryByRegion(region: Area): Area {
-        return countries.first { it.id == region.parentId }
+        val country = countries.first { it.id == region.parentId }
+        viewModelScope.launch {
+            filterInteractor.saveCountry(country)
+            filterInteractor.saveRegion(region)
+        }
+        return country
     }
 
     override fun onCleared() {

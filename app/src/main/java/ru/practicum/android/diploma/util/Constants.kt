@@ -22,12 +22,11 @@ const val LAST_SEARCH_QUERY = "last_search_query"
 const val SHARED_PREFERENCES = "diploma_preferences"
 
 // Сохраненные настройки фильтров
-const val SELECTED_AREA_ID = "selected_area_id"
-const val SELECTED_AREA_NAME = "selected_area_name"
-const val SELECTED_INDUSTRY_ID = "selected_industry_id"
-const val SELECTED_INDUSTRY_NAME = "selected_industry_name"
-const val MIN_SALARY = "min_salary"
-const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрытия вакансий с необозначенной ЗП
+const val SELECTED_COUNTRY = "selected_country"
+const val SELECTED_REGION = "selected_region"
+const val SELECTED_INDUSTRY = "selected_industry"
+const val SELECTED_SALARY = "selected_salary"
+const val ONLY_WITH_SALARY = "only_with_salary"
 // endregion
 
 // region Тэги для логов
