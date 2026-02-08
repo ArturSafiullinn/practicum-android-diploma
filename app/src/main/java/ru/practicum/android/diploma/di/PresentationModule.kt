@@ -15,6 +15,7 @@ import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SelectCountryViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SelectRegionViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.WorkPlaceViewModel
 
 val presentationModule = module {
     // UI mappers and utility classes
@@ -76,4 +77,6 @@ val presentationModule = module {
 
     single { HeadingDictionary(get()) }
     single { DescriptionParser(get()) }
+
+    viewModel { WorkPlaceViewModel(filterInteractor = get()) }
 }
