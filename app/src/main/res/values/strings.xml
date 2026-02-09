@@ -37,6 +37,7 @@
     <string name="search_placeholder">Введите запрос</string>
     <string name="salary_label">Ожидаемая зарплата</string>
     <string name="salary_placeholder">Введите сумму</string>
+    <string name="type_industry">Введите отрасль</string>
 
     <!-- Empty States (Заголовки экранов пустышек: нет интернета и т.д. -->
     <string name="empty_state_no_internet">Нет интернета</string>
@@ -46,6 +47,7 @@
     <string name="empty_state_vacancy_load_error">Вакансия не найдена или удалена</string>
     <string name="empty_state_server_error">Ошибка сервера</string>
     <string name="empty_state_empty_favourites">Список пуст</string>
+    <string name="empty_state_no_such_idustry">Такой отрасли нет</string>
 
     <!-- Team Fragment -->
     <string name="team_fragment_description">Над приложением работали</string>

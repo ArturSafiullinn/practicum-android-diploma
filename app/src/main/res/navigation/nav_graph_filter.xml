@@ -39,6 +39,6 @@
     </fragment>
     <fragment
         android:id="@+id/selectIndustryFragment2"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectIndustryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryFragment"
         android:label="SelectIndustryFragment" />
 </navigation>
