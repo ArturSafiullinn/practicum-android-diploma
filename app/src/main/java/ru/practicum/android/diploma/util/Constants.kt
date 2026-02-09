@@ -38,3 +38,7 @@ const val TAG_COIL_DEBUG = "Coil Debug"
 const val TAG_VACANCY_VIEW_MODEL = "VacancyViewModel"
 const val TAG_INDUSTRIES_VIEW_MODEL = "IndustriesViewModel"
 // endregion
+
+// Areas
+const val OTHER_REGIONS_ID = 1001
+const val MOSCOW_REGION_ID = 1

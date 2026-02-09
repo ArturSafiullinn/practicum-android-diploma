@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/filterSettingsFragment2"
         android:name="ru.practicum.android.diploma.ui.screens.FilterSettingsFragment"
-        android:label="FilterSettingsFragment" >
+        android:label="FilterSettingsFragment">
         <action
             android:id="@+id/action_filterSettingsFragment2_to_workPlaceFragment2"
             app:destination="@id/workPlaceFragment2" />
@@ -20,16 +20,16 @@
     </fragment>
     <fragment
         android:id="@+id/selectCountryFragment2"
-        android:name="ru.practicum.android.diploma.ui.screens.filter.SelectCountryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.areafilter.SelectCountryFragment"
         android:label="SelectCountryFragment" />
     <fragment
         android:id="@+id/selectRegionFragment2"
-        android:name="ru.practicum.android.diploma.ui.screens.filter.SelectRegionFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.areafilter.SelectRegionFragment"
         android:label="SelectRegionFragment" />
     <fragment
         android:id="@+id/workPlaceFragment2"
         android:name="ru.practicum.android.diploma.ui.screens.WorkPlaceFragment"
-        android:label="WorkPlaceFragment" >
+        android:label="WorkPlaceFragment">
         <action
             android:id="@+id/action_workPlaceFragment2_to_selectRegionFragment2"
             app:destination="@id/selectRegionFragment2" />

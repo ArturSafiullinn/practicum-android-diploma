@@ -2,12 +2,12 @@ package ru.practicum.android.diploma.data.impl
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.practicum.android.diploma.data.storage.PrefsStorageClient
+import ru.practicum.android.diploma.data.StorageClient
 import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.domain.models.FilterParameters
 
 class FilterInteractorImpl(
-    private val storage: PrefsStorageClient<FilterParameters>
+    private val storage: StorageClient<FilterParameters>
 ) : FilterInteractor {
 
     private var filter: FilterParameters = storage.getData() ?: FilterParameters()
@@ -24,14 +24,32 @@ class FilterInteractorImpl(
         storage.storeData(filter)
     }
 
-    override suspend fun updateIndustry(industryId: Int?) = withContext(Dispatchers.IO) {
-        filter = filter.copy(industryId = industryId)
-        storage.storeData(filter)
+    override suspend fun updateIndustry(
+        industryId: Int?,
+        industryDisplayName: String?
+    ) = withContext(Dispatchers.IO) {
+        filter = filter.copy(
+            industryId = industryId,
+            industryDisplayName = if (industryId == null) {
+                null
+            } else {
+                industryDisplayName ?: filter.industryDisplayName
+            }
+        )
     }
 
-    override suspend fun updateArea(areaId: Int?) = withContext(Dispatchers.IO) {
-        filter = filter.copy(areaId = areaId)
-        storage.storeData(filter)
+    override suspend fun updateArea(
+        areaId: Int?,
+        areaDisplayName: String?
+    ) = withContext(Dispatchers.IO) {
+        filter = filter.copy(
+            areaId = areaId,
+            areaDisplayName = if (areaId == null) {
+                null
+            } else {
+                areaDisplayName ?: filter.areaDisplayName
+            }
+        )
     }
 
     override suspend fun reset() = withContext(Dispatchers.IO) {

@@ -1,14 +1,24 @@
 package ru.practicum.android.diploma.ui.screens.selectworkplace
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 
 class WorkPlaceFragment : BaseComposeFragment() {
 
+    private val sharedViewModel: FilterSharedViewModel by activityViewModel()
+
     @Composable
     override fun ScreenContent() {
+        val filterState by sharedViewModel.filterState.collectAsState()
+        val countryName = sharedViewModel.getCountry()?.name
+        val regionName = sharedViewModel.getRegion()?.name
+
         WorkPlaceScreen(
             onBackClick = { findNavController().popBackStack() },
             onCountryClick = {
@@ -21,7 +31,9 @@ class WorkPlaceFragment : BaseComposeFragment() {
                     R.id.action_workPlaceFragment_to_selectRegionFragment
                 )
             },
-            onApplyClick = {},
+            onApplyClick = { findNavController().popBackStack() },
+            country = countryName,
+            region = regionName
         )
     }
 }

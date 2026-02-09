@@ -1,8 +1,6 @@
-package ru.practicum.android.diploma.ui.screens.filter
+package ru.practicum.android.diploma.ui.screens.filter.areafilter
 
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,25 +14,37 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.Area
+import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.SelectCountryViewModel
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
+import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
-import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens
 
 class SelectCountryFragment : BaseComposeFragment() {
 
+    private val viewModel: SelectCountryViewModel by viewModel()
+    private val sharedViewModel: FilterSharedViewModel by activityViewModel()
+
     @Composable
     override fun ScreenContent() {
+        val state by viewModel.screenState.observeAsState(AreaUIState.Loading)
         SelectCountryScreen(
+            state = state,
             onBackClick = { findNavController().popBackStack() },
-            onCountrySelect = {
+            onCountrySelect = { area ->
+                sharedViewModel.saveCountry(area)
                 findNavController().popBackStack()
             }
         )
@@ -43,16 +53,10 @@ class SelectCountryFragment : BaseComposeFragment() {
 
 @Composable
 fun SelectCountryScreen(
+    state: AreaUIState,
     onBackClick: () -> Unit,
-    onCountrySelect: () -> Unit
+    onCountrySelect: (Area) -> Unit
 ) {
-    val countries = listOf(
-        "Россия",
-        "Казахстан",
-        "Беларусь",
-        "Армения",
-        "Грузия"
-    )
     Scaffold(
         topBar = {
             BackTopAppBar(
@@ -61,29 +65,38 @@ fun SelectCountryScreen(
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-
-            items(countries) { country ->
-                FilterClickable(
-                    text = country,
-                    onClick = { onCountrySelect() }
+        when (state) {
+            is AreaUIState.Loading -> {
+                CustomLoadingIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
                 )
             }
 
-            item {
-                FilterClickable(
-                    text = "Другие регионы",
-                    onClick = {}
+            is AreaUIState.Error -> {
+                Text(
+                    "Ошибка",
+                    modifier = Modifier.padding(padding)
                 )
+            }
+
+            is AreaUIState.Content -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
+                    items(state.areas) { area ->
+                        FilterClickable(
+                            text = area.name,
+                            onClick = { onCountrySelect(area) }
+                        )
+                    }
+                }
             }
         }
     }
 }
-
 
 @Composable
 fun FilterClickable(
@@ -111,22 +124,6 @@ fun FilterClickable(
             contentDescription = null,
             modifier = Modifier.size(Dimens.SmallIconSize),
             tint = MaterialTheme.colorScheme.onSurface
-        )
-    }
-}
-
-@Preview(name = "Light", showBackground = true)
-@Preview(
-    name = "Dark",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun SelectCountryScreenPreview() {
-    AppTheme {
-        SelectCountryScreen(
-            onBackClick = {},
-            onCountrySelect = {}
         )
     }
 }
