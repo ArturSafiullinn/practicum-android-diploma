@@ -43,32 +43,31 @@ class VacancyViewModel(
     private fun observeConnectivity() {
         viewModelScope.launch {
             var last = connectivityMonitor.hasInternet()
-            _hasInternet.value = last
+            handleConnectivityChanged(last)
 
             while (true) {
                 delay(CONNECTIVITY_CHECK_DELAY_MS)
 
                 val current = connectivityMonitor.hasInternet()
-                if (current != last) {
-                    _hasInternet.value = current
+                if (current == last) continue
 
-                    if (current) {
-                        val state = _screenState.value
-                        val shouldRetry =
-                            state is VacancyUiState.ServerError ||
-                                state is VacancyUiState.VacancyNotFound
-
-                        if (shouldRetry) {
-                            loadVacancy()
-                        }
-                    }
-
-                    last = current
-                }
+                handleConnectivityChanged(current)
+                last = current
             }
         }
     }
 
+    private fun shouldRetryLoad(state: VacancyUiState): Boolean {
+        return state is VacancyUiState.ServerError || state is VacancyUiState.VacancyNotFound
+    }
+
+    private fun handleConnectivityChanged(isConnected: Boolean) {
+        _hasInternet.value = isConnected
+
+        if (isConnected && shouldRetryLoad(_screenState.value)) {
+            loadVacancy()
+        }
+    }
     private fun loadVacancy() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
