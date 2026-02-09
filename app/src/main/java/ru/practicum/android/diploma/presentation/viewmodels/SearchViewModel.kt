@@ -8,8 +8,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.domain.api.SearchInteractor
+import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
@@ -19,12 +19,14 @@ import java.io.IOException
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
-    private val filterInteractor: FilterInteractor,
     private val vacancyListItemUiMapper: VacancyListItemUiMapper
 ) : ViewModel() {
 
-    private fun buildSearchParams(text: String, page: Int? = null): SearchParams {
-        val filter = filterInteractor.getFilter()
+    private fun buildSearchParams(
+        text: String,
+        filter: FilterParameters,
+        page: Int? = null
+    ): SearchParams {
         val salaryInt = filter.salary.trim().toIntOrNull()
         return SearchParams(
             text = text,
@@ -39,13 +41,14 @@ class SearchViewModel(
     private var searchJob: Job? = null
     private var lastQuery: String = ""
     private val requestedPages = mutableSetOf<Int>()
+
     private val _toast = MutableLiveData<Int?>()
-    val toast: MutableLiveData<Int?> get() = _toast
+    val toast: LiveData<Int?> get() = _toast
 
     private val _screenState = MutableLiveData<SearchUiState>(SearchUiState.Initial)
     val screenState: LiveData<SearchUiState> get() = _screenState
 
-    private fun onSearchSubmitted(query: String) {
+    private fun onSearchSubmitted(query: String, applied: FilterParameters) {
         searchJob?.cancel()
         lastQuery = query.trim()
         requestedPages.clear()
@@ -53,7 +56,7 @@ class SearchViewModel(
         viewModelScope.launch {
             _screenState.postValue(SearchUiState.Loading)
 
-            searchInteractor.search(buildSearchParams(lastQuery))
+            searchInteractor.search(buildSearchParams(lastQuery, applied))
                 .collect { result ->
                     result
                         .onSuccess { response ->
@@ -84,26 +87,28 @@ class SearchViewModel(
         }
     }
 
-    fun onSearchQueryChanged(query: String) {
+    fun onSearchQueryChanged(query: String, applied: FilterParameters) {
         searchJob?.cancel()
         if (query.isBlank() || query.trim() == lastQuery) return
 
         requestedPages.clear()
         searchJob = viewModelScope.launch {
             delay(DEBOUNCE_SEARCH_DELAY)
-            onSearchSubmitted(query)
+            onSearchSubmitted(query, applied)
         }
     }
 
-    fun loadNextPage() {
+    fun loadNextPage(applied: FilterParameters) {
         val current = _screenState.value as? SearchUiState.Content ?: return
-        if (shouldLoadNextPage(current)) {
-            _screenState.postValue(current.copy(isLoadingNextPage = true))
-            val nextPage = current.currentPage + 1
+        if (!shouldLoadNextPage(current)) return
 
-            searchJob?.cancel()
-            searchJob = viewModelScope.launch {
-                searchInteractor.search(buildSearchParams(lastQuery, page = nextPage)).collect { result ->
+        _screenState.postValue(current.copy(isLoadingNextPage = true))
+        val nextPage = current.currentPage + 1
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            searchInteractor.search(buildSearchParams(lastQuery, applied, page = nextPage))
+                .collect { result ->
                     result
                         .onSuccess { response ->
                             requestedPages.add(nextPage)
@@ -127,7 +132,6 @@ class SearchViewModel(
                             _toast.postValue(messageRes)
                         }
                 }
-            }
         }
     }
 
@@ -140,14 +144,13 @@ class SearchViewModel(
         super.onCleared()
     }
 
-    private fun shouldLoadNextPage(current: SearchUiState.Content): Boolean {
-        return when {
+    private fun shouldLoadNextPage(current: SearchUiState.Content): Boolean =
+        when {
             current.isLoadingNextPage -> false
             current.currentPage >= current.pages - 1 -> false
             requestedPages.contains(current.currentPage + 1) -> false
             else -> true
         }
-    }
 }
 
 private fun mergeUnique(
