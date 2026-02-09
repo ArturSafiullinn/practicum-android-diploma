@@ -23,7 +23,7 @@ class WorkPlaceFragment : BaseComposeFragment() {
             onBackClick = {
                 sharedViewModel.discardDraft()
                 findNavController().popBackStack()
-                          },
+            },
             onCountryClick = {
                 findNavController().navigate(
                     R.id.action_workPlaceFragment_to_selectCountryFragment
@@ -37,7 +37,7 @@ class WorkPlaceFragment : BaseComposeFragment() {
             onApplyClick = {
                 sharedViewModel.applyDraft()
                 findNavController().popBackStack()
-                           },
+            },
             country = countryName,
             region = regionName
         )

@@ -22,7 +22,7 @@ class FilterSettingsFragment : BaseComposeFragment() {
             onBackClick = {
                 viewModel.discardDraft()
                 findNavController().popBackStack()
-                          },
+            },
             onWorkPlaceClick = {
                 findNavController().navigate(R.id.action_filterSettingsFragment_to_workPlaceFragment)
             },
@@ -32,7 +32,7 @@ class FilterSettingsFragment : BaseComposeFragment() {
             onApplyClick = {
                 viewModel.applyDraft()
                 findNavController().popBackStack()
-                           },
+            },
             onResetClick = {
                 viewModel.resetApplied()
                 findNavController().popBackStack()
