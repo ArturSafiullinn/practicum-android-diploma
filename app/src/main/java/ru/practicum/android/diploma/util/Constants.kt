@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.util
 // Константы времени
 const val DEBOUNCE_CLICK_DELAY = 1000L
 const val DEBOUNCE_SEARCH_DELAY = 2000L
+const val CONNECTIVITY_CHECK_DELAY_MS = 2_000L
 
 // Аргументы
 const val SEARCH_FILTERS = "search_filters"
