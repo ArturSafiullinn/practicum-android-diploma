@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonColors
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,7 +39,7 @@ fun RadioItem(item: FilterIndustry, onItemClicked: (Int) -> Unit, isSelected: Bo
         RadioButton(
             modifier = Modifier.padding(Space12),
             selected = isSelected,
-            colors = RadioButtonColors(
+            colors = RadioButtonDefaults.colors(
                 selectedColor = Blue,
                 unselectedColor = Blue,
                 disabledSelectedColor = Blue,

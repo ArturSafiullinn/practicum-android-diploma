@@ -17,6 +17,8 @@ import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiSt
 import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.NoInternet
 import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.NothingFound
 import ru.practicum.android.diploma.util.ConnectivityMonitor
+import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY_SHORT
+import ru.practicum.android.diploma.util.Debouncer
 import ru.practicum.android.diploma.util.TAG_INDUSTRIES_VIEW_MODEL
 
 class SelectIndustryViewModel(
@@ -24,6 +26,7 @@ class SelectIndustryViewModel(
     val connectivityMonitor: ConnectivityMonitor
 ) :
     ViewModel() {
+    private val debouncer = Debouncer(viewModelScope)
     private var query: String = ""
     private var industriesFullList = listOf<FilterIndustry>()
 
@@ -34,19 +37,22 @@ class SelectIndustryViewModel(
         viewModelScope.launch {
             connectivityMonitor.isConnected
                 .collect { isConnected ->
-                    val currentState = _screenState.value
-
-                    when {
-                        isConnected && (
-                            currentState is Initial ||
-                                currentState is NoInternet ||
-                                currentState is Industries && currentState.industriesShown.isEmpty()
-                            ) -> {
-                            loadIndustries()
+                    when (isConnected) {
+                        true -> {
+                            val currentState = _screenState.value
+                            if (currentState.shouldLoadIndustries(
+                                    isFullListEmpty = industriesFullList.isEmpty()
+                                )
+                            ) {
+                                loadIndustries()
+                            }
                         }
 
-                        else -> {
-                            _screenState.update { NoInternet }
+                        false -> {
+                            val currentState = _screenState.value
+                            if (currentState is Initial || currentState is Loading) {
+                                _screenState.update { NoInternet }
+                            }
                         }
                     }
                 }
@@ -59,7 +65,11 @@ class SelectIndustryViewModel(
         if (query == trimmed) return
         query = trimmed
 
-        updateFilteredList()
+        debouncer.searchDebounce(
+            param = Unit,
+            action = { updateFilteredList() },
+            debounceDelay = DEBOUNCE_SEARCH_DELAY_SHORT
+        )
     }
 
     private fun loadIndustries() {
@@ -74,29 +84,40 @@ class SelectIndustryViewModel(
                     }
                     .onFailure { e ->
                         _screenState.value = Error
-                        Log.e(TAG_INDUSTRIES_VIEW_MODEL, e.message.toString())
+                        Log.e(TAG_INDUSTRIES_VIEW_MODEL, "Failed to load industries", e)
                     }
             }
         }
     }
 
     private fun updateFilteredList() {
-        if (industriesFullList.isEmpty()) return
+        val currentFullList = industriesFullList
 
-        val filtered = if (query.isBlank()) {
-            industriesFullList
-        } else {
-            industriesFullList.filter {
+        val filtered = when {
+            currentFullList.isEmpty() -> emptyList()
+            query.isBlank() -> currentFullList
+            else -> currentFullList.filter {
                 it.name.contains(query, ignoreCase = true)
             }
         }
 
-        _screenState.update {
+        _screenState.update { currentState ->
             when {
                 filtered.isNotEmpty() -> Industries(industriesShown = filtered)
-
+                currentState is Loading -> Loading
+                currentState is Initial -> Initial
                 else -> NothingFound
             }
         }
+    }
+
+    private fun SelectIndustryUiState.shouldLoadIndustries(
+        isFullListEmpty: Boolean
+    ): Boolean = when (this) {
+        is Initial,
+        is NoInternet -> true
+
+        is Industries -> industriesShown.isEmpty() && isFullListEmpty
+        else -> false
     }
 }
