@@ -60,7 +60,7 @@ class SelectIndustryFragment : BaseComposeFragment() {
             screenState = screenState,
             selectedIndustryId = selectedIndustryId,
             onIndustryClicked = { clickedIndustryId ->
-                selectedIndustryId = (if (selectedIndustryId == clickedIndustryId) null else clickedIndustryId)
+                selectedIndustryId = if (selectedIndustryId == clickedIndustryId) null else clickedIndustryId
             },
             onQueryChanged = { newQuery -> selectIndustryViewModel.onQueryChanged(newQuery) },
             onBackClick = { findNavController().popBackStack() },
