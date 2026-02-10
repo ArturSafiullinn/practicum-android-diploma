@@ -51,6 +51,7 @@ class SearchViewModel(
 
     private suspend fun onSearchSubmitted(query: String, applied: FilterParameters) {
         lastQuery = query.trim()
+        lastAppliedFilter = applied
         requestedPages.clear()
 
         _screenState.postValue(SearchUiState.Loading)
@@ -85,35 +86,52 @@ class SearchViewModel(
             }
     }
 
-    fun onAppliedFilterChanged(appliedFilters: FilterParameters) {
+    fun onAppliedFilterChanged(appliedFilters: FilterParameters, currentQuery: String) {
         searchJob?.cancel()
-        if (appliedFilters == lastAppliedFilter) return
-        if (lastQuery.isBlank()) return
+
+        val trimmed = currentQuery.trim()
+        val hasFilters = hasActiveFilters(appliedFilters)
+
+        if (trimmed.isBlank() && !hasFilters) {
+            clearSearch()
+            lastAppliedFilter = appliedFilters
+            return
+        }
+
+        if (appliedFilters == lastAppliedFilter && trimmed == lastQuery) return
 
         requestedPages.clear()
         searchJob = viewModelScope.launch {
-            onSearchSubmitted(
-                query = lastQuery.trim(),
-                applied = appliedFilters
-            )
+            onSearchSubmitted(query = trimmed, applied = appliedFilters)
             lastAppliedFilter = appliedFilters
         }
     }
+
+    private fun hasActiveFilters(filter: FilterParameters): Boolean =
+        filter.areaId != null ||
+            filter.industryId != null ||
+            filter.salary.isNotBlank() ||
+            filter.onlyWithSalary
 
     fun onSearchQueryChanged(query: String, applied: FilterParameters) {
         searchJob?.cancel()
 
         val trimmed = query.trim()
-        if (trimmed.isBlank()) {
+        val hasFilters = hasActiveFilters(applied)
+
+        if (trimmed.isBlank() && !hasFilters) {
             clearSearch()
+            lastAppliedFilter = applied
             return
         }
-        if (trimmed == lastQuery) return
+
+        if (trimmed == lastQuery && applied == lastAppliedFilter) return
 
         requestedPages.clear()
         searchJob = viewModelScope.launch {
             delay(DEBOUNCE_SEARCH_DELAY_LONG)
-            onSearchSubmitted(query, applied)
+            onSearchSubmitted(trimmed, applied)
+            lastAppliedFilter = applied
         }
     }
 
@@ -156,6 +174,11 @@ class SearchViewModel(
 
     fun clearToast() {
         _toast.value = null
+    }
+
+    fun syncBaseline(appliedFilters: FilterParameters, currentQuery: String) {
+        lastAppliedFilter = appliedFilters
+        lastQuery = currentQuery.trim()
     }
 
     private fun clearSearch() {
