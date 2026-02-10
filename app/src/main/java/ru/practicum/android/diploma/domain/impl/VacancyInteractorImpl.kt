@@ -10,7 +10,9 @@ import ru.practicum.android.diploma.domain.api.VacancyRepository
 import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.util.HTTP_OK
 import ru.practicum.android.diploma.util.NOT_CONNECTED_CODE
+import ru.practicum.android.diploma.util.TIMEOUT_CODE
 import java.io.IOException
+import java.net.SocketTimeoutException
 
 class VacancyInteractorImpl(
     private val repository: VacancyRepository,
@@ -49,11 +51,14 @@ class VacancyInteractorImpl(
         throwable: Throwable
     ): Result<VacancyDetail> {
         val local = repository.getVacancyLocal(vacancyId)
-        return if (local != null) {
-            Result.success(local)
-        } else {
-            Result.failure(IOException("Not Connected", throwable))
+        if (local != null) return Result.success(local)
+
+        val error = when (throwable) {
+            is SocketTimeoutException -> SocketTimeoutException("Request timeout")
+            is IOException -> IOException("Not Connected", throwable)
+            else -> throwable
         }
+        return Result.failure(error)
     }
 
     private suspend fun fallbackToLocalOrError(
@@ -69,10 +74,10 @@ class VacancyInteractorImpl(
     }
 
     private fun networkError(resultCode: Int): Result<VacancyDetail> {
-        return if (resultCode == NOT_CONNECTED_CODE) {
-            Result.failure(IOException("Not Connected"))
-        } else {
-            Result.failure(Throwable("Failed with code=$resultCode"))
+        return when (resultCode) {
+            NOT_CONNECTED_CODE -> Result.failure(IOException("Not Connected"))
+            TIMEOUT_CODE -> Result.failure(SocketTimeoutException("Request timeout"))
+            else -> Result.failure(Throwable("Failed with code=$resultCode"))
         }
     }
 

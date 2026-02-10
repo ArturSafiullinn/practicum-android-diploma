@@ -7,10 +7,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.utils.DescriptionParser
@@ -21,6 +21,7 @@ import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.TAG_VACANCY_VIEW_MODEL
 import ru.practicum.android.diploma.util.extensions.observeConnectivity
 import java.io.IOException
+import java.net.SocketTimeoutException
 
 class VacancyViewModel(
     private val vacancyId: String,
@@ -38,7 +39,7 @@ class VacancyViewModel(
     val hasInternet: StateFlow<Boolean> = _hasInternet.asStateFlow()
 
     private val _toast = MutableStateFlow<Int?>(null)
-    val toast: StateFlow<Int?> get() = _toast
+    val toast: StateFlow<Int?> = _toast.asStateFlow()
 
     private var loadJob: Job? = null
     private var connectivityJob: Job? = null
@@ -68,46 +69,49 @@ class VacancyViewModel(
 
             vacancyInteractor.fetchVacancy(vacancyId).collect { result ->
                 result
-                    .onSuccess { vacancy ->
-                        val isFavorite = vacancyInteractor.isFavorite(vacancy.id)
-                        val complete = vacancy.copy(isFavorite = isFavorite)
-
-                        val ui = vacancyDetailUiMapper.toUi(complete)
-
-                        val description = ui.description?.trim().orEmpty()
-                        val blocks = if (description.isBlank()) {
-                            emptyList()
-                        } else {
-                            descriptionParser.parseDescription(description)
-                        }
-
-                        _screenState.value = VacancyUiState.Vacancy(
-                            vacancyDetailDomain = complete,
-                            vacancyDetailUi = ui,
-                            descriptionBlocks = blocks
-                        )
-                    }
-                    .onFailure { e ->
-                        val state = when (e) {
-                            is IOException -> {
-                                _toast.update { R.string.toast_check_internet }
-                                VacancyUiState.NoInternet
-                            }
-
-                            else -> {
-                                _toast.update { R.string.toast_error }
-                                VacancyUiState.ServerError
-                            }
-                        }
-                        _screenState.update { state }
-                        Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString(), e)
-                    }
+                    .onSuccess { handleVacancySuccess(it) }
+                    .onFailure { handleVacancyFailure(it) }
             }
         }
     }
 
+    private suspend fun handleVacancySuccess(vacancy: VacancyDetail) {
+        val isFavorite = vacancyInteractor.isFavorite(vacancy.id)
+        val complete = vacancy.copy(isFavorite = isFavorite)
+
+        val ui = vacancyDetailUiMapper.toUi(complete)
+
+        val description = ui.description?.trim().orEmpty()
+        val blocks = if (description.isBlank()) emptyList() else descriptionParser.parseDescription(description)
+
+        _screenState.value = VacancyUiState.Vacancy(
+            vacancyDetailDomain = complete,
+            vacancyDetailUi = ui,
+            descriptionBlocks = blocks
+        )
+    }
+
+    private fun handleVacancyFailure(e: Throwable) {
+        val state = when (e) {
+            is SocketTimeoutException -> {
+                _toast.value = R.string.toast_error
+                VacancyUiState.ServerError
+            }
+            is IOException -> {
+                _toast.value = R.string.toast_check_internet
+                VacancyUiState.NoInternet
+            }
+            else -> {
+                _toast.value = R.string.toast_error
+                VacancyUiState.ServerError
+            }
+        }
+        _screenState.value = state
+        Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString(), e)
+    }
+
     fun onToastShown() {
-        _toast.update { null }
+        _toast.value = null
     }
 
     fun onFavoriteClicked() {
@@ -139,6 +143,7 @@ class VacancyViewModel(
     }
 
     override fun onCleared() {
+        connectivityJob?.cancel()
         loadJob?.cancel()
         connectivityJob?.cancel()
         super.onCleared()

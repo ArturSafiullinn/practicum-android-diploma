@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY_LONG
 import ru.practicum.android.diploma.util.extensions.observeConnectivity
 import java.io.IOException
+import java.net.SocketTimeoutException
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
@@ -76,6 +78,8 @@ class SearchViewModel(
     }
 
     private suspend fun onSearchSubmitted(query: String, applied: FilterParameters) {
+        val previousState = _screenState.value
+
         lastQuery = query.trim()
         lastAppliedFilter = applied
         requestedPages.clear()
@@ -112,7 +116,50 @@ class SearchViewModel(
                         }
                         _screenState.update { state }
                     }
+        try {
+            searchInteractor.search(buildSearchParams(lastQuery, applied))
+                .collect { result ->
+                    result
+                        .onSuccess { handleSearchFirstPageSuccess(it, applied) }
+                        .onFailure { handleSearchFailure(it) }
+                }
+        } catch (e: CancellationException) {
+            if (_screenState.value is SearchUiState.Loading) {
+                _screenState.postValue(previousState ?: SearchUiState.Initial)
             }
+            throw e
+        }
+    }
+
+    private fun handleSearchFirstPageSuccess(response: VacancyResponse, applied: FilterParameters) {
+        val filteredResponse = filterByArea(response, applied.areaId)
+
+        if (filteredResponse.items.isEmpty()) {
+            _screenState.postValue(SearchUiState.NoResults)
+            return
+        }
+
+        requestedPages.add(filteredResponse.page)
+        val uiItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
+
+        _screenState.postValue(
+            SearchUiState.Content(
+                pages = filteredResponse.pages,
+                currentPage = filteredResponse.page,
+                vacancies = uiItems,
+                isLoadingNextPage = false,
+                found = filteredResponse.found
+            )
+        )
+    }
+
+    private fun handleSearchFailure(e: Throwable) {
+        val state = when (e) {
+            is SocketTimeoutException -> SearchUiState.ServerError
+            is IOException -> SearchUiState.NotConnected
+            else -> SearchUiState.ServerError
+        }
+        _screenState.postValue(state)
     }
 
     fun onAppliedFilterChanged(appliedFilters: FilterParameters, currentQuery: String) {
@@ -135,12 +182,6 @@ class SearchViewModel(
             lastAppliedFilter = appliedFilters
         }
     }
-
-    private fun hasActiveFilters(filter: FilterParameters): Boolean =
-        filter.areaId != null ||
-            filter.industryId != null ||
-            filter.salary.isNotBlank() ||
-            filter.onlyWithSalary
 
     fun onSearchQueryChanged(query: String, applied: FilterParameters) {
         searchJob?.cancel()
@@ -202,7 +243,50 @@ class SearchViewModel(
                             _toast.postValue(messageRes)
                         }
                 }
+            try {
+                searchInteractor.search(buildSearchParams(lastQuery, applied, page = nextPage))
+                    .collect { result ->
+                        result
+                            .onSuccess { handleNextPageSuccess(current, it, applied, nextPage) }
+                            .onFailure { handleNextPageFailure(current, it) }
+                    }
+            } catch (e: CancellationException) {
+                _screenState.postValue(current.copy(isLoadingNextPage = false))
+                throw e
+            }
         }
+    }
+
+    private fun handleNextPageSuccess(
+        current: SearchUiState.Content,
+        response: VacancyResponse,
+        applied: FilterParameters,
+        nextPage: Int
+    ) {
+        val filteredResponse = filterByArea(response, applied.areaId)
+
+        requestedPages.add(nextPage)
+        val newItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
+
+        _screenState.postValue(
+            current.copy(
+                pages = filteredResponse.pages,
+                currentPage = filteredResponse.page,
+                vacancies = mergeUnique(current.vacancies, newItems),
+                isLoadingNextPage = false,
+                found = filteredResponse.found
+            )
+        )
+    }
+
+    private fun handleNextPageFailure(current: SearchUiState.Content, e: Throwable) {
+        _screenState.postValue(current.copy(isLoadingNextPage = false))
+        val messageRes = when (e) {
+            is SocketTimeoutException -> R.string.toast_error
+            is IOException -> R.string.toast_check_internet
+            else -> R.string.toast_error
+        }
+        _toast.postValue(messageRes)
     }
 
     fun clearToast() {
@@ -214,11 +298,18 @@ class SearchViewModel(
         lastQuery = currentQuery.trim()
     }
 
+    private fun hasActiveFilters(filter: FilterParameters): Boolean =
+        filter.areaId != null ||
+            filter.industryId != null ||
+            filter.salary.isNotBlank() ||
+            filter.onlyWithSalary
+
     private fun clearSearch() {
         searchJob?.cancel()
         searchJob = null
 
         lastQuery = ""
+        lastAppliedFilter = null
         requestedPages.clear()
 
         _screenState.update { SearchUiState.Initial }
@@ -229,11 +320,6 @@ class SearchViewModel(
         super.onCleared()
     }
 
-    /**
-     * Дополнительная клиентская фильтрация по стране/региону.
-     * Нужна на случай, если сервер по каким-то причинам возвращает вакансии
-     * с другими идентификаторами регионов.
-     */
     private fun filterByArea(
         response: VacancyResponse,
         areaId: Int?,
@@ -246,8 +332,6 @@ class SearchViewModel(
 
         return response.copy(
             items = filteredItems,
-            // found/pages/page оставляем как есть, чтобы не ломать пагинацию,
-            // но счётчик найденных вакансий можно скорректировать при необходимости.
         )
     }
 
