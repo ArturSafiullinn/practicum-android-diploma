@@ -37,9 +37,11 @@ class VacancyFragment : BaseComposeFragment() {
     @Composable
     override fun ScreenContent() {
         val screenState by viewModel.screenState.collectAsState()
+        val hasInternet by viewModel.hasInternet.collectAsState()
 
         VacancyScreen(
             screenState = screenState,
+            hasInternet = hasInternet,
             onBackClick = { findNavController().popBackStack() },
             onShareClick = { viewModel.onShareClicked() },
             onFavoriteClick = { viewModel.onFavoriteClicked() }
@@ -50,15 +52,20 @@ class VacancyFragment : BaseComposeFragment() {
 @Composable
 fun VacancyScreen(
     screenState: VacancyUiState,
+    hasInternet: Boolean,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFavoriteClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
+            val canShare =
+                hasInternet && (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.url?.isNotBlank() == true
+
             VacancyTopAppBar(
                 title = stringResource(R.string.vacancy),
                 isFavorite = (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.isFavorite ?: false,
+                showShare = canShare,
                 onBackClick = onBackClick,
                 onShareClick = onShareClick,
                 onFavoriteClick = onFavoriteClick
@@ -136,6 +143,7 @@ fun VacancyContent(
 fun Preview1() {
     VacancyScreen(
         screenState = VacancyUiState.ServerError(),
+        hasInternet = true,
         onBackClick = { },
         onShareClick = { }
     ) { }

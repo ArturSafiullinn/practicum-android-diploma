@@ -28,12 +28,13 @@ class Debouncer(private val coroutineScope: CoroutineScope) {
      */
     fun <T> searchDebounce(
         param: T,
-        action: (T) -> Unit
+        action: (T) -> Unit,
+        debounceDelay: Long = DEBOUNCE_SEARCH_DELAY_LONG
     ) {
         searchJob?.cancel()
 
         searchJob = coroutineScope.launch {
-            delay(DEBOUNCE_SEARCH_DELAY)
+            delay(debounceDelay)
             action(param)
         }
     }
