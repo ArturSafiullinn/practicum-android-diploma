@@ -11,6 +11,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.SearchInteractor
 import ru.practicum.android.diploma.domain.models.FilterParameters
 import ru.practicum.android.diploma.domain.models.SearchParams
+import ru.practicum.android.diploma.domain.models.VacancyResponse
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
@@ -60,18 +61,20 @@ class SearchViewModel(
             .collect { result ->
                 result
                     .onSuccess { response ->
-                        if (response.items.isEmpty()) {
+                        val filteredResponse = filterByArea(response, applied.areaId)
+
+                        if (filteredResponse.items.isEmpty()) {
                             _screenState.postValue(SearchUiState.NoResults)
                         } else {
-                            requestedPages.add(response.page)
-                            val uiItems = response.items.map { vacancyListItemUiMapper.toUi(it) }
+                            requestedPages.add(filteredResponse.page)
+                            val uiItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
                             _screenState.postValue(
                                 SearchUiState.Content(
-                                    pages = response.pages,
-                                    currentPage = response.page,
+                                    pages = filteredResponse.pages,
+                                    currentPage = filteredResponse.page,
                                     vacancies = uiItems,
                                     isLoadingNextPage = false,
-                                    found = response.found
+                                    found = filteredResponse.found
                                 )
                             )
                         }
@@ -148,15 +151,17 @@ class SearchViewModel(
                 .collect { result ->
                     result
                         .onSuccess { response ->
+                            val filteredResponse = filterByArea(response, applied.areaId)
+
                             requestedPages.add(nextPage)
-                            val newItems = response.items.map { vacancyListItemUiMapper.toUi(it) }
+                            val newItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
                             _screenState.postValue(
                                 current.copy(
-                                    pages = response.pages,
-                                    currentPage = response.page,
+                                    pages = filteredResponse.pages,
+                                    currentPage = filteredResponse.page,
                                     vacancies = mergeUnique(current.vacancies, newItems),
                                     isLoadingNextPage = false,
-                                    found = response.found
+                                    found = filteredResponse.found
                                 )
                             )
                         }
@@ -194,6 +199,28 @@ class SearchViewModel(
     override fun onCleared() {
         searchJob?.cancel()
         super.onCleared()
+    }
+
+    /**
+     * Дополнительная клиентская фильтрация по стране/региону.
+     * Нужна на случай, если сервер по каким-то причинам возвращает вакансии
+     * с другими идентификаторами регионов.
+     */
+    private fun filterByArea(
+        response: VacancyResponse,
+        areaId: Int?,
+    ): VacancyResponse {
+        val id = areaId ?: return response
+
+        val filteredItems = response.items.filter { vacancy ->
+            vacancy.area.id == id || vacancy.area.parentId == id
+        }
+
+        return response.copy(
+            items = filteredItems,
+            // found/pages/page оставляем как есть, чтобы не ломать пагинацию,
+            // но счётчик найденных вакансий можно скорректировать при необходимости.
+        )
     }
 
     private fun shouldLoadNextPage(current: SearchUiState.Content): Boolean =

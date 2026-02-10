@@ -13,12 +13,11 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 import ru.practicum.android.diploma.ui.theme.Dimens.Space32
 import ru.practicum.android.diploma.ui.theme.Dimens.Space4
-import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 
 @Composable
 fun VacancyExperienceAndSchedule(vacancy: VacancyDetailUi) {
     Column(Modifier.fillMaxWidth()) {
-        if (vacancy.experience != null) {
+        if (vacancy.experience != null || vacancy.schedule != null || vacancy.employment != null) {
             Text(
                 stringResource(R.string.required_experience),
                 style = MaterialTheme.typography.bodyMedium,
@@ -27,23 +26,31 @@ fun VacancyExperienceAndSchedule(vacancy: VacancyDetailUi) {
 
             Spacer(Modifier.height(Space4))
 
-            Text(
-                text = vacancy.experience,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        if (vacancy.schedule != null) {
-            if (vacancy.experience != null) {
-                Spacer(Modifier.height(Space8))
+            // Первая строка — опыт работы
+            vacancy.experience?.let { experience ->
+                Text(
+                    text = experience,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
-            Text(
-                text = vacancy.schedule,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        if (vacancy.experience != null || vacancy.schedule != null) {
+
+            // Вторая строка — занятость и тип работы (график),
+            // например: "Полная занятость, Полный день"
+            val employmentAndSchedule = listOfNotNull(
+                vacancy.employment,
+                vacancy.schedule
+            ).takeIf { it.isNotEmpty() }?.joinToString(separator = ", ")
+
+            employmentAndSchedule?.let { line ->
+                Spacer(Modifier.height(Space4))
+                Text(
+                    text = line,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
             Spacer(Modifier.height(Space32))
         }
     }
