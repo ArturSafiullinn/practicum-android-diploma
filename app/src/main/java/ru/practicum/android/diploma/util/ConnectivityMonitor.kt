@@ -14,53 +14,50 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.stateIn
 
 class ConnectivityMonitor(context: Context) {
-    private val connectivityManager = context.getSystemService(
-        Context.CONNECTIVITY_SERVICE
-    ) as? ConnectivityManager
+
+    private val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
     val isConnected: StateFlow<Boolean> = callbackFlow {
+        fun sendCurrent(network: Network? = connectivityManager?.activeNetwork) {
+            trySend(hasValidatedInternet(network))
+        }
+
         val callback = object : ConnectivityManager.NetworkCallback() {
+
             override fun onAvailable(network: Network) {
-                trySend(true)
+                sendCurrent(network)
             }
 
             override fun onLost(network: Network) {
-                trySend(false)
+                sendCurrent(connectivityManager?.activeNetwork)
             }
 
-            override fun onCapabilitiesChanged(
-                network: Network,
-                networkCapabilities: NetworkCapabilities
-            ) {
-                val hasInternet = networkCapabilities.hasCapability(
-                    NetworkCapabilities.NET_CAPABILITY_INTERNET
-                ) && networkCapabilities.hasCapability(
-                    NetworkCapabilities.NET_CAPABILITY_VALIDATED
-                )
-                trySend(hasInternet)
+            override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+                val validated = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                    caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                trySend(validated)
             }
         }
 
         connectivityManager?.registerDefaultNetworkCallback(callback)
-        trySend(isCurrentlyConnected())
+        sendCurrent()
 
-        awaitClose {
-            connectivityManager?.unregisterNetworkCallback(callback)
-        }
+        awaitClose { connectivityManager?.unregisterNetworkCallback(callback) }
     }.stateIn(
         scope = CoroutineScope(Dispatchers.Main.immediate),
         started = SharingStarted.WhileSubscribed(CONNECTIVITY_STOP_TIMEOUT_MS),
-        initialValue = isCurrentlyConnected()
+        initialValue = hasValidatedInternet(connectivityManager?.activeNetwork)
     )
 
-    private fun isCurrentlyConnected(): Boolean = runCatching {
-        connectivityManager
-            ?.activeNetwork
-            ?.let { connectivityManager.getNetworkCapabilities(it) }
-            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ?: false
-
-    }.getOrElse { exception ->
-        Log.e(TAG_CONNECTIVITY_MONITOR, exception.message, exception)
+    private fun hasValidatedInternet(network: Network?): Boolean = runCatching {
+        val cm = connectivityManager ?: return false
+        val net = network ?: return false
+        val caps = cm.getNetworkCapabilities(net) ?: return false
+        caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    }.getOrElse { e ->
+        Log.e(TAG_CONNECTIVITY_MONITOR, e.message, e)
         false
     }
 }
