@@ -14,7 +14,7 @@ import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
-import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY
+import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY_LONG
 import java.io.IOException
 
 class SearchViewModel(
@@ -93,8 +93,8 @@ class SearchViewModel(
 
         requestedPages.clear()
         searchJob = viewModelScope.launch {
-            delay(DEBOUNCE_SEARCH_DELAY)
-            onSearchSubmitted(trimmed)
+            delay(DEBOUNCE_SEARCH_DELAY_LONG)
+            onSearchSubmitted(query)
         }
     }
 

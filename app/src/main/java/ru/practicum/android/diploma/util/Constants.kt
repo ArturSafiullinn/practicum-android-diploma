@@ -2,7 +2,10 @@ package ru.practicum.android.diploma.util
 
 // Константы времени
 const val DEBOUNCE_CLICK_DELAY = 1000L
-const val DEBOUNCE_SEARCH_DELAY = 2000L
+const val DEBOUNCE_SEARCH_DELAY_LONG = 2000L
+const val DEBOUNCE_SEARCH_DELAY_SHORT = 500L
+const val CONNECTIVITY_STOP_TIMEOUT_MS = 5000L
+const val BUTTON_ANIMATION_DURATION = 300
 
 // Аргументы
 const val SEARCH_FILTERS = "search_filters"
@@ -34,6 +37,7 @@ const val ONLY_WITH_SALARY = "only_with_salary" // Флаг для скрыти�
 const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
 const val TAG_COIL_DEBUG = "Coil Debug"
 const val TAG_VACANCY_VIEW_MODEL = "VacancyViewModel"
+const val TAG_INDUSTRIES_VIEW_MODEL = "IndustriesViewModel"
 // endregion
 
 // Areas
