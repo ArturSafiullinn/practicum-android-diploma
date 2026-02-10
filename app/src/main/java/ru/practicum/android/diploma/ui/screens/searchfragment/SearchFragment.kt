@@ -60,10 +60,10 @@ class SearchFragment : BaseComposeFragment() {
         LaunchedEffect(appliedFilter) {
             if (skipFirstApplied) {
                 skipFirstApplied = false
-                viewModel.syncBaseline(appliedFilter, query) // <-- ВАЖНО
-                return@LaunchedEffect
+                viewModel.syncBaseline(appliedFilter, query)
+            } else {
+                viewModel.onAppliedFilterChanged(appliedFilter, query)
             }
-            viewModel.onAppliedFilterChanged(appliedFilter, query)
         }
 
         SearchScreen(
