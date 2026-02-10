@@ -84,7 +84,19 @@ class VacancyDetailDtoMapper {
                 id = it.id,
                 name = it.name,
                 email = it.email,
-                phone = it.phone
+                phone = it.phones
+                    ?.mapNotNull { phoneDto ->
+                        val number = phoneDto.formatted?.trim().orEmpty()
+                        if (number.isBlank()) return@mapNotNull null
+
+                        val comment = phoneDto.comment?.trim().orEmpty()
+                        if (comment.isNotEmpty()) {
+                            "$number ($comment)"
+                        } else {
+                            number
+                        }
+                    }
+                    ?.takeIf { phones -> phones.isNotEmpty() }
             )
         }
     }

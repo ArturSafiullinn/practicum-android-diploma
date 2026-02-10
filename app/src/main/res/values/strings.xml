@@ -69,6 +69,11 @@
     <string name="required_experience">Требуемый опыт</string>
     <string name="vacancy_description">Описание вакансии</string>
     <string name="required_skills">Ключевые навыки</string>
+    <string name="contacts">Контакты</string>
+    <string name="choose_email_client">Выберите почтовый клиент</string>
+    <string name="choose_call_app">Выберите приложение для звонка</string>
+    <string name="no_email_app">Нет доступного почтового приложения</string>
+    <string name="no_call_app">Нет приложения для звонков</string>
 
     <!-- Filter Settings -->
     <string name="workplace">Место работы</string>

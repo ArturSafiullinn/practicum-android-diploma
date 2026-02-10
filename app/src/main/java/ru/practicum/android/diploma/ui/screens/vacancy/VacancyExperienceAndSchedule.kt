@@ -43,7 +43,17 @@ fun VacancyExperienceAndSchedule(vacancy: VacancyDetailUi) {
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-        if (vacancy.experience != null || vacancy.schedule != null) {
+        if (vacancy.employment != null) {
+            if (vacancy.experience != null || vacancy.schedule != null) {
+                Spacer(Modifier.height(Space8))
+            }
+            Text(
+                text = vacancy.employment,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        if (vacancy.experience != null || vacancy.schedule != null || vacancy.employment != null) {
             Spacer(Modifier.height(Space32))
         }
     }
