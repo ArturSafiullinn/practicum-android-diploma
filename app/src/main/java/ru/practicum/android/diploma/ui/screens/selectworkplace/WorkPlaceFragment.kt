@@ -42,6 +42,8 @@ class WorkPlaceFragment : BaseComposeFragment() {
                     R.id.action_workPlaceFragment_to_selectRegionFragment
                 )
             },
+            onClearCountry = { sharedViewModel.clearAreaDraft() },
+            onClearRegion = { sharedViewModel.clearRegionDraft() },
             onApplyClick = {
                 sharedViewModel.applyDraft()
                 findNavController().popBackStack()
