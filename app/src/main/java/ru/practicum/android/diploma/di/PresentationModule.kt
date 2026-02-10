@@ -12,6 +12,7 @@ import ru.practicum.android.diploma.presentation.utils.HeadingDictionary
 import ru.practicum.android.diploma.presentation.viewmodels.FavoritesViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.SelectIndustryViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SelectCountryViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SelectRegionViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
@@ -66,7 +67,12 @@ val presentationModule = module {
             interactor = get()
         )
     }
-
+    viewModel {
+        SelectIndustryViewModel(
+            industriesInteractor = get(),
+            connectivityMonitor = get()
+        )
+    }
     viewModel { SelectCountryViewModel(areaInteractor = get()) }
     viewModel { SelectRegionViewModel(areaInteractor = get()) }
 
