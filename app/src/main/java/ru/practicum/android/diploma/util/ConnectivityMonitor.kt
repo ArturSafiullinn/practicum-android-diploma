@@ -53,7 +53,7 @@ class ConnectivityMonitor(context: Context) {
         initialValue = isCurrentlyConnected()
     )
 
-    fun isCurrentlyConnected(): Boolean = runCatching {
+    private fun isCurrentlyConnected(): Boolean = runCatching {
         connectivityManager
             ?.activeNetwork
             ?.let { connectivityManager.getNetworkCapabilities(it) }
