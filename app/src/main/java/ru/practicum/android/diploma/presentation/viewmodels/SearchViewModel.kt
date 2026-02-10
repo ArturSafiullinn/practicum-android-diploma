@@ -40,6 +40,7 @@ class SearchViewModel(
 
     private var searchJob: Job? = null
     private var lastQuery: String = ""
+    private var lastAppliedFilter: FilterParameters? = null
     private val requestedPages = mutableSetOf<Int>()
 
     private val _toast = MutableLiveData<Int?>()
@@ -82,6 +83,21 @@ class SearchViewModel(
                         _screenState.postValue(state)
                     }
             }
+    }
+
+    fun onAppliedFilterChanged(appliedFilters: FilterParameters) {
+        searchJob?.cancel()
+        if (appliedFilters == lastAppliedFilter) return
+        if (lastQuery.isBlank()) return
+
+        requestedPages.clear()
+        searchJob = viewModelScope.launch {
+            onSearchSubmitted(
+                query = lastQuery.trim(),
+                applied = appliedFilters
+            )
+            lastAppliedFilter = appliedFilters
+        }
     }
 
     fun onSearchQueryChanged(query: String, applied: FilterParameters) {
@@ -142,7 +158,7 @@ class SearchViewModel(
         _toast.value = null
     }
 
-    fun clearSearch() {
+    private fun clearSearch() {
         searchJob?.cancel()
         searchJob = null
 
