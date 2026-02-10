@@ -30,7 +30,7 @@ class VacancyViewModel(
     private val _screenState = MutableStateFlow<VacancyUiState>(VacancyUiState.Loading)
     val screenState: StateFlow<VacancyUiState> = _screenState.asStateFlow()
 
-    private val _hasInternet = MutableStateFlow(connectivityMonitor.hasInternet())
+    private val _hasInternet = MutableStateFlow(connectivityMonitor.isCurrentlyConnected())
     val hasInternet: StateFlow<Boolean> = _hasInternet.asStateFlow()
 
     private var loadJob: Job? = null
@@ -42,13 +42,13 @@ class VacancyViewModel(
 
     private fun observeConnectivity() {
         viewModelScope.launch {
-            var last = connectivityMonitor.hasInternet()
+            var last = connectivityMonitor.isCurrentlyConnected()
             handleConnectivityChanged(last)
 
             while (true) {
                 delay(CONNECTIVITY_CHECK_DELAY_MS)
 
-                val current = connectivityMonitor.hasInternet()
+                val current = connectivityMonitor.isCurrentlyConnected()
                 if (current == last) continue
 
                 handleConnectivityChanged(current)
