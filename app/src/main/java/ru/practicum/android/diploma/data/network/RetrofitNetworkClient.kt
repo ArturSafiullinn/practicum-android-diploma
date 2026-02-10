@@ -4,9 +4,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.TimeoutCancellationException
 import retrofit2.HttpException
 import ru.practicum.android.diploma.data.AreasRequest
 import ru.practicum.android.diploma.data.AreasResponse
@@ -23,6 +23,7 @@ import ru.practicum.android.diploma.util.HTTP_OK
 import ru.practicum.android.diploma.util.NETWORK_REQUEST_TIMEOUT_MS
 import ru.practicum.android.diploma.util.NOT_CONNECTED_CODE
 import ru.practicum.android.diploma.util.SERVER_INTERNAL_ERROR
+import ru.practicum.android.diploma.util.TIMEOUT_CODE
 
 class RetrofitNetworkClient(
     private val context: Context,
@@ -70,7 +71,7 @@ class RetrofitNetworkClient(
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
             } catch (_: TimeoutCancellationException) {
-                Response(resultCode = NOT_CONNECTED_CODE)
+                Response(resultCode = TIMEOUT_CODE)
             } catch (_: Throwable) {
                 Response(resultCode = SERVER_INTERNAL_ERROR)
             }

@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.util
 
 import ru.practicum.android.diploma.data.Response
 import java.io.IOException
+import java.net.SocketTimeoutException
 
 object ResponseHandler {
     fun <T> handleResponse(
@@ -15,6 +16,10 @@ object ResponseHandler {
 
             NOT_CONNECTED_CODE -> {
                 Result.failure(IOException("Not Connected"))
+            }
+
+            TIMEOUT_CODE -> {
+                Result.failure(SocketTimeoutException("Request timeout"))
             }
 
             NOT_FOUND_CODE -> {

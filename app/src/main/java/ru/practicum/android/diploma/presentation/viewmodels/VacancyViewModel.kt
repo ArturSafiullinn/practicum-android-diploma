@@ -17,6 +17,7 @@ import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState
 import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.TAG_VACANCY_VIEW_MODEL
 import java.io.IOException
+import java.net.SocketTimeoutException
 
 class VacancyViewModel(
     private val vacancyId: String,
@@ -41,8 +42,8 @@ class VacancyViewModel(
     private var wasConnected: Boolean? = null
 
     init {
-        observeConnectivity()
         loadVacancy()
+        observeConnectivity()
     }
 
     private fun observeConnectivity() {
@@ -62,7 +63,7 @@ class VacancyViewModel(
                     }
                 }
 
-                if (isConnected && _screenState.value.shouldRetryLoad()) {
+                if (prev == false && isConnected && _screenState.value.shouldRetryLoad()) {
                     loadVacancy()
                 }
             }
@@ -97,6 +98,10 @@ class VacancyViewModel(
                     }
                     .onFailure { e ->
                         val state = when (e) {
+                            is SocketTimeoutException -> {
+                                _toast.value = R.string.toast_error
+                                VacancyUiState.ServerError
+                            }
                             is IOException -> {
                                 _toast.value = R.string.toast_check_internet
                                 VacancyUiState.NoInternet
