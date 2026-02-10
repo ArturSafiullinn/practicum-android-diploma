@@ -229,6 +229,7 @@ fun BackTopAppBar(
 fun VacancyTopAppBar(
     title: String,
     isFavorite: Boolean,
+    showShare: Boolean,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFavoriteClick: () -> Unit
@@ -236,7 +237,7 @@ fun VacancyTopAppBar(
     DiplomaTopAppBar(
         title = title,
         showBack = true,
-        showShare = true,
+        showShare = showShare,
         showFavorite = true,
         isFavorite = isFavorite,
         onBackClick = onBackClick,

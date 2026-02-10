@@ -52,7 +52,8 @@ val presentationModule = module {
             externalNavigator = get(),
             vacancyDetailUiMapper = get(),
             vacancyInteractor = get(),
-            descriptionParser = get()
+            descriptionParser = get(),
+            connectivityMonitor = get()
         )
     }
     viewModel {

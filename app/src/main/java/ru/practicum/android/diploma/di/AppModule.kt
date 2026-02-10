@@ -9,11 +9,13 @@ import ru.practicum.android.diploma.data.mappers.VacancyResponseDtoMapper
 import ru.practicum.android.diploma.domain.api.SearchInteractor
 import ru.practicum.android.diploma.domain.api.SearchRepository
 import ru.practicum.android.diploma.domain.impl.SearchInteractorImpl
+import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.ResourceProvider
 
 val appModule = module {
 
     single { ResourceProvider(get()) }
+    single { ConnectivityMonitor(get()) }
 
     factory<SearchInteractor> {
         SearchInteractorImpl(
