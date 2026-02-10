@@ -20,7 +20,8 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Space4
 import ru.practicum.android.diploma.ui.theme.Dimens.Space6
 
 @Composable
-fun RadioItem(item: FilterIndustry, onItemClicked: (FilterIndustry) -> Unit, isSelected: Boolean) {    Row(
+fun RadioItem(item: FilterIndustry, onItemClicked: (FilterIndustry) -> Unit, isSelected: Boolean) {
+    Row(
         Modifier
             .fillMaxWidth()
             .clickable { onItemClicked(item) }
