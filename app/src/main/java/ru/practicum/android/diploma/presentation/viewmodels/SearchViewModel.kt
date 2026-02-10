@@ -48,13 +48,13 @@ class SearchViewModel(
     private val _screenState = MutableLiveData<SearchUiState>(SearchUiState.Initial)
     val screenState: LiveData<SearchUiState> get() = _screenState
 
-    private suspend fun onSearchSubmitted(query: String) {
+    private suspend fun onSearchSubmitted(query: String, applied: FilterParameters) {
         lastQuery = query.trim()
         requestedPages.clear()
 
         _screenState.postValue(SearchUiState.Loading)
 
-        searchInteractor.search(buildSearchParams(lastQuery))
+        searchInteractor.search(buildSearchParams(lastQuery, applied))
             .collect { result ->
                 result
                     .onSuccess { response ->
@@ -97,7 +97,7 @@ class SearchViewModel(
         requestedPages.clear()
         searchJob = viewModelScope.launch {
             delay(DEBOUNCE_SEARCH_DELAY_LONG)
-            onSearchSubmitted(query)
+            onSearchSubmitted(query, applied)
         }
     }
 
