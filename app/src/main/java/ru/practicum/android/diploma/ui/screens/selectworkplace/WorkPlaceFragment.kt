@@ -30,7 +30,6 @@ class WorkPlaceFragment : BaseComposeFragment() {
 
         WorkPlaceScreen(
             onBackClick = {
-                sharedViewModel.discardDraft()
                 findNavController().popBackStack()
             },
             onCountryClick = {
