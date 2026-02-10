@@ -32,57 +32,49 @@ class RetrofitNetworkClient(
 
     @Suppress("SwallowedException")
     override suspend fun doRequest(dto: Request): Response {
-        if (!isConnected()) {
-            return Response(resultCode = NOT_CONNECTED_CODE)
-        }
+        if (!isConnected()) return Response(resultCode = NOT_CONNECTED_CODE)
 
         return withContext(Dispatchers.IO) {
             try {
                 withTimeout(NETWORK_REQUEST_TIMEOUT_MS) {
-                    when (dto) {
-                        AreasRequest -> {
-                            val areas = apiService.getAreas()
-                            AreasResponse(areas, HTTP_OK)
-                        }
-
-                        IndustriesRequest -> {
-                            val industries = apiService.getIndustries()
-                            IndustriesResponse(industries, HTTP_OK)
-                        }
-
-                        is VacanciesRequest -> {
-                            val result = apiService.getVacancies(
-                                area = dto.area,
-                                industry = dto.industry,
-                                text = dto.text,
-                                salary = dto.salary,
-                                page = dto.page,
-                                onlyWithSalary = dto.onlyWithSalary
-                            )
-                            VacanciesResponse(result, HTTP_OK)
-                        }
-
-                        is VacancyDetailsRequest -> {
-                            val vacancy = apiService.getVacancyDetails(dto.id)
-                            VacancyDetailsResponse(vacancy, HTTP_OK)
-                        }
-                    }
+                    handleRequest(dto)
                 }
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
             } catch (_: TimeoutCancellationException) {
-                Response(resultCode = TIMEOUT_CODE)
+                Response(resultCode = TIMEOUT_CODE) // важно
             } catch (_: Throwable) {
                 Response(resultCode = SERVER_INTERNAL_ERROR)
             }
         }
     }
 
+    private suspend fun handleRequest(dto: Request): Response =
+        when (dto) {
+            AreasRequest -> AreasResponse(apiService.getAreas(), HTTP_OK)
+            IndustriesRequest -> IndustriesResponse(apiService.getIndustries(), HTTP_OK)
+            is VacanciesRequest -> VacanciesResponse(
+                apiService.getVacancies(
+                    area = dto.area,
+                    industry = dto.industry,
+                    text = dto.text,
+                    salary = dto.salary,
+                    page = dto.page,
+                    onlyWithSalary = dto.onlyWithSalary
+                ),
+                HTTP_OK
+            )
+            is VacancyDetailsRequest -> VacancyDetailsResponse(apiService.getVacancyDetails(dto.id), HTTP_OK)
+        }
+
     private fun isConnected(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = cm.activeNetwork ?: return false
-        val caps = cm.getNetworkCapabilities(network) ?: return false
-        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        val network = cm.activeNetwork
+        val caps = network?.let { cm.getNetworkCapabilities(it) }
+
+        return caps?.let {
+            it.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                it.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        } ?: false
     }
 }

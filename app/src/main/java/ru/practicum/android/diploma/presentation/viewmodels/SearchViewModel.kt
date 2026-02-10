@@ -65,33 +65,8 @@ class SearchViewModel(
             searchInteractor.search(buildSearchParams(lastQuery, applied))
                 .collect { result ->
                     result
-                        .onSuccess { response ->
-                            val filteredResponse = filterByArea(response, applied.areaId)
-
-                            if (filteredResponse.items.isEmpty()) {
-                                _screenState.postValue(SearchUiState.NoResults)
-                            } else {
-                                requestedPages.add(filteredResponse.page)
-                                val uiItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
-                                _screenState.postValue(
-                                    SearchUiState.Content(
-                                        pages = filteredResponse.pages,
-                                        currentPage = filteredResponse.page,
-                                        vacancies = uiItems,
-                                        isLoadingNextPage = false,
-                                        found = filteredResponse.found
-                                    )
-                                )
-                            }
-                        }
-                        .onFailure { e ->
-                            val state = when (e) {
-                                is SocketTimeoutException -> SearchUiState.ServerError
-                                is IOException -> SearchUiState.NotConnected
-                                else -> SearchUiState.ServerError
-                            }
-                            _screenState.postValue(state)
-                        }
+                        .onSuccess { handleSearchFirstPageSuccess(it, applied) }
+                        .onFailure { handleSearchFailure(it) }
                 }
         } catch (e: CancellationException) {
             if (_screenState.value is SearchUiState.Loading) {
@@ -100,6 +75,38 @@ class SearchViewModel(
             throw e
         }
     }
+
+    private fun handleSearchFirstPageSuccess(response: VacancyResponse, applied: FilterParameters) {
+        val filteredResponse = filterByArea(response, applied.areaId)
+
+        if (filteredResponse.items.isEmpty()) {
+            _screenState.postValue(SearchUiState.NoResults)
+            return
+        }
+
+        requestedPages.add(filteredResponse.page)
+        val uiItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
+
+        _screenState.postValue(
+            SearchUiState.Content(
+                pages = filteredResponse.pages,
+                currentPage = filteredResponse.page,
+                vacancies = uiItems,
+                isLoadingNextPage = false,
+                found = filteredResponse.found
+            )
+        )
+    }
+
+    private fun handleSearchFailure(e: Throwable) {
+        val state = when (e) {
+            is SocketTimeoutException -> SearchUiState.ServerError
+            is IOException -> SearchUiState.NotConnected
+            else -> SearchUiState.ServerError
+        }
+        _screenState.postValue(state)
+    }
+
 
     fun onAppliedFilterChanged(appliedFilters: FilterParameters, currentQuery: String) {
         searchJob?.cancel()
@@ -157,31 +164,8 @@ class SearchViewModel(
                 searchInteractor.search(buildSearchParams(lastQuery, applied, page = nextPage))
                     .collect { result ->
                         result
-                            .onSuccess { response ->
-                                val filteredResponse = filterByArea(response, applied.areaId)
-
-                                requestedPages.add(nextPage)
-                                val newItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
-
-                                _screenState.postValue(
-                                    current.copy(
-                                        pages = filteredResponse.pages,
-                                        currentPage = filteredResponse.page,
-                                        vacancies = mergeUnique(current.vacancies, newItems),
-                                        isLoadingNextPage = false,
-                                        found = filteredResponse.found
-                                    )
-                                )
-                            }
-                            .onFailure { e ->
-                                _screenState.postValue(current.copy(isLoadingNextPage = false))
-                                val messageRes = when (e) {
-                                    is SocketTimeoutException -> R.string.toast_error
-                                    is IOException -> R.string.toast_check_internet
-                                    else -> R.string.toast_error
-                                }
-                                _toast.postValue(messageRes)
-                            }
+                            .onSuccess { handleNextPageSuccess(current, it, applied, nextPage) }
+                            .onFailure { handleNextPageFailure(current, it) }
                     }
             } catch (e: CancellationException) {
                 _screenState.postValue(current.copy(isLoadingNextPage = false))
@@ -189,6 +173,39 @@ class SearchViewModel(
             }
         }
     }
+
+    private fun handleNextPageSuccess(
+        current: SearchUiState.Content,
+        response: VacancyResponse,
+        applied: FilterParameters,
+        nextPage: Int
+    ) {
+        val filteredResponse = filterByArea(response, applied.areaId)
+
+        requestedPages.add(nextPage)
+        val newItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
+
+        _screenState.postValue(
+            current.copy(
+                pages = filteredResponse.pages,
+                currentPage = filteredResponse.page,
+                vacancies = mergeUnique(current.vacancies, newItems),
+                isLoadingNextPage = false,
+                found = filteredResponse.found
+            )
+        )
+    }
+
+    private fun handleNextPageFailure(current: SearchUiState.Content, e: Throwable) {
+        _screenState.postValue(current.copy(isLoadingNextPage = false))
+        val messageRes = when (e) {
+            is SocketTimeoutException -> R.string.toast_error
+            is IOException -> R.string.toast_check_internet
+            else -> R.string.toast_error
+        }
+        _toast.postValue(messageRes)
+    }
+
 
     fun clearToast() {
         _toast.value = null

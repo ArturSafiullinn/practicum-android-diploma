@@ -39,4 +39,3 @@ const val TAG_INDUSTRIES_VIEW_MODEL = "IndustriesViewModel"
 // Areas
 const val OTHER_REGIONS_ID = 1001
 const val MOSCOW_REGION_ID = 1
-

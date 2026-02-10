@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
+import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.utils.DescriptionParser
@@ -77,46 +78,47 @@ class VacancyViewModel(
 
             vacancyInteractor.fetchVacancy(vacancyId).collect { result ->
                 result
-                    .onSuccess { vacancy ->
-                        val isFavorite = vacancyInteractor.isFavorite(vacancy.id)
-                        val complete = vacancy.copy(isFavorite = isFavorite)
-
-                        val ui = vacancyDetailUiMapper.toUi(complete)
-
-                        val description = ui.description?.trim().orEmpty()
-                        val blocks = if (description.isBlank()) {
-                            emptyList()
-                        } else {
-                            descriptionParser.parseDescription(description)
-                        }
-
-                        _screenState.value = VacancyUiState.Vacancy(
-                            vacancyDetailDomain = complete,
-                            vacancyDetailUi = ui,
-                            descriptionBlocks = blocks
-                        )
-                    }
-                    .onFailure { e ->
-                        val state = when (e) {
-                            is SocketTimeoutException -> {
-                                _toast.value = R.string.toast_error
-                                VacancyUiState.ServerError
-                            }
-                            is IOException -> {
-                                _toast.value = R.string.toast_check_internet
-                                VacancyUiState.NoInternet
-                            }
-                            else -> {
-                                _toast.value = R.string.toast_error
-                                VacancyUiState.ServerError
-                            }
-                        }
-                        _screenState.value = state
-                        Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString(), e)
-                    }
+                    .onSuccess { handleVacancySuccess(it) }
+                    .onFailure { handleVacancyFailure(it) }
             }
         }
     }
+
+    private suspend fun handleVacancySuccess(vacancy: VacancyDetail) {
+        val isFavorite = vacancyInteractor.isFavorite(vacancy.id)
+        val complete = vacancy.copy(isFavorite = isFavorite)
+
+        val ui = vacancyDetailUiMapper.toUi(complete)
+
+        val description = ui.description?.trim().orEmpty()
+        val blocks = if (description.isBlank()) emptyList() else descriptionParser.parseDescription(description)
+
+        _screenState.value = VacancyUiState.Vacancy(
+            vacancyDetailDomain = complete,
+            vacancyDetailUi = ui,
+            descriptionBlocks = blocks
+        )
+    }
+
+    private fun handleVacancyFailure(e: Throwable) {
+        val state = when (e) {
+            is SocketTimeoutException -> {
+                _toast.value = R.string.toast_error
+                VacancyUiState.ServerError
+            }
+            is IOException -> {
+                _toast.value = R.string.toast_check_internet
+                VacancyUiState.NoInternet
+            }
+            else -> {
+                _toast.value = R.string.toast_error
+                VacancyUiState.ServerError
+            }
+        }
+        _screenState.value = state
+        Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString(), e)
+    }
+
 
     fun onToastShown() {
         _toast.value = null
