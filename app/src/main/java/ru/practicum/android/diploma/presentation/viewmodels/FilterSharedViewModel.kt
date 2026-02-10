@@ -64,6 +64,19 @@ class FilterSharedViewModel(
         _draftState.value = _draftState.value.copy(areaId = null, areaDisplayName = null)
     }
 
+    fun clearRegionDraft() {
+        region = null
+        val countryArea = country
+        _draftState.value = if (countryArea != null) {
+            _draftState.value.copy(
+                areaId = countryArea.id,
+                areaDisplayName = countryArea.name
+            )
+        } else {
+            _draftState.value.copy(areaId = null, areaDisplayName = null)
+        }
+    }
+
     fun clearIndustryDraft() {
         _draftState.value = _draftState.value.copy(industryId = null, industryDisplayName = null)
     }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +24,7 @@ import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewMode
 import ru.practicum.android.diploma.presentation.viewmodels.SelectRegionViewModel
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
+import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchInputField
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
@@ -102,25 +102,28 @@ fun SelectRegionScreen(
             )
 
             when (state) {
-                is AreaUIState.Loading -> {
-                    CustomLoadingIndicator(
-                        modifier = Modifier
-                            .fillMaxSize()
+                AreaUIState.Loading -> {
+                    CustomLoadingIndicator(modifier = Modifier.fillMaxSize())
+                }
+
+                AreaUIState.ServerError -> {
+                    EmptyState(
+                        modifier = Modifier.fillMaxSize(),
+                        imageRes = R.drawable.region_error,
+                        title = stringResource(R.string.empty_state_loading_regions_error)
                     )
                 }
 
-                is AreaUIState.Error -> {
-                    Text(
-                        "Ошибка",
-                        modifier = Modifier.padding(padding)
+                AreaUIState.NothingFound -> {
+                    EmptyState(
+                        modifier = Modifier.fillMaxSize(),
+                        imageRes = R.drawable.empty_result,
+                        title = stringResource(R.string.empty_state_no_such_region)
                     )
                 }
 
                 is AreaUIState.Content -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(state.areas) { area ->
                             FilterClickable(
                                 text = area.name,

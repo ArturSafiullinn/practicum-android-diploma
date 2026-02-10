@@ -39,7 +39,7 @@ class SelectCountryViewModel(
                                 AreaUIState.Content(countries)
                             )
                         }
-                        .onFailure { _screenState.postValue(AreaUIState.Error) }
+                        .onFailure { _screenState.postValue(AreaUIState.ServerError) }
                 }
         }
     }

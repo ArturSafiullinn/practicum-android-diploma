@@ -31,8 +31,10 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SelectIndustryViewModel
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
@@ -50,24 +52,39 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Space8
 import ru.practicum.android.diploma.util.BUTTON_ANIMATION_DURATION
 
 class SelectIndustryFragment : BaseComposeFragment() {
-    private val filterSharedViewModel: FilterSharedViewModel by viewModel()
-    private val selectIndustryViewModel: SelectIndustryViewModel by viewModel()
+    private val filterSharedViewModel: FilterSharedViewModel by activityViewModel()
 
     @Composable
     override fun ScreenContent() {
+        val selectIndustryViewModel: SelectIndustryViewModel by viewModel()
         val screenState by selectIndustryViewModel.screenState.collectAsState()
-        var selectedIndustryId by remember { mutableStateOf<Int?>(null) }
+        val draftState by filterSharedViewModel.draftState.collectAsState()
+        var selectedIndustryId by remember(draftState.industryId) {
+            mutableStateOf(draftState.industryId)
+        }
+        var selectedIndustryName by remember(draftState.industryDisplayName) {
+            mutableStateOf(draftState.industryDisplayName)
+        }
 
         SelectIndustryScreen(
             screenState = screenState,
             selectedIndustryId = selectedIndustryId,
-            onIndustryClicked = { clickedIndustryId ->
-                selectedIndustryId = if (selectedIndustryId == clickedIndustryId) null else clickedIndustryId
+            onIndustryClicked = { clickedIndustry ->
+                if (selectedIndustryId == clickedIndustry.id) {
+                    selectedIndustryId = null
+                    selectedIndustryName = null
+                } else {
+                    selectedIndustryId = clickedIndustry.id
+                    selectedIndustryName = clickedIndustry.name
+                }
             },
             onQueryChanged = { newQuery -> selectIndustryViewModel.onQueryChanged(newQuery) },
             onBackClick = { findNavController().popBackStack() },
             onApplyClick = {
-                filterSharedViewModel.updateIndustryDraft(industryId = selectedIndustryId)
+                filterSharedViewModel.updateIndustryDraft(
+                    industryId = selectedIndustryId,
+                    industryDisplayName = selectedIndustryName
+                )
                 findNavController().popBackStack()
             },
         )
@@ -78,7 +95,7 @@ class SelectIndustryFragment : BaseComposeFragment() {
 fun SelectIndustryScreen(
     screenState: SelectIndustryUiState,
     selectedIndustryId: Int?,
-    onIndustryClicked: (Int) -> Unit,
+    onIndustryClicked: (FilterIndustry) -> Unit,
     onQueryChanged: (String) -> Unit,
     onBackClick: () -> Unit,
     onApplyClick: () -> Unit
@@ -155,8 +172,8 @@ fun SelectIndustryScreen(
                         items(items = screenState.industriesShown, key = { it.id }) {
                             RadioItem(
                                 item = it,
-                                onItemClicked = { itemId ->
-                                    onIndustryClicked(itemId)
+                                onItemClicked = { industry ->
+                                    onIndustryClicked(industry)
                                     focusManager.clearFocus()
                                     keyboardController?.hide()
                                 },

@@ -24,6 +24,8 @@ fun WorkPlaceScreen(
     onCountryClick: () -> Unit,
     onRegionClick: () -> Unit,
     onApplyClick: () -> Unit,
+    onClearCountry: () -> Unit,
+    onClearRegion: () -> Unit,
     country: String? = null,
     region: String? = null,
 ) {
@@ -48,14 +50,14 @@ fun WorkPlaceScreen(
                     value = country,
                     placeholder = stringResource(R.string.country),
                     onClick = onCountryClick,
-                    onClear = {}
+                    onClear = onClearCountry
                 )
                 FilterClickableField(
                     label = stringResource(R.string.select_region),
                     value = region,
                     placeholder = stringResource(R.string.region),
                     onClick = onRegionClick,
-                    onClear = {}
+                    onClear = onClearRegion
                 )
             }
 
@@ -78,7 +80,9 @@ fun WorkPlaceScreenPreviewLight() {
             onBackClick = {},
             onCountryClick = {},
             onRegionClick = {},
-            onApplyClick = {}
+            onApplyClick = {},
+            onClearCountry = {},
+            onClearRegion = {},
         )
     }
 }
@@ -95,7 +99,9 @@ fun WorkPlaceScreenPreviewDark() {
             onBackClick = {},
             onCountryClick = {},
             onRegionClick = {},
-            onApplyClick = {}
+            onApplyClick = {},
+            onClearCountry = {},
+            onClearRegion = {},
         )
     }
 }
@@ -109,6 +115,8 @@ fun WorkPlaceScreenPreviewFilledLight() {
             onCountryClick = {},
             onRegionClick = {},
             onApplyClick = {},
+            onClearCountry = {},
+            onClearRegion = {},
             country = "Россия",
             region = "Москва"
         )
@@ -124,6 +132,8 @@ fun WorkPlaceScreenPreviewFilledDark() {
             onCountryClick = {},
             onRegionClick = {},
             onApplyClick = {},
+            onClearCountry = {},
+            onClearRegion = {},
             country = "Россия",
             region = "Москва"
         )

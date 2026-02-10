@@ -39,8 +39,13 @@ class FilterSettingsFragment : BaseComposeFragment() {
             },
             onSalaryChange = { viewModel.updateSalaryDraft(it) },
             onOnlyWithSalaryChange = { viewModel.updateOnlyWithSalaryDraft(it) },
-            onClearWorkplace = { viewModel.clearAreaDraft() },
-            onClearIndustry = { viewModel.clearIndustryDraft() }
+            onClearWorkplace = {
+                viewModel.clearAreaDraft()
+                viewModel.applyDraft()
+            },
+            onClearIndustry = { viewModel.clearIndustryDraft()
+                viewModel.applyDraft()
+            },
         )
     }
 }
