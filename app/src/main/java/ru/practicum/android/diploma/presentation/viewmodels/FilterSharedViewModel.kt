@@ -75,11 +75,16 @@ class FilterSharedViewModel(
     }
 
     fun applyDraft() {
-        val draft = _draftState.value
-        viewModelScope.launch {
-            interactor.setFilter(draft)
-            _appliedState.value = draft
-            _draftState.value = draft
+        val lastDraft = _appliedState.value
+        val currentDraft = _draftState.value
+        if (lastDraft == currentDraft) {
+            return
+        } else {
+            viewModelScope.launch {
+                interactor.setFilter(currentDraft)
+                _appliedState.value = currentDraft
+                _draftState.value = currentDraft
+            }
         }
     }
 

@@ -42,6 +42,10 @@ class SearchFragment : BaseComposeFragment() {
 
         val context = LocalContext.current
 
+        LaunchedEffect(appliedFilter) {
+            viewModel.onAppliedFilterChanged(appliedFilter)
+        }
+
         LaunchedEffect(toastRes) {
             toastRes?.let {
                 Toast.makeText(
