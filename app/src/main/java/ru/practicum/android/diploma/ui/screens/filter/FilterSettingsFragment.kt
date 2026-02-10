@@ -15,26 +15,32 @@ class FilterSettingsFragment : BaseComposeFragment() {
 
     @Composable
     override fun ScreenContent() {
-        val filterState by viewModel.filterState.collectAsState()
+        val draft by viewModel.draftState.collectAsState()
 
         FilterSettingsScreen(
-            filterState = filterState,
-            onBackClick = { findNavController().popBackStack() },
+            filterState = draft,
+            onBackClick = {
+                viewModel.discardDraft()
+                findNavController().popBackStack()
+            },
             onWorkPlaceClick = {
                 findNavController().navigate(R.id.action_filterSettingsFragment_to_workPlaceFragment)
             },
             onIndustryClick = {
                 findNavController().navigate(R.id.action_filterSettingsFragment_to_selectIndustryFragment)
             },
-            onApplyClick = { findNavController().popBackStack() },
-            onResetClick = {
-                viewModel.resetFilters()
+            onApplyClick = {
+                viewModel.applyDraft()
                 findNavController().popBackStack()
             },
-            onSalaryChange = { viewModel.updateSalary(it) },
-            onOnlyWithSalaryChange = { viewModel.updateOnlyWithSalary(it) },
-            onClearWorkplace = { viewModel.clearArea() },
-            onClearIndustry = { viewModel.updateIndustry(null) }
+            onResetClick = {
+                viewModel.resetApplied()
+                findNavController().popBackStack()
+            },
+            onSalaryChange = { viewModel.updateSalaryDraft(it) },
+            onOnlyWithSalaryChange = { viewModel.updateOnlyWithSalaryDraft(it) },
+            onClearWorkplace = { viewModel.clearAreaDraft() },
+            onClearIndustry = { viewModel.clearIndustryDraft() }
         )
     }
 }

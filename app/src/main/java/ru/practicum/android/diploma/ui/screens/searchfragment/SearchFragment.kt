@@ -33,12 +33,12 @@ class SearchFragment : BaseComposeFragment() {
         val navController = findNavController()
         val state by viewModel.screenState.observeAsState(SearchUiState.Initial)
         val toastRes by viewModel.toast.observeAsState()
-        val filterState by filterViewModel.filterState.collectAsState()
+        val appliedFilter by filterViewModel.appliedState.collectAsState()
 
-        val filtersActive = filterState.areaId != null ||
-            filterState.industryId != null ||
-            filterState.salary.isNotBlank() ||
-            filterState.onlyWithSalary
+        val filtersActive = appliedFilter.areaId != null ||
+            appliedFilter.industryId != null ||
+            appliedFilter.salary.isNotBlank() ||
+            appliedFilter.onlyWithSalary
 
         val context = LocalContext.current
 
@@ -60,11 +60,11 @@ class SearchFragment : BaseComposeFragment() {
             query = query,
             onQueryChange = { newQuery ->
                 query = newQuery
-                viewModel.onSearchQueryChanged(newQuery)
+                viewModel.onSearchQueryChanged(newQuery, appliedFilter)
             },
             onClearQuery = {
                 query = ""
-                viewModel.onSearchQueryChanged("")
+                viewModel.onSearchQueryChanged("", appliedFilter)
             },
             onFilterClick = {
                 navController.navigate(R.id.action_searchFragment_to_filterSettingsFragment)
@@ -77,7 +77,7 @@ class SearchFragment : BaseComposeFragment() {
                 )
             },
             onLoadNextPage = {
-                viewModel.loadNextPage()
+                viewModel.loadNextPage(appliedFilter)
             }
         )
     }

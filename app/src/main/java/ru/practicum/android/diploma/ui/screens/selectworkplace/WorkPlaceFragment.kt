@@ -20,7 +20,10 @@ class WorkPlaceFragment : BaseComposeFragment() {
         val regionName = sharedViewModel.getRegion()?.name
 
         WorkPlaceScreen(
-            onBackClick = { findNavController().popBackStack() },
+            onBackClick = {
+                sharedViewModel.discardDraft()
+                findNavController().popBackStack()
+            },
             onCountryClick = {
                 findNavController().navigate(
                     R.id.action_workPlaceFragment_to_selectCountryFragment
@@ -31,7 +34,10 @@ class WorkPlaceFragment : BaseComposeFragment() {
                     R.id.action_workPlaceFragment_to_selectRegionFragment
                 )
             },
-            onApplyClick = { findNavController().popBackStack() },
+            onApplyClick = {
+                sharedViewModel.applyDraft()
+                findNavController().popBackStack()
+            },
             country = countryName,
             region = regionName
         )

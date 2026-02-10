@@ -4,93 +4,96 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.FilterInteractor
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.FilterParameters
 
-class FilterSharedViewModel(private val interactor: FilterInteractor) : ViewModel() {
+class FilterSharedViewModel(
+    private val interactor: FilterInteractor
+) : ViewModel() {
 
-    // StateFlow для UI
-    private val _filterState = MutableStateFlow(interactor.getFilter())
-    val filterState: StateFlow<FilterParameters> = _filterState
+    private val _appliedState = MutableStateFlow(interactor.getFilter())
+    val appliedState: StateFlow<FilterParameters> = _appliedState.asStateFlow()
 
-    // Обновление зарплаты
-    fun updateSalary(salary: String) {
-        viewModelScope.launch {
-            interactor.updateSalary(salary)
-            _filterState.value = interactor.getFilter()
-        }
-    }
+    private val _draftState = MutableStateFlow(_appliedState.value)
+    val draftState: StateFlow<FilterParameters> = _draftState.asStateFlow()
 
-    // Обновление чекбокса "только с зарплатой"
-    fun updateOnlyWithSalary(enabled: Boolean) {
-        viewModelScope.launch {
-            interactor.updateOnlyWithSalary(enabled)
-            _filterState.value = interactor.getFilter()
-        }
-    }
+    val filterState: StateFlow<FilterParameters> = draftState
 
-    // Обновление отрасли
-    fun updateIndustry(industryId: Int?, industryDisplayName: String? = null) {
-        viewModelScope.launch {
-            interactor.updateIndustry(industryId, industryDisplayName)
-            _filterState.value = interactor.getFilter()
-        }
-    }
-
-    // Страна/регион в памяти для экранов выбора (восстанавливаются из filterState при необходимости)
     private var country: Area? = null
     private var region: Area? = null
 
-    fun saveCountry(area: Area) {
+    fun updateSalaryDraft(salary: String) {
+        _draftState.value = _draftState.value.copy(salary = salary)
+    }
+
+    fun updateOnlyWithSalaryDraft(enabled: Boolean) {
+        _draftState.value = _draftState.value.copy(onlyWithSalary = enabled)
+    }
+
+    fun updateIndustryDraft(industryId: Int?, industryDisplayName: String? = null) {
+        _draftState.value = _draftState.value.copy(
+            industryId = industryId,
+            industryDisplayName = if (industryId == null) null else industryDisplayName
+        )
+    }
+
+    fun saveCountryDraft(area: Area) {
         country = area
         region = null
+        _draftState.value = _draftState.value.copy(
+            areaId = area.id,
+            areaDisplayName = area.name
+        )
+    }
+
+    fun saveRegionDraft(area: Area) {
+        region = area
+        val displayName = country?.let { "${it.name} / ${area.name}" } ?: area.name
+        _draftState.value = _draftState.value.copy(
+            areaId = area.id,
+            areaDisplayName = displayName
+        )
+    }
+
+    fun clearAreaDraft() {
+        country = null
+        region = null
+        _draftState.value = _draftState.value.copy(areaId = null, areaDisplayName = null)
+    }
+
+    fun clearIndustryDraft() {
+        _draftState.value = _draftState.value.copy(industryId = null, industryDisplayName = null)
+    }
+
+    fun discardDraft() {
+        country = null
+        region = null
+        _draftState.value = _appliedState.value
+    }
+
+    fun applyDraft() {
+        val draft = _draftState.value
         viewModelScope.launch {
-            interactor.updateArea(area.id, area.name)
-            _filterState.value = interactor.getFilter()
+            interactor.setFilter(draft)
+            _appliedState.value = draft
+            _draftState.value = draft
         }
     }
 
-    fun saveRegion(area: Area) {
-        region = area
-        val displayName = country?.let { "${it.name} / ${area.name}" } ?: area.name
+    fun resetApplied() {
         viewModelScope.launch {
-            interactor.updateArea(area.id, displayName)
-            _filterState.value = interactor.getFilter()
+            country = null
+            region = null
+            interactor.reset()
+            val applied = interactor.getFilter()
+            _appliedState.value = applied
+            _draftState.value = applied
         }
     }
 
     fun getCountry(): Area? = country
     fun getRegion(): Area? = region
-
-    fun updateArea(areaId: Int?, areaDisplayName: String? = null) {
-        viewModelScope.launch {
-            interactor.updateArea(areaId, areaDisplayName)
-            if (areaId == null) {
-                country = null
-                region = null
-            }
-            _filterState.value = interactor.getFilter()
-        }
-    }
-
-    fun clearArea() {
-        viewModelScope.launch {
-            country = null
-            region = null
-            interactor.updateArea(null, null)
-            _filterState.value = interactor.getFilter()
-        }
-    }
-
-    // Сброс всех фильтров
-    fun resetFilters() {
-        viewModelScope.launch {
-            country = null
-            region = null
-            interactor.reset()
-            _filterState.value = interactor.getFilter()
-        }
-    }
 }

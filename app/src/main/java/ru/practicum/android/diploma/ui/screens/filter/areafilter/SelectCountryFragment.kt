@@ -44,7 +44,7 @@ class SelectCountryFragment : BaseComposeFragment() {
             state = state,
             onBackClick = { findNavController().popBackStack() },
             onCountrySelect = { area ->
-                sharedViewModel.saveCountry(area)
+                sharedViewModel.saveCountryDraft(area)
                 findNavController().popBackStack()
             }
         )

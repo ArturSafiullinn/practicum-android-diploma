@@ -14,42 +14,9 @@ class FilterInteractorImpl(
 
     override fun getFilter(): FilterParameters = filter
 
-    override suspend fun updateSalary(salary: String) = withContext(Dispatchers.IO) {
-        filter = filter.copy(salary = salary)
+    override suspend fun setFilter(filter: FilterParameters) = withContext(Dispatchers.IO) {
+        this@FilterInteractorImpl.filter = filter
         storage.storeData(filter)
-    }
-
-    override suspend fun updateOnlyWithSalary(enabled: Boolean) = withContext(Dispatchers.IO) {
-        filter = filter.copy(onlyWithSalary = enabled)
-        storage.storeData(filter)
-    }
-
-    override suspend fun updateIndustry(
-        industryId: Int?,
-        industryDisplayName: String?
-    ) = withContext(Dispatchers.IO) {
-        filter = filter.copy(
-            industryId = industryId,
-            industryDisplayName = if (industryId == null) {
-                null
-            } else {
-                industryDisplayName ?: filter.industryDisplayName
-            }
-        )
-    }
-
-    override suspend fun updateArea(
-        areaId: Int?,
-        areaDisplayName: String?
-    ) = withContext(Dispatchers.IO) {
-        filter = filter.copy(
-            areaId = areaId,
-            areaDisplayName = if (areaId == null) {
-                null
-            } else {
-                areaDisplayName ?: filter.areaDisplayName
-            }
-        )
     }
 
     override suspend fun reset() = withContext(Dispatchers.IO) {
