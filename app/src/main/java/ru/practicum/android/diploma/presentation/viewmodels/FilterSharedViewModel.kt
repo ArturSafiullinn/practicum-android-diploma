@@ -77,7 +77,6 @@ class FilterSharedViewModel(
         }
     }
 
-
     fun clearIndustryDraft() {
         _draftState.value = _draftState.value.copy(industryId = null, industryDisplayName = null)
     }
