@@ -16,8 +16,17 @@ class WorkPlaceFragment : BaseComposeFragment() {
     @Composable
     override fun ScreenContent() {
         val filterState by sharedViewModel.filterState.collectAsState()
+
+        val areaDisplayName = filterState.areaDisplayName
+        val parsedArea = areaDisplayName
+            ?.split("/")
+            ?.map { it.trim() }
+            ?.filter { it.isNotEmpty() }
+
         val countryName = sharedViewModel.getCountry()?.name
+            ?: parsedArea?.getOrNull(0)
         val regionName = sharedViewModel.getRegion()?.name
+            ?: parsedArea?.getOrNull(1)
 
         WorkPlaceScreen(
             onBackClick = {
@@ -43,4 +52,3 @@ class WorkPlaceFragment : BaseComposeFragment() {
         )
     }
 }
-
