@@ -4,9 +4,11 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
-
 import ru.practicum.android.diploma.R
+
+private const val TAG = "Utils"
 
 fun formatSalarySpaced(amount: Int?): String {
     return amount?.let {
@@ -27,6 +29,7 @@ fun openEmail(context: Context, email: String) {
             )
         )
     } catch (e: ActivityNotFoundException) {
+        Log.w(TAG, "No email app found", e)
         Toast.makeText(context, R.string.no_email_app, Toast.LENGTH_SHORT).show()
     }
 }
@@ -48,6 +51,7 @@ fun openPhone(context: Context, phoneRaw: String) {
             )
         )
     } catch (e: ActivityNotFoundException) {
+        Log.w(TAG, "No call app found", e)
         Toast.makeText(context, R.string.no_call_app, Toast.LENGTH_SHORT).show()
     }
 }
