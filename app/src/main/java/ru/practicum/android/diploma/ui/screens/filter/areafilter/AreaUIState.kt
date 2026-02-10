@@ -8,4 +8,3 @@ sealed interface AreaUIState {
     data object NothingFound : AreaUIState
     data class Content(val areas: List<Area>) : AreaUIState
 }
-
