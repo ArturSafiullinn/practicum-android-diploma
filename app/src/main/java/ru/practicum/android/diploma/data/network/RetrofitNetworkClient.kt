@@ -5,8 +5,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.TimeoutCancellationException
 import retrofit2.HttpException
 import ru.practicum.android.diploma.data.AreasRequest
 import ru.practicum.android.diploma.data.AreasResponse
@@ -20,7 +18,6 @@ import ru.practicum.android.diploma.data.VacanciesResponse
 import ru.practicum.android.diploma.data.VacancyDetailsRequest
 import ru.practicum.android.diploma.data.VacancyDetailsResponse
 import ru.practicum.android.diploma.util.HTTP_OK
-import ru.practicum.android.diploma.util.NETWORK_REQUEST_TIMEOUT_MS
 import ru.practicum.android.diploma.util.NOT_CONNECTED_CODE
 import ru.practicum.android.diploma.util.SERVER_INTERNAL_ERROR
 
@@ -37,40 +34,36 @@ class RetrofitNetworkClient(
 
         return withContext(Dispatchers.IO) {
             try {
-                withTimeout(NETWORK_REQUEST_TIMEOUT_MS) {
-                    when (dto) {
-                        AreasRequest -> {
-                            val areas = apiService.getAreas()
-                            AreasResponse(areas, HTTP_OK)
-                        }
+                when (dto) {
+                    AreasRequest -> {
+                        val areas = apiService.getAreas()
+                        AreasResponse(areas, HTTP_OK)
+                    }
 
-                        IndustriesRequest -> {
-                            val industries = apiService.getIndustries()
-                            IndustriesResponse(industries, HTTP_OK)
-                        }
+                    IndustriesRequest -> {
+                        val industries = apiService.getIndustries()
+                        IndustriesResponse(industries, HTTP_OK)
+                    }
 
-                        is VacanciesRequest -> {
-                            val result = apiService.getVacancies(
-                                area = dto.area,
-                                industry = dto.industry,
-                                text = dto.text,
-                                salary = dto.salary,
-                                page = dto.page,
-                                onlyWithSalary = dto.onlyWithSalary
-                            )
-                            VacanciesResponse(result, HTTP_OK)
-                        }
+                    is VacanciesRequest -> {
+                        val result = apiService.getVacancies(
+                            area = dto.area,
+                            industry = dto.industry,
+                            text = dto.text,
+                            salary = dto.salary,
+                            page = dto.page,
+                            onlyWithSalary = dto.onlyWithSalary
+                        )
+                        VacanciesResponse(result, HTTP_OK)
+                    }
 
-                        is VacancyDetailsRequest -> {
-                            val vacancy = apiService.getVacancyDetails(dto.id)
-                            VacancyDetailsResponse(vacancy, HTTP_OK)
-                        }
+                    is VacancyDetailsRequest -> {
+                        val vacancy = apiService.getVacancyDetails(dto.id)
+                        VacancyDetailsResponse(vacancy, HTTP_OK)
                     }
                 }
             } catch (e: HttpException) {
                 Response(resultCode = e.code())
-            } catch (_: TimeoutCancellationException) {
-                Response(resultCode = NOT_CONNECTED_CODE)
             } catch (_: Throwable) {
                 Response(resultCode = SERVER_INTERNAL_ERROR)
             }
@@ -78,10 +71,15 @@ class RetrofitNetworkClient(
     }
 
     private fun isConnected(): Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = cm.activeNetwork ?: return false
-        val caps = cm.getNetworkCapabilities(network) ?: return false
-        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        val connectivityManager = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        return capabilities?.let {
+            it.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                it.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+        } ?: false
     }
 }
