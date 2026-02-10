@@ -13,7 +13,7 @@ const val NETWORK_READ_TIMEOUT_SEC = 15L
 const val NETWORK_WRITE_TIMEOUT_SEC = 15L
 const val NETWORK_CALL_TIMEOUT_SEC = 20L
 
-const val NETWORK_REQUEST_TIMEOUT_MS = 15_000L   // для мест, где ещё используется
+const val NETWORK_REQUEST_TIMEOUT_MS = 15_000L
 
 // Аргументы
 const val SEARCH_FILTERS = "search_filters"
