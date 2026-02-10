@@ -20,11 +20,10 @@ import ru.practicum.android.diploma.ui.theme.Dimens.Space4
 import ru.practicum.android.diploma.ui.theme.Dimens.Space6
 
 @Composable
-fun RadioItem(item: FilterIndustry, onItemClicked: (Int) -> Unit, isSelected: Boolean) {
-    Row(
+fun RadioItem(item: FilterIndustry, onItemClicked: (FilterIndustry) -> Unit, isSelected: Boolean) {    Row(
         Modifier
             .fillMaxWidth()
-            .clickable { onItemClicked(item.id) }
+            .clickable { onItemClicked(item) }
             .padding(vertical = Space6)
             .padding(start = Space16, end = Space4),
         verticalAlignment = Alignment.CenterVertically
