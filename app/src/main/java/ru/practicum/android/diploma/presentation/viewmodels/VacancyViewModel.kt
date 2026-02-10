@@ -7,7 +7,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
@@ -18,6 +17,7 @@ import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState
 import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.TAG_VACANCY_VIEW_MODEL
 import java.io.IOException
+import java.net.SocketTimeoutException
 
 class VacancyViewModel(
     private val vacancyId: String,
@@ -35,9 +35,11 @@ class VacancyViewModel(
     val hasInternet: StateFlow<Boolean> = _hasInternet.asStateFlow()
 
     private val _toast = MutableStateFlow<Int?>(null)
-    val toast: StateFlow<Int?> get() = _toast
+    val toast: StateFlow<Int?> = _toast.asStateFlow()
 
     private var loadJob: Job? = null
+    private var connectivityJob: Job? = null
+    private var wasConnected: Boolean? = null
 
     init {
         loadVacancy()
@@ -45,25 +47,26 @@ class VacancyViewModel(
     }
 
     private fun observeConnectivity() {
-        viewModelScope.launch {
-            connectivityMonitor.isConnected
-                .collect { isConnected ->
-                    _hasInternet.update { isConnected }
+        connectivityJob?.cancel()
+        connectivityJob = viewModelScope.launch {
+            connectivityMonitor.isConnected.collect { isConnected ->
+                _hasInternet.value = isConnected
 
-                    when (isConnected) {
-                        true -> {
-                            _toast.update { R.string.toast_connection_restored }
-                            val currentState = _screenState.value
-                            if (currentState.shouldRetryLoad()) {
-                                loadVacancy()
-                            }
-                        }
-                        false -> {
-                            _toast.update { R.string.toast_connection_lost }
-                        }
+                val prev = wasConnected
+                wasConnected = isConnected
+
+                if (prev != null && prev != isConnected) {
+                    _toast.value = if (isConnected) {
+                        R.string.toast_connection_restored
+                    } else {
+                        R.string.toast_connection_lost
                     }
                 }
 
+                if (prev == false && isConnected && _screenState.value.shouldRetryLoad()) {
+                    loadVacancy()
+                }
+            }
         }
     }
 
@@ -95,16 +98,20 @@ class VacancyViewModel(
                     }
                     .onFailure { e ->
                         val state = when (e) {
+                            is SocketTimeoutException -> {
+                                _toast.value = R.string.toast_error
+                                VacancyUiState.ServerError
+                            }
                             is IOException -> {
-                                _toast.update { R.string.toast_check_internet }
+                                _toast.value = R.string.toast_check_internet
                                 VacancyUiState.NoInternet
                             }
                             else -> {
-                                _toast.update { R.string.toast_error }
+                                _toast.value = R.string.toast_error
                                 VacancyUiState.ServerError
                             }
                         }
-                        _screenState.update { state }
+                        _screenState.value = state
                         Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString(), e)
                     }
             }
@@ -112,7 +119,7 @@ class VacancyViewModel(
     }
 
     fun onToastShown() {
-        _toast.update { null }
+        _toast.value = null
     }
 
     fun onFavoriteClicked() {
@@ -144,6 +151,7 @@ class VacancyViewModel(
     }
 
     override fun onCleared() {
+        connectivityJob?.cancel()
         loadJob?.cancel()
         super.onCleared()
     }
@@ -152,7 +160,6 @@ class VacancyViewModel(
         when (this) {
             is VacancyUiState.NoInternet,
             VacancyUiState.Initial -> true
-
             else -> false
         }
 }

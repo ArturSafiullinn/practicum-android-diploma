@@ -7,6 +7,15 @@ const val DEBOUNCE_SEARCH_DELAY_SHORT = 500L
 const val CONNECTIVITY_STOP_TIMEOUT_MS = 5000L
 const val BUTTON_ANIMATION_DURATION = 300
 
+// === Network timeouts ===
+const val NETWORK_CONNECT_TIMEOUT_SEC = 15L
+const val NETWORK_READ_TIMEOUT_SEC = 15L
+const val NETWORK_WRITE_TIMEOUT_SEC = 15L
+const val NETWORK_CALL_TIMEOUT_SEC = 20L
+const val TIMEOUT_CODE = -2
+
+const val NETWORK_REQUEST_TIMEOUT_MS = 15_000L
+
 // Аргументы
 const val SEARCH_FILTERS = "search_filters"
 const val ARGS_VACANCY_ID = "vacancy_id"
@@ -26,8 +35,8 @@ const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
 const val TAG_COIL_DEBUG = "Coil Debug"
 const val TAG_VACANCY_VIEW_MODEL = "VacancyViewModel"
 const val TAG_INDUSTRIES_VIEW_MODEL = "IndustriesViewModel"
-// endregion
 
 // Areas
 const val OTHER_REGIONS_ID = 1001
 const val MOSCOW_REGION_ID = 1
+
