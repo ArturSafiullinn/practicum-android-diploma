@@ -42,10 +42,6 @@ class SearchFragment : BaseComposeFragment() {
 
         val context = LocalContext.current
 
-        LaunchedEffect(appliedFilter) {
-            viewModel.onAppliedFilterChanged(appliedFilter)
-        }
-
         LaunchedEffect(toastRes) {
             toastRes?.let {
                 Toast.makeText(
@@ -58,6 +54,17 @@ class SearchFragment : BaseComposeFragment() {
         }
 
         var query by rememberSaveable { mutableStateOf("") }
+
+        var skipFirstApplied by rememberSaveable { mutableStateOf(true) }
+
+        LaunchedEffect(appliedFilter) {
+            if (skipFirstApplied) {
+                skipFirstApplied = false
+                viewModel.syncBaseline(appliedFilter, query) // <-- ВАЖНО
+                return@LaunchedEffect
+            }
+            viewModel.onAppliedFilterChanged(appliedFilter, query)
+        }
 
         SearchScreen(
             state = state,

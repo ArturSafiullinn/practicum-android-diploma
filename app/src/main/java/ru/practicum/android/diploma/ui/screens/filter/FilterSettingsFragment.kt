@@ -35,7 +35,6 @@ class FilterSettingsFragment : BaseComposeFragment() {
             },
             onResetClick = {
                 viewModel.resetApplied()
-                findNavController().popBackStack()
             },
             onSalaryChange = { viewModel.updateSalaryDraft(it) },
             onOnlyWithSalaryChange = { viewModel.updateOnlyWithSalaryDraft(it) },
