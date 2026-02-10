@@ -48,7 +48,12 @@ data class VacancyDetailDto(
         val id: String?,
         val name: String?,
         val email: String?,
-        val phone: List<String>?
+        val phones: List<PhoneDto>?
+    )
+
+    data class PhoneDto(
+        val comment: String?,
+        val formatted: String?
     )
 
     data class EmployerDto(

@@ -160,6 +160,10 @@ fun VacancyContent(
         )
 
         VacancySkills(vacancy)
+
+        Spacer(Modifier.height(Space24))
+
+        VacancyContacts(vacancy)
     }
 }
 
