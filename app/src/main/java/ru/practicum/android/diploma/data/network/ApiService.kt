@@ -9,16 +9,19 @@ import ru.practicum.android.diploma.data.dto.FilterAreaDto
 import ru.practicum.android.diploma.data.dto.FilterIndustryDto
 import ru.practicum.android.diploma.data.dto.VacancyDetailDto
 import ru.practicum.android.diploma.data.dto.VacancyResponseDto
+import ru.practicum.android.diploma.util.CONTENT_TYPE
 
 interface ApiService {
     @GET("areas")
     suspend fun getAreas(
         @Header("Authorization") token: String = API_TOKEN,
+        @Header("Content-Type") contentType: String = CONTENT_TYPE
     ): List<FilterAreaDto>
 
     @GET("industries")
     suspend fun getIndustries(
         @Header("Authorization") token: String = API_TOKEN,
+        @Header("Content-Type") contentType: String = CONTENT_TYPE
     ): List<FilterIndustryDto>
 
     @GET("vacancies")
@@ -30,12 +33,14 @@ interface ApiService {
         @Query("page") page: Int? = 1,
         @Query("only_with_salary") onlyWithSalary: Boolean? = null,
         @Header("Authorization") token: String = API_TOKEN,
+        @Header("Content-Type") contentType: String = CONTENT_TYPE
     ): VacancyResponseDto
 
     @GET("vacancies/{id}")
     suspend fun getVacancyDetails(
         @Path("id") id: String,
         @Header("Authorization") token: String = API_TOKEN,
+        @Header("Content-Type") contentType: String = CONTENT_TYPE
     ): VacancyDetailDto
 
     companion object {
