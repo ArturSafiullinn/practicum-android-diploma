@@ -61,8 +61,6 @@
     <string name="enter_your_query">Введите запрос</string>
     <string name="count_vacancy">Найдено %d вакансий</string>
     <string name="unknown_workplace">Работодатель неизвестен</string>
-    <string name="toast_check_internet">Проверьте подключение к интернету</string>
-    <string name="toast_error">Произошла ошибка</string>
 
     <!-- Vacancy Fragment -->
     <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
@@ -115,4 +113,10 @@
 
     <!-- Окончание VacancyDetail.name ("в ${vacancy.employer.name}") -->
     <string name="suffix_vacancy_title_employer">"в %s"</string>
+
+    <!-- Toast messages -->
+    <string name="toast_check_internet">Проверьте подключение к интернету</string>
+    <string name="toast_error">Произошла ошибка</string>
+    <string name="toast_connection_lost">Подключение потеряно</string>
+    <string name="toast_connection_restored">Подключение восстановлено</string>
 </resources>
