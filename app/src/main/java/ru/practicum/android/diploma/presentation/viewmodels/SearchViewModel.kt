@@ -14,7 +14,7 @@ import ru.practicum.android.diploma.domain.models.SearchParams
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
-import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY
+import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY_LONG
 import java.io.IOException
 
 class SearchViewModel(
@@ -45,52 +45,55 @@ class SearchViewModel(
     private val _screenState = MutableLiveData<SearchUiState>(SearchUiState.Initial)
     val screenState: LiveData<SearchUiState> get() = _screenState
 
-    private fun onSearchSubmitted(query: String) {
-        searchJob?.cancel()
+    private suspend fun onSearchSubmitted(query: String) {
         lastQuery = query.trim()
         requestedPages.clear()
 
-        viewModelScope.launch {
-            _screenState.postValue(SearchUiState.Loading)
+        _screenState.postValue(SearchUiState.Loading)
 
-            searchInteractor.search(buildSearchParams(lastQuery))
-                .collect { result ->
-                    result
-                        .onSuccess { response ->
-                            if (response.items.isEmpty()) {
-                                _screenState.postValue(SearchUiState.NoResults)
-                            } else {
-                                requestedPages.add(response.page)
-                                val uiItems = response.items.map { vacancyListItemUiMapper.toUi(it) }
-                                _screenState.postValue(
-                                    SearchUiState.Content(
-                                        pages = response.pages,
-                                        currentPage = response.page,
-                                        vacancies = uiItems,
-                                        isLoadingNextPage = false,
-                                        found = response.found
-                                    )
+        searchInteractor.search(buildSearchParams(lastQuery))
+            .collect { result ->
+                result
+                    .onSuccess { response ->
+                        if (response.items.isEmpty()) {
+                            _screenState.postValue(SearchUiState.NoResults)
+                        } else {
+                            requestedPages.add(response.page)
+                            val uiItems = response.items.map { vacancyListItemUiMapper.toUi(it) }
+                            _screenState.postValue(
+                                SearchUiState.Content(
+                                    pages = response.pages,
+                                    currentPage = response.page,
+                                    vacancies = uiItems,
+                                    isLoadingNextPage = false,
+                                    found = response.found
                                 )
-                            }
+                            )
                         }
-                        .onFailure { e ->
-                            val state = when (e) {
-                                is IOException -> SearchUiState.NotConnected
-                                else -> SearchUiState.ServerError
-                            }
-                            _screenState.postValue(state)
+                    }
+                    .onFailure { e ->
+                        val state = when (e) {
+                            is IOException -> SearchUiState.NotConnected
+                            else -> SearchUiState.ServerError
                         }
-                }
-        }
+                        _screenState.postValue(state)
+                    }
+            }
     }
 
     fun onSearchQueryChanged(query: String) {
         searchJob?.cancel()
-        if (query.isBlank() || query.trim() == lastQuery) return
+
+        val trimmed = query.trim()
+        if (trimmed.isBlank()) {
+            clearSearch()
+            return
+        }
+        if (trimmed == lastQuery) return
 
         requestedPages.clear()
         searchJob = viewModelScope.launch {
-            delay(DEBOUNCE_SEARCH_DELAY)
+            delay(DEBOUNCE_SEARCH_DELAY_LONG)
             onSearchSubmitted(query)
         }
     }
@@ -133,6 +136,16 @@ class SearchViewModel(
 
     fun clearToast() {
         _toast.value = null
+    }
+
+    fun clearSearch() {
+        searchJob?.cancel()
+        searchJob = null
+
+        lastQuery = ""
+        requestedPages.clear()
+
+        _screenState.postValue(SearchUiState.Initial)
     }
 
     override fun onCleared() {

@@ -10,6 +10,7 @@ import ru.practicum.android.diploma.data.NetworkClient
 import ru.practicum.android.diploma.data.network.ApiService
 import ru.practicum.android.diploma.data.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.util.API_BASE_URL
+import ru.practicum.android.diploma.util.ConnectivityMonitor
 
 val networkModule = module {
 
@@ -47,5 +48,11 @@ val networkModule = module {
             .okHttpClient(okHttpClient)
             .crossfade(true)
             .build()
+    }
+
+    single {
+        ConnectivityMonitor(
+            context = androidContext()
+        )
     }
 }
