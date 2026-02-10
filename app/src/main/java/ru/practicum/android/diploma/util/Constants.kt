@@ -16,6 +16,7 @@ const val HTTP_OK = 200
 const val NOT_CONNECTED_CODE = -1
 const val SERVER_INTERNAL_ERROR = 500
 const val NOT_FOUND_CODE = 404
+const val CONNECTIVITY_CHECK_DELAY_MS = 2000L
 
 // Параметры экрана поиска
 const val PAGE_SIZE = 20
