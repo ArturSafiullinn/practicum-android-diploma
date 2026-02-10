@@ -205,7 +205,6 @@ class SearchViewModel(
         _toast.postValue(messageRes)
     }
 
-
     fun clearToast() {
         _toast.value = null
     }
