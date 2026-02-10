@@ -12,4 +12,20 @@ sealed interface SelectIndustryUiState {
     data class Industries(
         val industriesShown: List<FilterIndustry>
     ) : SelectIndustryUiState
+
+    fun SelectIndustryUiState.shouldLoadIndustries(
+        isFullListEmpty: Boolean
+    ): Boolean = when (this) {
+        is Initial,
+        is NoInternet,
+        is Error -> true
+
+        is Industries -> industriesShown.isEmpty() && isFullListEmpty
+        else -> false
+    }
+
+    fun SelectIndustryUiState.shouldShowNoInternet(): Boolean = when (this) {
+        is Initial, Loading -> true
+        else -> false
+    }
 }

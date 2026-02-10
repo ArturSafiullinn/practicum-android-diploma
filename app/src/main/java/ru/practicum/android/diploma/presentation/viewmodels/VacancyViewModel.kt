@@ -15,8 +15,11 @@ import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.utils.DescriptionParser
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState
+import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.Initial.shouldRetryLoad
+import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState.Initial.shouldShowNoInternet
 import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.TAG_VACANCY_VIEW_MODEL
+import ru.practicum.android.diploma.util.extensions.observeConnectivity
 import java.io.IOException
 
 class VacancyViewModel(
@@ -38,33 +41,24 @@ class VacancyViewModel(
     val toast: StateFlow<Int?> get() = _toast
 
     private var loadJob: Job? = null
+    private var connectivityJob: Job? = null
 
     init {
-        loadVacancy()
-        observeConnectivity()
-    }
-
-    private fun observeConnectivity() {
-        viewModelScope.launch {
-            connectivityMonitor.isConnected
-                .collect { isConnected ->
-                    _hasInternet.update { isConnected }
-
-                    when (isConnected) {
-                        true -> {
-                            _toast.update { R.string.toast_connection_restored }
-                            val currentState = _screenState.value
-                            if (currentState.shouldRetryLoad()) {
-                                loadVacancy()
-                            }
-                        }
-                        false -> {
-                            _toast.update { R.string.toast_connection_lost }
-                        }
-                    }
+        observeConnectivity(
+            connectivityMonitor = connectivityMonitor,
+            screenState = _screenState,
+            onConnected = {
+                if (it.shouldRetryLoad()) {
+                    loadVacancy()
                 }
-
-        }
+            },
+            onDisconnected = {
+                if (it.shouldShowNoInternet()) {
+                    _screenState.update { VacancyUiState.NoInternet }
+                }
+            }
+        )
+        loadVacancy()
     }
 
     private fun loadVacancy() {
@@ -99,6 +93,7 @@ class VacancyViewModel(
                                 _toast.update { R.string.toast_check_internet }
                                 VacancyUiState.NoInternet
                             }
+
                             else -> {
                                 _toast.update { R.string.toast_error }
                                 VacancyUiState.ServerError
@@ -145,14 +140,7 @@ class VacancyViewModel(
 
     override fun onCleared() {
         loadJob?.cancel()
+        connectivityJob?.cancel()
         super.onCleared()
     }
-
-    private fun VacancyUiState.shouldRetryLoad(): Boolean =
-        when (this) {
-            is VacancyUiState.NoInternet,
-            VacancyUiState.Initial -> true
-
-            else -> false
-        }
 }

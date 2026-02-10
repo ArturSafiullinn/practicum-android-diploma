@@ -16,4 +16,17 @@ sealed interface VacancyUiState {
         val vacancyDetailDomain: VacancyDetail,
         val descriptionBlocks: List<DescriptionBlock>
     ) : VacancyUiState
+
+    fun VacancyUiState.shouldRetryLoad(): Boolean =
+        when (this) {
+            is NoInternet,
+            Initial -> true
+
+            else -> false
+        }
+
+    fun VacancyUiState.shouldShowNoInternet(): Boolean = when (this) {
+        is Loading, Initial -> true
+        else -> false
+    }
 }

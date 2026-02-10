@@ -31,7 +31,7 @@ class SearchFragment : BaseComposeFragment() {
     @Composable
     override fun ScreenContent() {
         val navController = findNavController()
-        val state by viewModel.screenState.observeAsState(SearchUiState.Initial)
+        val state by viewModel.screenState.collectAsState()
         val toastRes by viewModel.toast.observeAsState()
         val appliedFilter by filterViewModel.appliedState.collectAsState()
 

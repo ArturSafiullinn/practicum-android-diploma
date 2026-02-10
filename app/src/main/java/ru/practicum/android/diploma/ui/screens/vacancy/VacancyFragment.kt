@@ -89,6 +89,7 @@ fun VacancyScreen(
         }
     ) { paddingValues ->
         when (screenState) {
+            is VacancyUiState.Initial -> {}
             is VacancyUiState.Loading -> {
                 CustomLoadingIndicator(
                     Modifier
@@ -97,17 +98,17 @@ fun VacancyScreen(
                 )
             }
 
-            is VacancyUiState.ServerError -> {
-                VacancyError(
-                    imageResId = R.drawable.image_vacancy_server_error,
-                    textResId = R.string.server_error
-                )
-            }
-
             is VacancyUiState.NoInternet -> {
                 VacancyError(
                     imageResId = R.drawable.no_internet,
                     textResId = R.string.empty_state_no_internet
+                )
+            }
+
+            is VacancyUiState.ServerError -> {
+                VacancyError(
+                    imageResId = R.drawable.image_vacancy_server_error,
+                    textResId = R.string.server_error
                 )
             }
 
@@ -129,8 +130,6 @@ fun VacancyScreen(
                     textResId = R.string.vacancy_not_found_or_deleted
                 )
             }
-
-            is VacancyUiState.Initial -> {}
         }
     }
 }

@@ -8,8 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,7 +36,7 @@ class SelectRegionFragment : BaseComposeFragment() {
 
     @Composable
     override fun ScreenContent() {
-        val state by viewModel.screenState.observeAsState(AreaUIState.Loading)
+        val state by viewModel.screenState.collectAsState()
 
         val countryId = sharedViewModel.getCountry()?.id
 
@@ -102,6 +102,8 @@ fun SelectRegionScreen(
             )
 
             when (state) {
+                AreaUIState.Initial -> {}
+
                 AreaUIState.Loading -> {
                     CustomLoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
@@ -111,6 +113,14 @@ fun SelectRegionScreen(
                         modifier = Modifier.fillMaxSize(),
                         imageRes = R.drawable.region_error,
                         title = stringResource(R.string.empty_state_loading_regions_error)
+                    )
+                }
+
+                AreaUIState.NoInternet -> {
+                    EmptyState(
+                        modifier = Modifier.fillMaxSize(),
+                        imageRes = R.drawable.no_internet,
+                        title = stringResource(R.string.empty_state_no_internet)
                     )
                 }
 

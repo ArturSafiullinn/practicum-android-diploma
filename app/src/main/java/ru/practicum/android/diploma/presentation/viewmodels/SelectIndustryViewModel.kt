@@ -11,6 +11,8 @@ import ru.practicum.android.diploma.domain.api.IndustriesInteractor
 import ru.practicum.android.diploma.domain.models.FilterIndustry
 import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState
 import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Error
+import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Error.shouldLoadIndustries
+import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Error.shouldShowNoInternet
 import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Industries
 import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Initial
 import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Loading
@@ -20,6 +22,8 @@ import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY_SHORT
 import ru.practicum.android.diploma.util.Debouncer
 import ru.practicum.android.diploma.util.TAG_INDUSTRIES_VIEW_MODEL
+import ru.practicum.android.diploma.util.extensions.observeConnectivity
+import java.io.IOException
 
 class SelectIndustryViewModel(
     val industriesInteractor: IndustriesInteractor,
@@ -34,30 +38,21 @@ class SelectIndustryViewModel(
     val screenState = _screenState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            connectivityMonitor.isConnected
-                .collect { isConnected ->
-                    when (isConnected) {
-                        true -> {
-                            val currentState = _screenState.value
-                            if (currentState.shouldLoadIndustries(
-                                    isFullListEmpty = industriesFullList.isEmpty()
-                                )
-                            ) {
-                                loadIndustries()
-                            }
-                        }
-
-                        false -> {
-                            val currentState = _screenState.value
-                            if (currentState is Initial || currentState is Loading) {
-                                _screenState.update { NoInternet }
-                            }
-                        }
-                    }
+        observeConnectivity(
+            connectivityMonitor = connectivityMonitor,
+            screenState = _screenState,
+            onConnected = {
+                if (it.shouldLoadIndustries(industriesFullList.isEmpty())) {
+                    loadIndustries()
                 }
-
-        }
+            },
+            onDisconnected = {
+                if (it.shouldShowNoInternet()) {
+                    _screenState.update { NoInternet }
+                }
+            },
+        )
+        loadIndustries()
     }
 
     fun onQueryChanged(newQuery: String) {
@@ -83,8 +78,14 @@ class SelectIndustryViewModel(
                         updateFilteredList()
                     }
                     .onFailure { e ->
-                        _screenState.value = Error
-                        Log.e(TAG_INDUSTRIES_VIEW_MODEL, "Failed to load industries", e)
+                        val state = when (e) {
+                            is IOException -> NoInternet
+                            else -> {
+                                Log.e(TAG_INDUSTRIES_VIEW_MODEL, "Failed to load industries", e)
+                                Error
+                            }
+                        }
+                        _screenState.update { state }
                     }
             }
         }
@@ -109,15 +110,5 @@ class SelectIndustryViewModel(
                 else -> NothingFound
             }
         }
-    }
-
-    private fun SelectIndustryUiState.shouldLoadIndustries(
-        isFullListEmpty: Boolean
-    ): Boolean = when (this) {
-        is Initial,
-        is NoInternet -> true
-
-        is Industries -> industriesShown.isEmpty() && isFullListEmpty
-        else -> false
     }
 }

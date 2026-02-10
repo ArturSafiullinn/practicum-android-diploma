@@ -15,4 +15,14 @@ sealed interface SearchUiState {
         val isLoadingNextPage: Boolean = false,
         val found: Int = 0
     ) : SearchUiState
+
+    fun SearchUiState.shouldTryReload() = when (this) {
+        is NotConnected, ServerError -> true
+        else -> false
+    }
+
+    fun SearchUiState.shouldShowNoInternet() = when (this) {
+        is Loading -> true
+        else -> false
+    }
 }

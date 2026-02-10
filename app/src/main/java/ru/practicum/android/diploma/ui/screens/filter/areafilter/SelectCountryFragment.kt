@@ -14,8 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -40,7 +40,7 @@ class SelectCountryFragment : BaseComposeFragment() {
 
     @Composable
     override fun ScreenContent() {
-        val state by viewModel.screenState.observeAsState(AreaUIState.Loading)
+        val state by viewModel.screenState.collectAsState()
         SelectCountryScreen(
             state = state,
             onBackClick = { findNavController().popBackStack() },
@@ -67,6 +67,7 @@ fun SelectCountryScreen(
         }
     ) { padding ->
         when (state) {
+            is AreaUIState.Initial -> {}
             is AreaUIState.Loading -> {
                 CustomLoadingIndicator(
                     modifier = Modifier
@@ -79,6 +80,14 @@ fun SelectCountryScreen(
                     modifier = Modifier.fillMaxSize(),
                     imageRes = R.drawable.region_error,
                     title = stringResource(R.string.empty_state_loading_regions_error)
+                )
+            }
+
+            is AreaUIState.NoInternet -> {
+                EmptyState(
+                    modifier = Modifier.fillMaxSize(),
+                    imageRes = R.drawable.no_internet,
+                    title = stringResource(R.string.empty_state_no_internet)
                 )
             }
 

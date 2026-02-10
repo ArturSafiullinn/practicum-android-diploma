@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.SearchInteractor
@@ -15,13 +18,46 @@ import ru.practicum.android.diploma.domain.models.VacancyResponse
 import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.ui.models.VacancyListItemUi
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState
+import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState.Initial.shouldShowNoInternet
+import ru.practicum.android.diploma.ui.screens.searchfragment.SearchUiState.Initial.shouldTryReload
+import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY_LONG
+import ru.practicum.android.diploma.util.extensions.observeConnectivity
 import java.io.IOException
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
-    private val vacancyListItemUiMapper: VacancyListItemUiMapper
+    private val vacancyListItemUiMapper: VacancyListItemUiMapper,
+    private val connectivityMonitor: ConnectivityMonitor
 ) : ViewModel() {
+
+    private var searchJob: Job? = null
+    private var lastQuery: String = ""
+    private var lastAppliedFilter = FilterParameters()
+    private val requestedPages = mutableSetOf<Int>()
+
+    private val _toast = MutableLiveData<Int?>()
+    val toast: LiveData<Int?> get() = _toast
+
+    private val _screenState = MutableStateFlow<SearchUiState>(SearchUiState.Initial)
+    val screenState = _screenState.asStateFlow()
+
+    init {
+        observeConnectivity(
+            connectivityMonitor = connectivityMonitor,
+            screenState = _screenState,
+            onConnected = {
+                if (it.shouldTryReload()) {
+                    onSearchSubmitted(lastQuery, lastAppliedFilter)
+                }
+            },
+            onDisconnected = {
+                if (it.shouldShowNoInternet()) {
+                    _screenState.update { SearchUiState.NotConnected }
+                }
+            }
+        )
+    }
 
     private fun buildSearchParams(
         text: String,
@@ -39,23 +75,12 @@ class SearchViewModel(
         )
     }
 
-    private var searchJob: Job? = null
-    private var lastQuery: String = ""
-    private var lastAppliedFilter: FilterParameters? = null
-    private val requestedPages = mutableSetOf<Int>()
-
-    private val _toast = MutableLiveData<Int?>()
-    val toast: LiveData<Int?> get() = _toast
-
-    private val _screenState = MutableLiveData<SearchUiState>(SearchUiState.Initial)
-    val screenState: LiveData<SearchUiState> get() = _screenState
-
     private suspend fun onSearchSubmitted(query: String, applied: FilterParameters) {
         lastQuery = query.trim()
         lastAppliedFilter = applied
         requestedPages.clear()
 
-        _screenState.postValue(SearchUiState.Loading)
+        _screenState.update { SearchUiState.Loading }
 
         searchInteractor.search(buildSearchParams(lastQuery, applied))
             .collect { result ->
@@ -64,11 +89,11 @@ class SearchViewModel(
                         val filteredResponse = filterByArea(response, applied.areaId)
 
                         if (filteredResponse.items.isEmpty()) {
-                            _screenState.postValue(SearchUiState.NoResults)
+                            _screenState.update { SearchUiState.NoResults }
                         } else {
                             requestedPages.add(filteredResponse.page)
                             val uiItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
-                            _screenState.postValue(
+                            _screenState.update {
                                 SearchUiState.Content(
                                     pages = filteredResponse.pages,
                                     currentPage = filteredResponse.page,
@@ -76,7 +101,8 @@ class SearchViewModel(
                                     isLoadingNextPage = false,
                                     found = filteredResponse.found
                                 )
-                            )
+                            }
+
                         }
                     }
                     .onFailure { e ->
@@ -84,7 +110,7 @@ class SearchViewModel(
                             is IOException -> SearchUiState.NotConnected
                             else -> SearchUiState.ServerError
                         }
-                        _screenState.postValue(state)
+                        _screenState.update { state }
                     }
             }
     }
@@ -142,7 +168,7 @@ class SearchViewModel(
         val current = _screenState.value as? SearchUiState.Content ?: return
         if (!shouldLoadNextPage(current)) return
 
-        _screenState.postValue(current.copy(isLoadingNextPage = true))
+        _screenState.update { current.copy(isLoadingNextPage = true) }
         val nextPage = current.currentPage + 1
 
         searchJob?.cancel()
@@ -155,7 +181,7 @@ class SearchViewModel(
 
                             requestedPages.add(nextPage)
                             val newItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
-                            _screenState.postValue(
+                            _screenState.update {
                                 current.copy(
                                     pages = filteredResponse.pages,
                                     currentPage = filteredResponse.page,
@@ -163,10 +189,12 @@ class SearchViewModel(
                                     isLoadingNextPage = false,
                                     found = filteredResponse.found
                                 )
-                            )
+                            }
                         }
                         .onFailure { e ->
-                            _screenState.postValue(current.copy(isLoadingNextPage = false))
+                            _screenState.update {
+                                current.copy(isLoadingNextPage = false)
+                            }
                             val messageRes = when (e) {
                                 is IOException -> R.string.toast_check_internet
                                 else -> R.string.toast_error
@@ -193,7 +221,7 @@ class SearchViewModel(
         lastQuery = ""
         requestedPages.clear()
 
-        _screenState.postValue(SearchUiState.Initial)
+        _screenState.update { SearchUiState.Initial }
     }
 
     override fun onCleared() {
