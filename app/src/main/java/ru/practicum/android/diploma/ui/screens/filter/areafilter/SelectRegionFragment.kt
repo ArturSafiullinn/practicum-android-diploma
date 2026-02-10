@@ -38,9 +38,10 @@ class SelectRegionFragment : BaseComposeFragment() {
     override fun ScreenContent() {
         val state by viewModel.screenState.observeAsState(AreaUIState.Loading)
 
-        LaunchedEffect(Unit) {
-            val parentId = sharedViewModel.getCountry()?.id
-            viewModel.getRegions(parentId)
+        val countryId = sharedViewModel.getCountry()?.id
+
+        LaunchedEffect(countryId) {
+            viewModel.getRegions(countryId)
         }
 
         var query by remember { mutableStateOf("") }
@@ -58,11 +59,14 @@ class SelectRegionFragment : BaseComposeFragment() {
                 viewModel.onSearchQueryChanged(query)
             },
             onRegionSelect = { area ->
-                val country = viewModel.getCountryByRegion(area)
-                sharedViewModel.saveCountry(country)
-                sharedViewModel.saveRegion(area)
+                val selectedCountry = sharedViewModel.getCountry()
+                if (selectedCountry == null) {
+                    val country = viewModel.getCountryByRegion(area)
+                    sharedViewModel.saveCountryDraft(country)
+                }
+                sharedViewModel.saveRegionDraft(area)
                 findNavController().popBackStack()
-            },
+            }
         )
     }
 }

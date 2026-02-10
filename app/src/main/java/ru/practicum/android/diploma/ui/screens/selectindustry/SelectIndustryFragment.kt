@@ -67,7 +67,7 @@ class SelectIndustryFragment : BaseComposeFragment() {
             onQueryChanged = { newQuery -> selectIndustryViewModel.onQueryChanged(newQuery) },
             onBackClick = { findNavController().popBackStack() },
             onApplyClick = {
-                filterSharedViewModel.updateIndustry(industryId = selectedIndustryId)
+                filterSharedViewModel.updateIndustryDraft(industryId = selectedIndustryId)
                 findNavController().popBackStack()
             },
         )

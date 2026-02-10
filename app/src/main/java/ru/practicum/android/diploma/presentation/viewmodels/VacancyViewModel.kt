@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +13,6 @@ import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.utils.DescriptionParser
 import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState
-import ru.practicum.android.diploma.util.CONNECTIVITY_CHECK_DELAY_MS
 import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.TAG_VACANCY_VIEW_MODEL
 
@@ -34,6 +32,7 @@ class VacancyViewModel(
     val hasInternet: StateFlow<Boolean> = _hasInternet.asStateFlow()
 
     private var loadJob: Job? = null
+    private var connectivityJob: Job? = null
 
     init {
         observeConnectivity()
@@ -41,18 +40,16 @@ class VacancyViewModel(
     }
 
     private fun observeConnectivity() {
-        viewModelScope.launch {
-            var last = connectivityMonitor.isCurrentlyConnected()
+        connectivityJob?.cancel()
+        connectivityJob = viewModelScope.launch {
+            var last = connectivityMonitor.isConnected.value
             handleConnectivityChanged(last)
 
-            while (true) {
-                delay(CONNECTIVITY_CHECK_DELAY_MS)
-
-                val current = connectivityMonitor.isCurrentlyConnected()
-                if (current == last) continue
-
-                handleConnectivityChanged(current)
-                last = current
+            connectivityMonitor.isConnected.collect { current ->
+                if (current != last) {
+                    handleConnectivityChanged(current)
+                    last = current
+                }
             }
         }
     }
@@ -68,6 +65,7 @@ class VacancyViewModel(
             loadVacancy()
         }
     }
+
     private fun loadVacancy() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
@@ -132,6 +130,7 @@ class VacancyViewModel(
 
     override fun onCleared() {
         loadJob?.cancel()
+        connectivityJob?.cancel()
         super.onCleared()
     }
 }
