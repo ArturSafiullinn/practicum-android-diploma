@@ -119,7 +119,6 @@ class VacancyViewModel(
         Log.e(TAG_VACANCY_VIEW_MODEL, e.message.toString(), e)
     }
 
-
     fun onToastShown() {
         _toast.value = null
     }

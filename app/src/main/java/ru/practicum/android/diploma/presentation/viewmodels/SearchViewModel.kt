@@ -107,7 +107,6 @@ class SearchViewModel(
         _screenState.postValue(state)
     }
 
-
     fun onAppliedFilterChanged(appliedFilters: FilterParameters, currentQuery: String) {
         searchJob?.cancel()
 
