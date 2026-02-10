@@ -46,9 +46,10 @@ class VacancyViewModel(
             handleConnectivityChanged(last)
 
             connectivityMonitor.isConnected.collect { current ->
-                if (current == last) return@collect
-                handleConnectivityChanged(current)
-                last = current
+                if (current != last) {
+                    handleConnectivityChanged(current)
+                    last = current
+                }
             }
         }
     }
