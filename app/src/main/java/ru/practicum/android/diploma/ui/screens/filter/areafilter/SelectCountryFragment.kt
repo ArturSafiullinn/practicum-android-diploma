@@ -29,6 +29,7 @@ import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewMode
 import ru.practicum.android.diploma.presentation.viewmodels.SelectCountryViewModel
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
+import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.theme.Dimens
 
@@ -73,10 +74,19 @@ fun SelectCountryScreen(
                 )
             }
 
-            is AreaUIState.Error -> {
-                Text(
-                    "Ошибка",
-                    modifier = Modifier.padding(padding)
+            is AreaUIState.ServerError -> {
+                EmptyState(
+                    modifier = Modifier.fillMaxSize(),
+                    imageRes = R.drawable.region_error,
+                    title = stringResource(R.string.empty_state_loading_regions_error)
+                )
+            }
+
+            AreaUIState.NothingFound -> {
+                EmptyState(
+                    modifier = Modifier.fillMaxSize(),
+                    imageRes = R.drawable.empty_result,
+                    title = stringResource(R.string.empty_state_no_such_region)
                 )
             }
 

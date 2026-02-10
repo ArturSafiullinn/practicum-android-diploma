@@ -42,7 +42,7 @@ class SelectRegionViewModel(
                             )
                             countries = response.filter { it.parentId == null }
                         }
-                        .onFailure { _screenState.postValue(AreaUIState.Error) }
+                        .onFailure { _screenState.postValue(AreaUIState.ServerError) }
                 }
         }
     }
