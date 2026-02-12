@@ -116,33 +116,34 @@ class SearchViewModel(
                         }
                         _screenState.update { state }
                     }
-        try {
-            searchInteractor.search(buildSearchParams(lastQuery, applied))
-                .collect { result ->
-                    result
-                        .onSuccess { handleSearchFirstPageSuccess(it, applied) }
-                        .onFailure { handleSearchFailure(it) }
+                try {
+                    searchInteractor.search(buildSearchParams(lastQuery, applied))
+                        .collect { result ->
+                            result
+                                .onSuccess { handleSearchFirstPageSuccess(it, applied) }
+                                .onFailure { handleSearchFailure(it) }
+                        }
+                } catch (e: CancellationException) {
+                    if (_screenState.value is SearchUiState.Loading) {
+                        _screenState.update { previousState }
+                    }
+                    throw e
                 }
-        } catch (e: CancellationException) {
-            if (_screenState.value is SearchUiState.Loading) {
-                _screenState.postValue(previousState ?: SearchUiState.Initial)
             }
-            throw e
-        }
     }
 
     private fun handleSearchFirstPageSuccess(response: VacancyResponse, applied: FilterParameters) {
         val filteredResponse = filterByArea(response, applied.areaId)
 
         if (filteredResponse.items.isEmpty()) {
-            _screenState.postValue(SearchUiState.NoResults)
+            _screenState.update { SearchUiState.NoResults }
             return
         }
 
         requestedPages.add(filteredResponse.page)
         val uiItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
 
-        _screenState.postValue(
+        _screenState.update {
             SearchUiState.Content(
                 pages = filteredResponse.pages,
                 currentPage = filteredResponse.page,
@@ -150,7 +151,7 @@ class SearchViewModel(
                 isLoadingNextPage = false,
                 found = filteredResponse.found
             )
-        )
+        }
     }
 
     private fun handleSearchFailure(e: Throwable) {
@@ -159,7 +160,7 @@ class SearchViewModel(
             is IOException -> SearchUiState.NotConnected
             else -> SearchUiState.ServerError
         }
-        _screenState.postValue(state)
+        _screenState.update { state }
     }
 
     fun onAppliedFilterChanged(appliedFilters: FilterParameters, currentQuery: String) {
@@ -251,7 +252,7 @@ class SearchViewModel(
                             .onFailure { handleNextPageFailure(current, it) }
                     }
             } catch (e: CancellationException) {
-                _screenState.postValue(current.copy(isLoadingNextPage = false))
+                _screenState.update { current.copy(isLoadingNextPage = false) }
                 throw e
             }
         }
@@ -268,7 +269,7 @@ class SearchViewModel(
         requestedPages.add(nextPage)
         val newItems = filteredResponse.items.map { vacancyListItemUiMapper.toUi(it) }
 
-        _screenState.postValue(
+        _screenState.update {
             current.copy(
                 pages = filteredResponse.pages,
                 currentPage = filteredResponse.page,
@@ -276,11 +277,11 @@ class SearchViewModel(
                 isLoadingNextPage = false,
                 found = filteredResponse.found
             )
-        )
+        }
     }
 
     private fun handleNextPageFailure(current: SearchUiState.Content, e: Throwable) {
-        _screenState.postValue(current.copy(isLoadingNextPage = false))
+        _screenState.update { current.copy(isLoadingNextPage = false) }
         val messageRes = when (e) {
             is SocketTimeoutException -> R.string.toast_error
             is IOException -> R.string.toast_check_internet
@@ -309,7 +310,7 @@ class SearchViewModel(
         searchJob = null
 
         lastQuery = ""
-        lastAppliedFilter = null
+        lastAppliedFilter = FilterParameters()
         requestedPages.clear()
 
         _screenState.update { SearchUiState.Initial }

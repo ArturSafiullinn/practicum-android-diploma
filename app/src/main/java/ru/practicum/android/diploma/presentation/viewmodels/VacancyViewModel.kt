@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
@@ -97,10 +98,12 @@ class VacancyViewModel(
                 _toast.value = R.string.toast_error
                 VacancyUiState.ServerError
             }
+
             is IOException -> {
                 _toast.value = R.string.toast_check_internet
                 VacancyUiState.NoInternet
             }
+
             else -> {
                 _toast.value = R.string.toast_error
                 VacancyUiState.ServerError
