@@ -59,7 +59,8 @@ val presentationModule = module {
     viewModel {
         SearchViewModel(
             searchInteractor = get(),
-            vacancyListItemUiMapper = get()
+            vacancyListItemUiMapper = get(),
+            connectivityMonitor = get()
         )
     }
     viewModel {
@@ -73,8 +74,18 @@ val presentationModule = module {
             connectivityMonitor = get()
         )
     }
-    viewModel { SelectCountryViewModel(areaInteractor = get()) }
-    viewModel { SelectRegionViewModel(areaInteractor = get()) }
+    viewModel {
+        SelectCountryViewModel(
+            areaInteractor = get(),
+            connectivityMonitor = get()
+        )
+    }
+    viewModel {
+        SelectRegionViewModel(
+            areaInteractor = get(),
+            connectivityMonitor = get()
+        )
+    }
 
     single { HeadingDictionary(get()) }
     single { DescriptionParser(get()) }

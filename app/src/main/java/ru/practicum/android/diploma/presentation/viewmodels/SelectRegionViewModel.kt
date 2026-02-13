@@ -1,32 +1,56 @@
 package ru.practicum.android.diploma.presentation.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.AreaInteractor
 import ru.practicum.android.diploma.domain.models.Area
-import ru.practicum.android.diploma.ui.screens.filter.areafilter.AreaUIState
+import ru.practicum.android.diploma.ui.models.ContentData
+import ru.practicum.android.diploma.ui.states.ScreenState
+import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.MOSCOW_REGION_ID
+import ru.practicum.android.diploma.util.TAG_REGION_FILTER_VIEW_MODEL
+import ru.practicum.android.diploma.util.extensions.observeConnectivity
+import java.io.IOException
 
 class SelectRegionViewModel(
     private val areaInteractor: AreaInteractor,
+    private val connectivityMonitor: ConnectivityMonitor
 ) : ViewModel() {
 
     private var searchJob: Job? = null
+    private var lastParentId: Int? = null
 
-    private val _screenState = MutableLiveData<AreaUIState>(AreaUIState.Loading)
-    val screenState: LiveData<AreaUIState> get() = _screenState
+    private val _screenState = MutableStateFlow<ScreenState<ContentData.AreaFilter>>(ScreenState.Empty)
+    val screenState = _screenState.asStateFlow()
 
     private var regions: List<Area> = emptyList()
     private var countries: List<Area> = emptyList()
 
+    init {
+        observeConnectivity(
+            connectivityMonitor = connectivityMonitor,
+            screenState = _screenState,
+            onConnected = {
+                getRegions(lastParentId)
+            },
+            onDisconnected = {
+                _screenState.update { ScreenState.NotConnected }
+            }
+        )
+    }
+
     fun getRegions(parentId: Int?) {
         searchJob?.cancel()
+        lastParentId = parentId
+
         searchJob = viewModelScope.launch {
-            _screenState.postValue(AreaUIState.Loading)
+            _screenState.update { ScreenState.Loading }
             areaInteractor.getAreas()
                 .collect { result ->
                     result
@@ -37,12 +61,22 @@ class SelectRegionViewModel(
                                 response.filter { it.parentId != null }
                             }.sortedWith(compareBy { it.id != MOSCOW_REGION_ID })
 
-                            _screenState.postValue(
-                                AreaUIState.Content(regions)
-                            )
+                            _screenState.update { ScreenState.Content(ContentData.AreaFilter(regions)) }
                             countries = response.filter { it.parentId == null }
                         }
-                        .onFailure { _screenState.postValue(AreaUIState.ServerError) }
+                        .onFailure { e ->
+                            val state = when (e) {
+                                is IOException -> {
+                                    ScreenState.NotConnected
+                                }
+
+                                else -> {
+                                    Log.e(TAG_REGION_FILTER_VIEW_MODEL, "Failed to load regions", e)
+                                    ScreenState.ServerError
+                                }
+                            }
+                            _screenState.update { state }
+                        }
                 }
         }
     }
@@ -54,7 +88,7 @@ class SelectRegionViewModel(
             regions.filter { it.name.contains(query, ignoreCase = true) }
         }
 
-        _screenState.postValue(AreaUIState.Content(filtered))
+        _screenState.update { ScreenState.Content(ContentData.AreaFilter(filtered)) }
     }
 
     fun getCountryByRegion(region: Area): Area {

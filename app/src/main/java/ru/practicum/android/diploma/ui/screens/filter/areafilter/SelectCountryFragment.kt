@@ -14,8 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,7 +30,9 @@ import ru.practicum.android.diploma.presentation.viewmodels.SelectCountryViewMod
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.components.EmptyState
+import ru.practicum.android.diploma.ui.models.ContentData
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.Dimens
 
 class SelectCountryFragment : BaseComposeFragment() {
@@ -40,7 +42,7 @@ class SelectCountryFragment : BaseComposeFragment() {
 
     @Composable
     override fun ScreenContent() {
-        val state by viewModel.screenState.observeAsState(AreaUIState.Loading)
+        val state by viewModel.screenState.collectAsState()
         SelectCountryScreen(
             state = state,
             onBackClick = { findNavController().popBackStack() },
@@ -54,7 +56,7 @@ class SelectCountryFragment : BaseComposeFragment() {
 
 @Composable
 fun SelectCountryScreen(
-    state: AreaUIState,
+    state: ScreenState<ContentData.AreaFilter>,
     onBackClick: () -> Unit,
     onCountrySelect: (Area) -> Unit
 ) {
@@ -67,14 +69,14 @@ fun SelectCountryScreen(
         }
     ) { padding ->
         when (state) {
-            is AreaUIState.Loading -> {
+            is ScreenState.Loading -> {
                 CustomLoadingIndicator(
                     modifier = Modifier
                         .fillMaxSize()
                 )
             }
 
-            is AreaUIState.ServerError -> {
+            is ScreenState.ServerError -> {
                 EmptyState(
                     modifier = Modifier.fillMaxSize(),
                     imageRes = R.drawable.region_error,
@@ -82,7 +84,15 @@ fun SelectCountryScreen(
                 )
             }
 
-            AreaUIState.NothingFound -> {
+            is ScreenState.NotConnected -> {
+                EmptyState(
+                    modifier = Modifier.fillMaxSize(),
+                    imageRes = R.drawable.no_internet,
+                    title = stringResource(R.string.empty_state_no_internet)
+                )
+            }
+
+            ScreenState.NoResults -> {
                 EmptyState(
                     modifier = Modifier.fillMaxSize(),
                     imageRes = R.drawable.empty_result,
@@ -90,13 +100,13 @@ fun SelectCountryScreen(
                 )
             }
 
-            is AreaUIState.Content -> {
+            is ScreenState.Content -> {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
                 ) {
-                    items(state.areas) { area ->
+                    items(state.data.areas) { area ->
                         FilterClickable(
                             text = area.name,
                             onClick = { onCountrySelect(area) }
@@ -104,6 +114,8 @@ fun SelectCountryScreen(
                     }
                 }
             }
+
+            else -> {}
         }
     }
 }

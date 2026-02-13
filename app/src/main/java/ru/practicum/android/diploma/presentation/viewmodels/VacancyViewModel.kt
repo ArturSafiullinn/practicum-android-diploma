@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.VacancyInteractor
@@ -14,9 +15,11 @@ import ru.practicum.android.diploma.domain.models.VacancyDetail
 import ru.practicum.android.diploma.presentation.api.ExternalNavigator
 import ru.practicum.android.diploma.presentation.mappers.VacancyDetailUiMapper
 import ru.practicum.android.diploma.presentation.utils.DescriptionParser
-import ru.practicum.android.diploma.ui.screens.vacancy.VacancyUiState
+import ru.practicum.android.diploma.ui.models.ContentData
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.TAG_VACANCY_VIEW_MODEL
+import ru.practicum.android.diploma.util.extensions.observeConnectivity
 import java.io.IOException
 import java.net.SocketTimeoutException
 
@@ -29,8 +32,8 @@ class VacancyViewModel(
     private val connectivityMonitor: ConnectivityMonitor,
 ) : ViewModel() {
 
-    private val _screenState = MutableStateFlow<VacancyUiState>(VacancyUiState.Initial)
-    val screenState: StateFlow<VacancyUiState> = _screenState.asStateFlow()
+    private val _screenState = MutableStateFlow<ScreenState<ContentData.Vacancy>>(ScreenState.Empty)
+    val screenState = _screenState.asStateFlow()
 
     private val _hasInternet = MutableStateFlow(false)
     val hasInternet: StateFlow<Boolean> = _hasInternet.asStateFlow()
@@ -40,41 +43,25 @@ class VacancyViewModel(
 
     private var loadJob: Job? = null
     private var connectivityJob: Job? = null
-    private var wasConnected: Boolean? = null
 
     init {
-        loadVacancy()
-        observeConnectivity()
-    }
-
-    private fun observeConnectivity() {
-        connectivityJob?.cancel()
-        connectivityJob = viewModelScope.launch {
-            connectivityMonitor.isConnected.collect { isConnected ->
-                _hasInternet.value = isConnected
-
-                val prev = wasConnected
-                wasConnected = isConnected
-
-                if (prev != null && prev != isConnected) {
-                    _toast.value = if (isConnected) {
-                        R.string.toast_connection_restored
-                    } else {
-                        R.string.toast_connection_lost
-                    }
-                }
-
-                if (prev == false && isConnected && _screenState.value.shouldRetryLoad()) {
-                    loadVacancy()
-                }
+        observeConnectivity(
+            connectivityMonitor = connectivityMonitor,
+            screenState = _screenState,
+            onConnected = {
+                loadVacancy()
+            },
+            onDisconnected = {
+                _screenState.update { ScreenState.NotConnected }
             }
-        }
+        )
+        loadVacancy()
     }
 
     private fun loadVacancy() {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
-            _screenState.value = VacancyUiState.Loading
+            _screenState.value = ScreenState.Loading
 
             vacancyInteractor.fetchVacancy(vacancyId).collect { result ->
                 result
@@ -93,10 +80,12 @@ class VacancyViewModel(
         val description = ui.description?.trim().orEmpty()
         val blocks = if (description.isBlank()) emptyList() else descriptionParser.parseDescription(description)
 
-        _screenState.value = VacancyUiState.Vacancy(
-            vacancyDetailDomain = complete,
-            vacancyDetailUi = ui,
-            descriptionBlocks = blocks
+        _screenState.value = ScreenState.Content(
+            data = ContentData.Vacancy(
+                vacancyDetailDomain = complete,
+                vacancyDetailUi = ui,
+                descriptionBlocks = blocks
+            )
         )
     }
 
@@ -104,15 +93,17 @@ class VacancyViewModel(
         val state = when (e) {
             is SocketTimeoutException -> {
                 _toast.value = R.string.toast_error
-                VacancyUiState.ServerError
+                ScreenState.ServerError
             }
+
             is IOException -> {
                 _toast.value = R.string.toast_check_internet
-                VacancyUiState.NoInternet
+                ScreenState.NotConnected
             }
+
             else -> {
                 _toast.value = R.string.toast_error
-                VacancyUiState.ServerError
+                ScreenState.ServerError
             }
         }
         _screenState.value = state
@@ -125,28 +116,30 @@ class VacancyViewModel(
 
     fun onFavoriteClicked() {
         val current = _screenState.value
-        if (current !is VacancyUiState.Vacancy) return
+        if (current !is ScreenState.Content<ContentData.Vacancy>) return
 
         viewModelScope.launch {
-            vacancyInteractor.toggleFavorite(current.vacancyDetailDomain)
+            vacancyInteractor.toggleFavorite(current.data.vacancyDetailDomain)
             updateIsFavorite()
         }
     }
 
     fun onShareClicked() {
         val current = _screenState.value
-        if (current is VacancyUiState.Vacancy && _hasInternet.value) {
-            externalNavigator.shareLink(current.vacancyDetailUi.url)
+        if (current is ScreenState.Content && _hasInternet.value) {
+            externalNavigator.shareLink(current.data.vacancyDetailUi.url)
         }
     }
 
     private suspend fun updateIsFavorite() {
         val isFavorite = vacancyInteractor.isFavorite(vacancyId)
         val current = _screenState.value
-        if (current is VacancyUiState.Vacancy) {
+        if (current is ScreenState.Content) {
             _screenState.value = current.copy(
-                vacancyDetailUi = current.vacancyDetailUi.copy(isFavorite = isFavorite),
-                vacancyDetailDomain = current.vacancyDetailDomain.copy(isFavorite = isFavorite)
+                data = current.data.copy(
+                    vacancyDetailUi = current.data.vacancyDetailUi.copy(isFavorite = isFavorite),
+                    vacancyDetailDomain = current.data.vacancyDetailDomain.copy(isFavorite = isFavorite)
+                )
             )
         }
     }
@@ -154,13 +147,7 @@ class VacancyViewModel(
     override fun onCleared() {
         connectivityJob?.cancel()
         loadJob?.cancel()
+        connectivityJob?.cancel()
         super.onCleared()
     }
-
-    private fun VacancyUiState.shouldRetryLoad(): Boolean =
-        when (this) {
-            is VacancyUiState.NoInternet,
-            VacancyUiState.Initial -> true
-            else -> false
-        }
 }

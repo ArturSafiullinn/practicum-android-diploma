@@ -35,6 +35,9 @@ const val TAG_CONNECTIVITY_MONITOR = "ConnectivityMonitor"
 const val TAG_COIL_DEBUG = "Coil Debug"
 const val TAG_VACANCY_VIEW_MODEL = "VacancyViewModel"
 const val TAG_INDUSTRIES_VIEW_MODEL = "IndustriesViewModel"
+const val TAG_COUNTRY_FILTER_VIEW_MODEL = "SelectCountryViewModel"
+const val TAG_REGION_FILTER_VIEW_MODEL = "SelectRegionViewModel"
+// endregion
 
 // Areas
 const val OTHER_REGIONS_ID = 1001

@@ -19,7 +19,9 @@ import ru.practicum.android.diploma.presentation.viewmodels.FavoritesViewModel
 import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SimpleTitleTopAppBar
 import ru.practicum.android.diploma.ui.components.VacancyItem
+import ru.practicum.android.diploma.ui.models.ContentData
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.util.ARGS_VACANCY_ID
 
@@ -45,7 +47,7 @@ class FavoritesFragment : BaseComposeFragment() {
 
 @Composable
 fun FavoritesScreen(
-    state: FavoritesUiState,
+    state: ScreenState<ContentData.Favorites>,
     onVacancyClick: (String) -> Unit,
 ) {
     Scaffold(
@@ -54,7 +56,7 @@ fun FavoritesScreen(
         }
     ) { padding ->
         when (state) {
-            is FavoritesUiState.Content -> {
+            is ScreenState.Content -> {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -62,7 +64,7 @@ fun FavoritesScreen(
                         .padding(horizontal = Dimens.Space16),
                     verticalArrangement = Arrangement.spacedBy(Dimens.Space8)
                 ) {
-                    items(state.vacancies, key = { it.id }) { vacancy ->
+                    items(state.data.vacancies, key = { it.id }) { vacancy ->
                         VacancyItem(
                             vacancy = vacancy,
                             onClick = { onVacancyClick(vacancy.id) }
@@ -71,7 +73,7 @@ fun FavoritesScreen(
                 }
             }
 
-            FavoritesUiState.Empty -> {
+            ScreenState.Empty -> {
                 EmptyState(
                     modifier = Modifier.padding(padding),
                     imageRes = R.drawable.empty_favorites,
@@ -79,13 +81,15 @@ fun FavoritesScreen(
                 )
             }
 
-            FavoritesUiState.Error -> {
+            ScreenState.ServerError -> {
                 EmptyState(
                     modifier = Modifier.padding(padding),
                     imageRes = R.drawable.empty_result,
                     title = stringResource(R.string.empty_state_no_such_vacancies)
                 )
             }
+
+            else -> {}
         }
     }
 }

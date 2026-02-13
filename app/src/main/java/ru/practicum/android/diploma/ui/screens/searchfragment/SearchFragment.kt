@@ -20,6 +20,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.util.ARGS_VACANCY_ID
 
@@ -31,7 +32,7 @@ class SearchFragment : BaseComposeFragment() {
     @Composable
     override fun ScreenContent() {
         val navController = findNavController()
-        val state by viewModel.screenState.observeAsState(SearchUiState.Initial)
+        val state by viewModel.screenState.collectAsState()
         val toastRes by viewModel.toast.observeAsState()
         val appliedFilter by filterViewModel.appliedState.collectAsState()
 
@@ -104,7 +105,7 @@ class SearchFragment : BaseComposeFragment() {
 fun SearchScreenInitialPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.Initial,
+            state = ScreenState.Initial,
             query = "",
             onFilterClick = {},
             onQueryChange = {},
@@ -126,7 +127,7 @@ fun SearchScreenInitialPreview() {
 fun SearchScreenEmptyResultPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.NoResults,
+            state = ScreenState.NoResults,
             query = "",
             onFilterClick = {},
             onQueryChange = {},
@@ -148,7 +149,7 @@ fun SearchScreenEmptyResultPreview() {
 fun SearchScreenNoInternetPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.NotConnected,
+            state = ScreenState.NotConnected,
             query = "",
             onFilterClick = {},
             onQueryChange = {},
@@ -170,7 +171,7 @@ fun SearchScreenNoInternetPreview() {
 fun SearchScreenServerErrorPreview() {
     AppTheme {
         SearchScreen(
-            state = SearchUiState.ServerError,
+            state = ScreenState.ServerError,
             query = "",
             onFilterClick = {},
             onQueryChange = {},
