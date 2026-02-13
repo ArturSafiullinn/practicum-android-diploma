@@ -30,7 +30,9 @@ import ru.practicum.android.diploma.presentation.viewmodels.SelectCountryViewMod
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.components.EmptyState
+import ru.practicum.android.diploma.ui.models.ContentData
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.Dimens
 
 class SelectCountryFragment : BaseComposeFragment() {
@@ -54,7 +56,7 @@ class SelectCountryFragment : BaseComposeFragment() {
 
 @Composable
 fun SelectCountryScreen(
-    state: AreaUIState,
+    state: ScreenState<ContentData.AreaFilter>,
     onBackClick: () -> Unit,
     onCountrySelect: (Area) -> Unit
 ) {
@@ -67,15 +69,14 @@ fun SelectCountryScreen(
         }
     ) { padding ->
         when (state) {
-            is AreaUIState.Initial -> {}
-            is AreaUIState.Loading -> {
+            is ScreenState.Loading -> {
                 CustomLoadingIndicator(
                     modifier = Modifier
                         .fillMaxSize()
                 )
             }
 
-            is AreaUIState.ServerError -> {
+            is ScreenState.ServerError -> {
                 EmptyState(
                     modifier = Modifier.fillMaxSize(),
                     imageRes = R.drawable.region_error,
@@ -83,7 +84,7 @@ fun SelectCountryScreen(
                 )
             }
 
-            is AreaUIState.NoInternet -> {
+            is ScreenState.NotConnected -> {
                 EmptyState(
                     modifier = Modifier.fillMaxSize(),
                     imageRes = R.drawable.no_internet,
@@ -91,7 +92,7 @@ fun SelectCountryScreen(
                 )
             }
 
-            AreaUIState.NothingFound -> {
+            ScreenState.NoResults -> {
                 EmptyState(
                     modifier = Modifier.fillMaxSize(),
                     imageRes = R.drawable.empty_result,
@@ -99,13 +100,13 @@ fun SelectCountryScreen(
                 )
             }
 
-            is AreaUIState.Content -> {
+            is ScreenState.Content -> {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
                 ) {
-                    items(state.areas) { area ->
+                    items(state.data.areas) { area ->
                         FilterClickable(
                             text = area.name,
                             onClick = { onCountrySelect(area) }
@@ -113,6 +114,8 @@ fun SelectCountryScreen(
                     }
                 }
             }
+
+            else -> {}
         }
     }
 }

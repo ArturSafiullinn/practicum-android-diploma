@@ -40,10 +40,11 @@ import ru.practicum.android.diploma.presentation.viewmodels.SelectIndustryViewMo
 import ru.practicum.android.diploma.ui.components.BackTopAppBar
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.components.EmptyState
+import ru.practicum.android.diploma.ui.models.ContentData
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
 import ru.practicum.android.diploma.ui.screens.filter.ApplyButton
 import ru.practicum.android.diploma.ui.screens.searchfragment.SearchInputField
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Industries
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space17
@@ -93,7 +94,7 @@ class SelectIndustryFragment : BaseComposeFragment() {
 
 @Composable
 fun SelectIndustryScreen(
-    screenState: SelectIndustryUiState,
+    screenState: ScreenState<ContentData.IndustriesFilter>,
     selectedIndustryId: Int?,
     onIndustryClicked: (FilterIndustry) -> Unit,
     onQueryChanged: (String) -> Unit,
@@ -114,7 +115,7 @@ fun SelectIndustryScreen(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = selectedIndustryId != null && screenState is Industries,
+                visible = selectedIndustryId != null && screenState is ScreenState.Content,
                 enter = slideInVertically(
                     initialOffsetY = { fullHeight -> fullHeight },
                     animationSpec = tween(
@@ -167,9 +168,9 @@ fun SelectIndustryScreen(
             Spacer(Modifier.height(Space8))
 
             when (screenState) {
-                is Industries -> {
+                is ScreenState.Content -> {
                     LazyColumn {
-                        items(items = screenState.industriesShown, key = { it.id }) {
+                        items(items = screenState.data.industriesShown, key = { it.id }) {
                             RadioItem(
                                 item = it,
                                 onItemClicked = { industry ->
@@ -183,18 +184,17 @@ fun SelectIndustryScreen(
                     }
                 }
 
-                SelectIndustryUiState.Error -> EmptyState(
+                ScreenState.ServerError -> EmptyState(
                     modifier = Modifier.fillMaxSize(),
                     imageRes = R.drawable.search_error,
                     title = stringResource(R.string.empty_state_loading_regions_error)
                 )
 
-                SelectIndustryUiState.Initial -> {}
-                SelectIndustryUiState.Loading -> {
+                ScreenState.Loading -> {
                     CustomLoadingIndicator(Modifier.fillMaxSize())
                 }
 
-                SelectIndustryUiState.NoInternet -> {
+                ScreenState.NotConnected -> {
                     EmptyState(
                         modifier = Modifier.fillMaxSize(),
                         imageRes = R.drawable.no_internet,
@@ -202,13 +202,15 @@ fun SelectIndustryScreen(
                     )
                 }
 
-                SelectIndustryUiState.NothingFound -> {
+                ScreenState.NoResults -> {
                     EmptyState(
                         modifier = Modifier.fillMaxSize(),
                         imageRes = R.drawable.empty_result,
                         title = stringResource(R.string.empty_state_no_such_idustry)
                     )
                 }
+
+                else -> {}
             }
         }
     }
@@ -226,8 +228,8 @@ fun SelectIndustryScreenPreview() {
         SelectIndustryScreen(
             onBackClick = {},
             onApplyClick = {},
-            screenState = Industries(
-                industriesShown = listOf()
+            screenState = ScreenState.Content(
+                ContentData.IndustriesFilter(industriesShown = listOf())
             ),
             selectedIndustryId = null,
             onIndustryClicked = {},

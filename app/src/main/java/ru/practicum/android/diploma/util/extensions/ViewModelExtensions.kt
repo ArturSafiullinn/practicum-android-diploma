@@ -4,22 +4,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.ui.states.ScreenState
+import ru.practicum.android.diploma.ui.states.ScreenState.Empty.shouldShowNoInternetOnDisconnect
+import ru.practicum.android.diploma.ui.states.ScreenState.Empty.shouldTryReloadOnReconnect
 import ru.practicum.android.diploma.util.ConnectivityMonitor
 
-fun <S> ViewModel.observeConnectivity(
+fun ViewModel.observeConnectivity(
     connectivityMonitor: ConnectivityMonitor,
-    screenState: StateFlow<S>,
-    onConnected: suspend (S) -> Unit,
-    onDisconnected: (S) -> Unit
+    screenState: StateFlow<ScreenState<*>>,
+    onConnected: suspend (ScreenState<*>) -> Unit,
+    onDisconnected: (ScreenState<*>) -> Unit
 ) {
     viewModelScope.launch {
         connectivityMonitor.isConnected.collect { isConnected ->
             val current = screenState.value
 
             if (isConnected) {
-                onConnected(current)
+                if (current.shouldTryReloadOnReconnect()) {
+                    onConnected(current)
+                }
             } else {
-                onDisconnected(current)
+                if (current.shouldShowNoInternetOnDisconnect()) {
+                    onDisconnected(current)
+                }
             }
         }
     }

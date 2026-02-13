@@ -24,12 +24,14 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.zIndex
 import ru.practicum.android.diploma.ui.components.VacancyItem
+import ru.practicum.android.diploma.ui.models.ContentData
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.Dimens.ListSpacerInitialHeight
 
 @Composable
 fun SearchContent(
-    state: SearchUiState.Content,
+    state: ScreenState.Content<ContentData.Search>,
     onLoadNextPage: () -> Unit,
     onVacancyClick: (String) -> Unit
 ) {
@@ -37,9 +39,9 @@ fun SearchContent(
 
     val shouldLoadMore by remember {
         derivedStateOf {
-            if (state.isLoadingNextPage) {
+            if (state.data.isLoadingNextPage) {
                 false
-            } else if (state.currentPage >= state.pages - 1) {
+            } else if (state.data.currentPage >= state.data.pages - 1) {
                 false
             } else {
                 val layoutInfo = listState.layoutInfo
@@ -65,13 +67,13 @@ fun SearchContent(
                 Spacer(modifier = Modifier.height(spacerHeight))
             }
 
-            items(state.vacancies, key = { it.id }) { vacancy ->
+            items(state.data.vacancies, key = { it.id }) { vacancy ->
                 VacancyItem(
                     vacancy = vacancy,
                     onClick = { onVacancyClick(vacancy.id) }
                 )
             }
-            if (state.isLoadingNextPage) {
+            if (state.data.isLoadingNextPage) {
                 item(key = "loading_footer") {
                     Box(
                         modifier = Modifier
@@ -85,7 +87,7 @@ fun SearchContent(
             }
         }
         VacancyCount(
-            count = state.found,
+            count = state.data.found,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .onSizeChanged { size ->

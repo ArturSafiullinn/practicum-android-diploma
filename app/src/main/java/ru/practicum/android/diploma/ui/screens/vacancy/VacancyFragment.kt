@@ -24,8 +24,10 @@ import ru.practicum.android.diploma.presentation.utils.DescriptionBlock
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.components.VacancyTopAppBar
+import ru.practicum.android.diploma.ui.models.ContentData
 import ru.practicum.android.diploma.ui.models.VacancyDetailUi
 import ru.practicum.android.diploma.ui.screens.BaseComposeFragment
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.Dimens.Space16
 import ru.practicum.android.diploma.ui.theme.Dimens.Space24
 import ru.practicum.android.diploma.ui.theme.Dimens.Space8
@@ -65,7 +67,7 @@ class VacancyFragment : BaseComposeFragment() {
 
 @Composable
 fun VacancyScreen(
-    screenState: VacancyUiState,
+    screenState: ScreenState<ContentData.Vacancy>,
     hasInternet: Boolean,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
@@ -74,12 +76,12 @@ fun VacancyScreen(
     Scaffold(
         topBar = {
             val canShare =
-                hasInternet && (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.url?.isNotBlank() == true
-            val canLike = screenState is VacancyUiState.Vacancy
+                hasInternet && (screenState as? ScreenState.Content)?.data?.vacancyDetailUi?.url?.isNotBlank() == true
+            val canLike = screenState is ScreenState.Content
 
             VacancyTopAppBar(
                 title = stringResource(R.string.vacancy),
-                isFavorite = (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.isFavorite ?: false,
+                isFavorite = (screenState as? ScreenState.Content)?.data?.vacancyDetailUi?.isFavorite ?: false,
                 showFavorite = canLike,
                 showShare = canShare,
                 onBackClick = onBackClick,
@@ -89,8 +91,7 @@ fun VacancyScreen(
         }
     ) { paddingValues ->
         when (screenState) {
-            is VacancyUiState.Initial -> {}
-            is VacancyUiState.Loading -> {
+            is ScreenState.Loading -> {
                 CustomLoadingIndicator(
                     Modifier
                         .fillMaxSize()
@@ -98,38 +99,40 @@ fun VacancyScreen(
                 )
             }
 
-            is VacancyUiState.NoInternet -> {
+            is ScreenState.NotConnected -> {
                 VacancyError(
                     imageResId = R.drawable.no_internet,
                     textResId = R.string.empty_state_no_internet
                 )
             }
 
-            is VacancyUiState.ServerError -> {
+            is ScreenState.ServerError -> {
                 VacancyError(
                     imageResId = R.drawable.image_vacancy_server_error,
                     textResId = R.string.server_error
                 )
             }
 
-            is VacancyUiState.Vacancy -> {
+            is ScreenState.Content -> {
                 VacancyContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = Space16, vertical = Space8),
-                    vacancy = screenState.vacancyDetailUi,
-                    descriptionBlocks = screenState.descriptionBlocks
+                    vacancy = screenState.data.vacancyDetailUi,
+                    descriptionBlocks = screenState.data.descriptionBlocks
                 )
             }
 
-            is VacancyUiState.VacancyNotFound -> {
+            is ScreenState.NoResults -> {
                 VacancyError(
                     imageResId = R.drawable.image_vacancy_not_found,
                     textResId = R.string.vacancy_not_found_or_deleted
                 )
             }
+
+            else -> {}
         }
     }
 }
@@ -170,7 +173,7 @@ fun VacancyContent(
 @Preview
 fun Preview1() {
     VacancyScreen(
-        screenState = VacancyUiState.ServerError,
+        screenState = ScreenState.ServerError,
         hasInternet = true,
         onBackClick = { },
         onShareClick = { }

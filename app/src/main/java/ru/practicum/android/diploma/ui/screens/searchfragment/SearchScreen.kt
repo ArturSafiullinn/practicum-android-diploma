@@ -13,11 +13,13 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.components.CustomLoadingIndicator
 import ru.practicum.android.diploma.ui.components.EmptyState
 import ru.practicum.android.diploma.ui.components.SearchTopAppBar
+import ru.practicum.android.diploma.ui.models.ContentData
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.ui.theme.Dimens
 
 @Composable
 fun SearchScreen(
-    state: SearchUiState,
+    state: ScreenState<ContentData.Search>,
     query: String,
     onClearQuery: () -> Unit,
     onQueryChange: (String) -> Unit,
@@ -52,38 +54,40 @@ fun SearchScreen(
             Spacer(modifier = Modifier.height(Dimens.Space12))
 
             when (state) {
-                is SearchUiState.Initial -> {
+                is ScreenState.Initial -> {
                     EmptyState(imageRes = R.drawable.image_search)
                 }
 
-                is SearchUiState.Loading -> {
+                is ScreenState.Loading -> {
                     CustomLoadingIndicator(Modifier.fillMaxSize())
                 }
 
-                is SearchUiState.NoResults,
-                is SearchUiState.NotConnected,
-                is SearchUiState.ServerError -> {
+                is ScreenState.NoResults,
+                is ScreenState.NotConnected,
+                is ScreenState.ServerError -> {
                     EmptyState(
                         title = when (state) {
-                            is SearchUiState.NoResults -> stringResource(R.string.empty_state_no_such_vacancies)
-                            is SearchUiState.NotConnected -> stringResource(R.string.empty_state_no_internet)
+                            is ScreenState.NoResults -> stringResource(R.string.empty_state_no_such_vacancies)
+                            is ScreenState.NotConnected -> stringResource(R.string.empty_state_no_internet)
                             else -> stringResource(R.string.empty_state_server_error)
                         },
                         imageRes = when (state) {
-                            is SearchUiState.NoResults -> R.drawable.empty_result
-                            is SearchUiState.NotConnected -> R.drawable.no_internet
+                            is ScreenState.NoResults -> R.drawable.empty_result
+                            is ScreenState.NotConnected -> R.drawable.no_internet
                             else -> R.drawable.search_error
                         }
                     )
                 }
 
-                is SearchUiState.Content -> {
+                is ScreenState.Content -> {
                     SearchContent(
                         state = state,
                         onLoadNextPage = onLoadNextPage,
                         onVacancyClick = onVacancyClick
                     )
                 }
+
+                ScreenState.Empty -> {}
             }
         }
     }

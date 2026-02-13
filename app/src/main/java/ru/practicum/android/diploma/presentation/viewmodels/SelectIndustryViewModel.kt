@@ -9,15 +9,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IndustriesInteractor
 import ru.practicum.android.diploma.domain.models.FilterIndustry
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Error
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Error.shouldLoadIndustries
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Error.shouldShowNoInternet
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Industries
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Initial
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.Loading
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.NoInternet
-import ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryUiState.NothingFound
+import ru.practicum.android.diploma.ui.models.ContentData
+import ru.practicum.android.diploma.ui.states.ScreenState
 import ru.practicum.android.diploma.util.ConnectivityMonitor
 import ru.practicum.android.diploma.util.DEBOUNCE_SEARCH_DELAY_SHORT
 import ru.practicum.android.diploma.util.Debouncer
@@ -34,7 +27,7 @@ class SelectIndustryViewModel(
     private var query: String = ""
     private var industriesFullList = listOf<FilterIndustry>()
 
-    private val _screenState = MutableStateFlow<SelectIndustryUiState>(Initial)
+    private val _screenState = MutableStateFlow<ScreenState<ContentData.IndustriesFilter>>(ScreenState.Empty)
     val screenState = _screenState.asStateFlow()
 
     init {
@@ -42,14 +35,10 @@ class SelectIndustryViewModel(
             connectivityMonitor = connectivityMonitor,
             screenState = _screenState,
             onConnected = {
-                if (it.shouldLoadIndustries(industriesFullList.isEmpty())) {
-                    loadIndustries()
-                }
+                loadIndustries()
             },
             onDisconnected = {
-                if (it.shouldShowNoInternet()) {
-                    _screenState.update { NoInternet }
-                }
+                _screenState.update { ScreenState.NotConnected }
             },
         )
         loadIndustries()
@@ -69,7 +58,7 @@ class SelectIndustryViewModel(
 
     private fun loadIndustries() {
         viewModelScope.launch {
-            _screenState.value = Loading
+            _screenState.update { ScreenState.Loading }
 
             industriesInteractor.getIndustries().collect { result ->
                 result
@@ -79,10 +68,10 @@ class SelectIndustryViewModel(
                     }
                     .onFailure { e ->
                         val state = when (e) {
-                            is IOException -> NoInternet
+                            is IOException -> ScreenState.NotConnected
                             else -> {
                                 Log.e(TAG_INDUSTRIES_VIEW_MODEL, "Failed to load industries", e)
-                                Error
+                                ScreenState.ServerError
                             }
                         }
                         _screenState.update { state }
@@ -104,10 +93,10 @@ class SelectIndustryViewModel(
 
         _screenState.update { currentState ->
             when {
-                filtered.isNotEmpty() -> Industries(industriesShown = filtered)
-                currentState is Loading -> Loading
-                currentState is Initial -> Initial
-                else -> NothingFound
+                filtered.isNotEmpty() -> ScreenState.Content(ContentData.IndustriesFilter(industriesShown = filtered))
+                currentState is ScreenState.Loading -> ScreenState.Loading
+                currentState is ScreenState.Empty -> ScreenState.Empty
+                else -> ScreenState.NoResults
             }
         }
     }
