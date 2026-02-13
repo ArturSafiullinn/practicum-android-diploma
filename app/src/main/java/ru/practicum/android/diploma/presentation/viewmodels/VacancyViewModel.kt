@@ -135,7 +135,6 @@ class VacancyViewModel(
         val isFavorite = vacancyInteractor.isFavorite(vacancyId)
         val current = _screenState.value
         if (current is ScreenState.Content) {
-
             _screenState.value = current.copy(
                 data = current.data.copy(
                     vacancyDetailUi = current.data.vacancyDetailUi.copy(isFavorite = isFavorite),
