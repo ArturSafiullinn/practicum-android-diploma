@@ -26,7 +26,7 @@ class App : Application(), KoinComponent {
                 dataModule,
                 storageModule,
                 domainModule,
-                presentationModule
+                presentationModule,
             )
         }
         Coil.setImageLoader(getKoin().get<ImageLoader>())

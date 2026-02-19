@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.ui.screens.vacancy
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -37,9 +39,23 @@ class VacancyFragment : BaseComposeFragment() {
     @Composable
     override fun ScreenContent() {
         val screenState by viewModel.screenState.collectAsState()
+        val hasInternet by viewModel.hasInternet.collectAsState()
+        val toastRes by viewModel.toast.collectAsState()
+
+        LaunchedEffect(toastRes) {
+            toastRes?.let {
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getString(it),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            viewModel.onToastShown()
+        }
 
         VacancyScreen(
             screenState = screenState,
+            hasInternet = hasInternet,
             onBackClick = { findNavController().popBackStack() },
             onShareClick = { viewModel.onShareClicked() },
             onFavoriteClick = { viewModel.onFavoriteClicked() }
@@ -50,15 +66,22 @@ class VacancyFragment : BaseComposeFragment() {
 @Composable
 fun VacancyScreen(
     screenState: VacancyUiState,
+    hasInternet: Boolean,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFavoriteClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
+            val canShare =
+                hasInternet && (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.url?.isNotBlank() == true
+            val canLike = screenState is VacancyUiState.Vacancy
+
             VacancyTopAppBar(
                 title = stringResource(R.string.vacancy),
                 isFavorite = (screenState as? VacancyUiState.Vacancy)?.vacancyDetailUi?.isFavorite ?: false,
+                showFavorite = canLike,
+                showShare = canShare,
                 onBackClick = onBackClick,
                 onShareClick = onShareClick,
                 onFavoriteClick = onFavoriteClick
@@ -81,6 +104,13 @@ fun VacancyScreen(
                 )
             }
 
+            is VacancyUiState.NoInternet -> {
+                VacancyError(
+                    imageResId = R.drawable.no_internet,
+                    textResId = R.string.empty_state_no_internet
+                )
+            }
+
             is VacancyUiState.Vacancy -> {
                 VacancyContent(
                     modifier = Modifier
@@ -99,6 +129,8 @@ fun VacancyScreen(
                     textResId = R.string.vacancy_not_found_or_deleted
                 )
             }
+
+            is VacancyUiState.Initial -> {}
         }
     }
 }
@@ -128,6 +160,10 @@ fun VacancyContent(
         )
 
         VacancySkills(vacancy)
+
+        Spacer(Modifier.height(Space24))
+
+        VacancyContacts(vacancy)
     }
 }
 
@@ -135,7 +171,8 @@ fun VacancyContent(
 @Preview
 fun Preview1() {
     VacancyScreen(
-        screenState = VacancyUiState.ServerError(),
+        screenState = VacancyUiState.ServerError,
+        hasInternet = true,
         onBackClick = { },
         onShareClick = { }
     ) { }

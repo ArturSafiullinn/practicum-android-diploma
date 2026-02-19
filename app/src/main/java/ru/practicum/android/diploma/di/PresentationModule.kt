@@ -10,17 +10,27 @@ import ru.practicum.android.diploma.presentation.mappers.VacancyListItemUiMapper
 import ru.practicum.android.diploma.presentation.utils.DescriptionParser
 import ru.practicum.android.diploma.presentation.utils.HeadingDictionary
 import ru.practicum.android.diploma.presentation.viewmodels.FavoritesViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.FilterSharedViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.SearchViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.SelectCountryViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.SelectIndustryViewModel
+import ru.practicum.android.diploma.presentation.viewmodels.SelectRegionViewModel
 import ru.practicum.android.diploma.presentation.viewmodels.VacancyViewModel
 
 val presentationModule = module {
     // UI mappers and utility classes
     single {
-        VacancyDetailUiMapper(salaryFormatter = get())
+        VacancyDetailUiMapper(
+            salaryFormatter = get(),
+            titleFormatter = get()
+        )
     }
 
     single {
-        VacancyListItemUiMapper(salaryFormatter = get())
+        VacancyListItemUiMapper(
+            salaryFormatter = get(),
+            titleFormatter = get()
+        )
     }
 
     single<ExternalNavigator> {
@@ -42,7 +52,8 @@ val presentationModule = module {
             externalNavigator = get(),
             vacancyDetailUiMapper = get(),
             vacancyInteractor = get(),
-            descriptionParser = get()
+            descriptionParser = get(),
+            connectivityMonitor = get()
         )
     }
     viewModel {
@@ -51,6 +62,19 @@ val presentationModule = module {
             vacancyListItemUiMapper = get()
         )
     }
+    viewModel {
+        FilterSharedViewModel(
+            interactor = get()
+        )
+    }
+    viewModel {
+        SelectIndustryViewModel(
+            industriesInteractor = get(),
+            connectivityMonitor = get()
+        )
+    }
+    viewModel { SelectCountryViewModel(areaInteractor = get()) }
+    viewModel { SelectRegionViewModel(areaInteractor = get()) }
 
     single { HeadingDictionary(get()) }
     single { DescriptionParser(get()) }

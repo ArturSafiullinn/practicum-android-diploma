@@ -37,6 +37,7 @@
     <string name="search_placeholder">Введите запрос</string>
     <string name="salary_label">Ожидаемая зарплата</string>
     <string name="salary_placeholder">Введите сумму</string>
+    <string name="type_industry">Введите отрасль</string>
 
     <!-- Empty States (Заголовки экранов пустышек: нет интернета и т.д. -->
     <string name="empty_state_no_internet">Нет интернета</string>
@@ -46,6 +47,7 @@
     <string name="empty_state_vacancy_load_error">Вакансия не найдена или удалена</string>
     <string name="empty_state_server_error">Ошибка сервера</string>
     <string name="empty_state_empty_favourites">Список пуст</string>
+    <string name="empty_state_no_such_idustry">Такой отрасли нет</string>
 
     <!-- Team Fragment -->
     <string name="team_fragment_description">Над приложением работали</string>
@@ -59,19 +61,27 @@
     <string name="enter_your_query">Введите запрос</string>
     <string name="count_vacancy">Найдено %d вакансий</string>
     <string name="unknown_workplace">Работодатель неизвестен</string>
-    <string name="toast_check_internet">Проверьте подключение к интернету</string>
-    <string name="toast_error">Произошла ошибка</string>
 
     <!-- Vacancy Fragment -->
     <string name="vacancy_not_found_or_deleted">Вакансия не найдена или удалена</string>
     <string name="required_experience">Требуемый опыт</string>
     <string name="vacancy_description">Описание вакансии</string>
     <string name="required_skills">Ключевые навыки</string>
+    <string name="contacts">Контакты</string>
+    <string name="choose_email_client">Выберите почтовый клиент</string>
+    <string name="choose_call_app">Выберите приложение для звонка</string>
+    <string name="no_email_app">Нет доступного почтового приложения</string>
+    <string name="no_call_app">Нет приложения для звонков</string>
 
     <!-- Filter Settings -->
     <string name="workplace">Место работы</string>
     <string name="industry">Отрасль</string>
+    <string name="filter_not_selected">Не выбрано</string>
     <string name="no_salary_checkbox">Не показывать без зарплаты</string>
+    <string name="country">Страна</string>
+    <string name="region">Регион</string>
+    <string name="enter_region">Введите регион</string>
+
 
     <!-- Button Texts -->
     <string name="select_button_text">Выбрать</string>
@@ -105,4 +115,13 @@
     <string name="heading_skills">Ключевые навыки</string>
     <string name="heading_nice_to_have">Будет здорово, если у тебя есть</string>
     <string name="heading_we_need">У того, кто нам нужен, есть</string>
+
+    <!-- Окончание VacancyDetail.name ("в ${vacancy.employer.name}") -->
+    <string name="suffix_vacancy_title_employer">"в %s"</string>
+
+    <!-- Toast messages -->
+    <string name="toast_check_internet">Проверьте подключение к интернету</string>
+    <string name="toast_error">Произошла ошибка</string>
+    <string name="toast_connection_lost">Подключение потеряно</string>
+    <string name="toast_connection_restored">Подключение восстановлено</string>
 </resources>

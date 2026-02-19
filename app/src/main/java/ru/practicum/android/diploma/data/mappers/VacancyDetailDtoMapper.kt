@@ -29,7 +29,6 @@ class VacancyDetailDtoMapper {
         )
     }
 
-    // region Функции конвертации внутренних полей VacancyDetail
     private fun salaryToDomain(dto: VacancyDetailDto.SalaryDto?): VacancyDetail.Salary? {
         return dto?.let {
             VacancyDetail.Salary(
@@ -84,7 +83,21 @@ class VacancyDetailDtoMapper {
                 id = it.id,
                 name = it.name,
                 email = it.email,
-                phone = it.phone
+                phone = it.phones
+                    ?.mapNotNull { phoneDto ->
+                        phoneDto.formatted
+                            ?.trim()
+                            ?.takeIf { it.isNotBlank() }
+                            ?.let { number ->
+                                val comment = phoneDto.comment?.trim().orEmpty()
+                                if (comment.isNotEmpty()) {
+                                    "$number ($comment)"
+                                } else {
+                                    number
+                                }
+                            }
+                    }
+                    ?.takeIf { phones -> phones.isNotEmpty() }
             )
         }
     }
@@ -112,5 +125,4 @@ class VacancyDetailDtoMapper {
             name = dto.name
         )
     }
-    // endregion
 }

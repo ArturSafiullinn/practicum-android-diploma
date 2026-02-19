@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/filterSettingsFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.FilterSettingsFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.FilterSettingsFragment"
         android:label="FilterSettingsFragment">
         <action
             android:id="@+id/action_filterSettingsFragment_to_workPlaceFragment"
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/workPlaceFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.WorkPlaceFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.selectworkplace.WorkPlaceFragment"
         android:label="WorkPlaceFragment">
         <action
             android:id="@+id/action_workPlaceFragment_to_selectCountryFragment"
@@ -55,17 +55,17 @@
 
     <fragment
         android:id="@+id/selectCountryFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectCountryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.areafilter.SelectCountryFragment"
         android:label="SelectCountryFragment" />
 
     <fragment
         android:id="@+id/selectRegionFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectRegionFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.filter.areafilter.SelectRegionFragment"
         android:label="SelectRegionFragment" />
 
     <fragment
         android:id="@+id/selectIndustryFragment"
-        android:name="ru.practicum.android.diploma.ui.screens.SelectIndustryFragment"
+        android:name="ru.practicum.android.diploma.ui.screens.selectindustry.SelectIndustryFragment"
         android:label="SelectIndustryFragment">
         <action
             android:id="@+id/action_selectIndustryFragment_to_filterSettingsFragment"
